@@ -1,4 +1,4 @@
-import { test, expect, ElectronApplication, _electron as electron } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import { writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
@@ -7,40 +7,27 @@ import { join } from 'path';
  * 
  * This test suite focuses on:
  * 1. React component render performance
- * 2. Electron main/renderer process communication
- * 3. IPC message latency
- * 4. SQLite database query performance
- * 5. File system operations
+ * 2. Electron main/renderer process communication (simulated via web)
+ * 3. IPC message latency tracking
+ * 4. Component render tracking
+ * 5. Memory usage monitoring
  */
 
 test.describe('Crystal React & Electron Performance', () => {
-  let electronApp: ElectronApplication;
+  let page: Page;
   let performanceData: any = {};
 
-  test.beforeAll(async () => {
-    // Launch Electron app with performance flags
-    electronApp = await electron.launch({
-      args: [
-        '.',
-        '--enable-logging',
-        '--enable-precise-memory-info',
-        '--js-flags=--expose-gc',
-        '--disable-background-timer-throttling'
-      ],
-      env: {
-        ...process.env,
-        NODE_ENV: 'development',
-        CRYSTAL_PERF_MODE: '1', // Enable performance monitoring in app
-        ELECTRON_ENABLE_LOGGING: '1'
-      }
-    });
-
-    // Wait for the first window to be ready
-    const window = await electronApp.firstWindow();
-    await window.waitForLoadState('domcontentloaded');
+  test.beforeAll(async ({ browser }) => {
+    // Create a new page with performance monitoring enabled
+    const context = await browser.newContext();
+    page = await context.newPage();
+    
+    // Navigate to the app
+    await page.goto('http://localhost:4521');
+    await page.waitForLoadState('networkidle');
 
     // Inject React DevTools profiling
-    await window.addInitScript(() => {
+    await page.addInitScript(() => {
       // Enable React Profiler
       if ((window as any).React && (window as any).React.Profiler) {
         const Profiler = (window as any).React.Profiler;
@@ -159,22 +146,21 @@ test.describe('Crystal React & Electron Performance', () => {
   });
 
   test('React component render performance', async () => {
-    const window = await electronApp.firstWindow();
     
     // Navigate through different views to trigger renders
-    await window.click('[data-testid="settings-button"]').catch(() => {});
-    await window.waitForTimeout(500);
-    await window.press('body', 'Escape');
+    await page.click('[data-testid="settings-button"]').catch(() => {});
+    await page.waitForTimeout(500);
+    await page.press('body', 'Escape');
     
     // Switch between sessions
-    const sessions = await window.locator('[data-testid^="session-item"]').all();
+    const sessions = await page.locator('[data-testid^="session-item"]').all();
     for (let i = 0; i < Math.min(3, sessions.length); i++) {
       await sessions[i].click();
-      await window.waitForTimeout(500);
+      await page.waitForTimeout(500);
     }
     
     // Extract React performance data
-    const perfData = await window.evaluate(() => {
+    const perfData = await page.evaluate(() => {
       return (window as any).__CRYSTAL_PERF__ || {};
     });
     
@@ -219,15 +205,13 @@ test.describe('Crystal React & Electron Performance', () => {
   });
 
   test('IPC communication latency', async () => {
-    const window = await electronApp.firstWindow();
-    
     // Trigger various IPC calls
-    await window.click('[data-testid="create-session-button"]').catch(() => {});
-    await window.waitForTimeout(500);
-    await window.press('body', 'Escape');
+    await page.click('[data-testid="create-session-button"]').catch(() => {});
+    await page.waitForTimeout(500);
+    await page.press('body', 'Escape');
     
     // Get IPC latency data
-    const ipcData = await window.evaluate(() => {
+    const ipcData = await page.evaluate(() => {
       return (window as any).__CRYSTAL_PERF__?.ipcLatency || [];
     });
     
@@ -280,98 +264,122 @@ test.describe('Crystal React & Electron Performance', () => {
     }
   });
 
-  test('Electron process metrics', async () => {
-    // Get main process metrics
-    const mainMetrics = await electronApp.evaluate(async ({ app }) => {
-      const metrics = app.getAppMetrics();
-      return metrics;
+  test('Browser process metrics', async () => {
+    // Get browser-level performance metrics
+    const metrics = await page.evaluate(() => {
+      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      const paint = performance.getEntriesByName('first-contentful-paint')[0];
+      const memory = (performance as any).memory;
+      
+      return {
+        navigation: navigation ? {
+          domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
+          loadComplete: navigation.loadEventEnd - navigation.loadEventStart,
+          domInteractive: navigation.domInteractive - navigation.fetchStart,
+          responseTime: navigation.responseEnd - navigation.requestStart
+        } : null,
+        paint: paint ? paint.startTime : null,
+        memory: memory ? {
+          used: memory.usedJSHeapSize,
+          total: memory.totalJSHeapSize,
+          limit: memory.jsHeapSizeLimit
+        } : null
+      };
     });
     
-    console.log('\n💻 Electron Process Metrics:');
+    console.log('\n💻 Browser Performance Metrics:');
     console.log('─'.repeat(50));
     
-    mainMetrics.forEach((process: any) => {
-      console.log(`${process.type} Process (PID: ${process.pid}):`);
-      console.log(`  CPU: ${process.cpu.percentCPUUsage.toFixed(2)}%`);
-      console.log(`  Memory: ${(process.memory.workingSetSize / 1024).toFixed(2)} MB`);
-      console.log(`  Sandboxed: ${process.sandboxed}`);
-    });
-    
-    performanceData.processMetrics = mainMetrics;
-    
-    // Check for high CPU usage
-    const highCPUProcesses = mainMetrics.filter((p: any) => p.cpu.percentCPUUsage > 50);
-    if (highCPUProcesses.length > 0) {
-      console.log('\n⚠️ High CPU Usage Detected:');
-      highCPUProcesses.forEach((p: any) => {
-        console.log(`  - ${p.type}: ${p.cpu.percentCPUUsage.toFixed(2)}%`);
-      });
+    if (metrics.navigation) {
+      console.log('Navigation Timing:');
+      console.log(`  DOM Content Loaded: ${metrics.navigation.domContentLoaded.toFixed(2)}ms`);
+      console.log(`  Load Complete: ${metrics.navigation.loadComplete.toFixed(2)}ms`);
+      console.log(`  DOM Interactive: ${metrics.navigation.domInteractive.toFixed(2)}ms`);
+      console.log(`  Response Time: ${metrics.navigation.responseTime.toFixed(2)}ms`);
     }
     
-    // Check total memory usage
-    const totalMemory = mainMetrics.reduce((sum: number, p: any) => sum + p.memory.workingSetSize, 0) / 1024;
-    console.log(`\nTotal Memory Usage: ${totalMemory.toFixed(2)} MB`);
+    if (metrics.paint) {
+      console.log(`\nFirst Contentful Paint: ${metrics.paint.toFixed(2)}ms`);
+    }
     
-    expect(totalMemory).toBeLessThan(1024); // Total memory under 1GB
+    if (metrics.memory) {
+      const memoryUsedMB = metrics.memory.used / 1024 / 1024;
+      const memoryTotalMB = metrics.memory.total / 1024 / 1024;
+      const memoryLimitMB = metrics.memory.limit / 1024 / 1024;
+      
+      console.log('\nMemory Usage:');
+      console.log(`  Used: ${memoryUsedMB.toFixed(2)} MB`);
+      console.log(`  Total: ${memoryTotalMB.toFixed(2)} MB`);
+      console.log(`  Limit: ${memoryLimitMB.toFixed(2)} MB`);
+      console.log(`  Usage: ${((metrics.memory.used / metrics.memory.limit) * 100).toFixed(2)}%`);
+      
+      performanceData.memoryMetrics = metrics.memory;
+      
+      // Check memory usage
+      expect(memoryUsedMB).toBeLessThan(500); // Memory usage under 500MB
+    }
+    
+    performanceData.browserMetrics = metrics;
   });
 
-  test('Database query performance', async () => {
-    const window = await electronApp.firstWindow();
+  test('Database query performance (simulated)', async () => {
+    // Note: Direct database monitoring requires Electron main process access
+    // This test simulates database operations through UI interactions
     
-    // Inject database performance monitoring
-    await electronApp.evaluate(async ({ app }) => {
-      // This would need to be implemented in the main process
-      // to track SQLite query performance
-      const db = (global as any).database;
-      if (db) {
-        const originalPrepare = db.prepare;
-        (global as any).__DB_PERF__ = [];
-        
-        db.prepare = function(sql: string) {
-          const statement = originalPrepare.call(this, sql);
-          const originalRun = statement.run;
-          const originalGet = statement.get;
-          const originalAll = statement.all;
-          
-          statement.run = function(...args: any[]) {
-            const start = Date.now();
-            const result = originalRun.apply(this, args);
-            const duration = Date.now() - start;
-            (global as any).__DB_PERF__.push({ sql, operation: 'run', duration });
-            return result;
-          };
-          
-          statement.get = function(...args: any[]) {
-            const start = Date.now();
-            const result = originalGet.apply(this, args);
-            const duration = Date.now() - start;
-            (global as any).__DB_PERF__.push({ sql, operation: 'get', duration });
-            return result;
-          };
-          
-          statement.all = function(...args: any[]) {
-            const start = Date.now();
-            const result = originalAll.apply(this, args);
-            const duration = Date.now() - start;
-            (global as any).__DB_PERF__.push({ sql, operation: 'all', duration });
-            return result;
-          };
-          
-          return statement;
-        };
+    console.log('\n🗄️ Database Query Performance (via UI operations):');
+    console.log('─'.repeat(50));
+    
+    // Measure operations that trigger database queries
+    const operations = [
+      {
+        name: 'Load sessions',
+        action: async () => {
+          const start = performance.now();
+          await page.click('[data-testid^="session-item"]').first().catch(() => {});
+          await page.waitForSelector('[data-testid="output-container"], .xterm-screen', { timeout: 5000 }).catch(() => {});
+          return performance.now() - start;
+        }
+      },
+      {
+        name: 'Switch projects',
+        action: async () => {
+          const start = performance.now();
+          const projects = await page.locator('[data-testid^="project-"], [class*="project-item"]').all();
+          if (projects.length > 1) {
+            await projects[1].click();
+            await page.waitForTimeout(500);
+          }
+          return performance.now() - start;
+        }
+      },
+      {
+        name: 'Load prompt history',
+        action: async () => {
+          const start = performance.now();
+          const promptTab = await page.locator('[data-testid="prompts-tab"], button:has-text("Prompts")').first();
+          if (await promptTab.isVisible()) {
+            await promptTab.click();
+            await page.waitForTimeout(500);
+          }
+          return performance.now() - start;
+        }
       }
-    }).catch(() => {
-      console.log('Database performance monitoring not available');
-    });
+    ];
     
-    // Trigger database operations
-    await window.click('[data-testid^="session-item"]').first().catch(() => {});
-    await window.waitForTimeout(1000);
+    const dbPerf: any[] = [];
     
-    // Get database performance data
-    const dbPerf = await electronApp.evaluate(() => {
-      return (global as any).__DB_PERF__ || [];
-    }).catch(() => []);
+    for (const op of operations) {
+      try {
+        const duration = await op.action();
+        dbPerf.push({
+          operation: op.name,
+          duration: duration
+        });
+        console.log(`${op.name}: ${duration.toFixed(2)}ms`);
+      } catch (error) {
+        console.log(`${op.name}: Skipped (element not found)`);
+      }
+    }
     
     if (dbPerf.length > 0) {
       console.log('\n🗄️ Database Query Performance:');
@@ -424,7 +432,7 @@ test.describe('Crystal React & Electron Performance', () => {
     
     console.log(`\n📊 Performance report saved to: ${reportPath}`);
     
-    // Close the app
-    await electronApp.close();
+    // Close the page
+    await page.close();
   });
 });

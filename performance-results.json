@@ -1,0 +1,551 @@
+{
+  "config": {
+    "configFile": "/Users/bytedance/dev/crystal/worktrees/test-check/playwright.performance.config.ts",
+    "rootDir": "/Users/bytedance/dev/crystal/worktrees/test-check/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "performance-results.json"
+        }
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "performance-report",
+          "open": "never"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/bytedance/dev/crystal/worktrees/test-check/test-results",
+        "repeatEach": 1,
+        "retries": 1,
+        "metadata": {},
+        "id": "performance-chromium",
+        "name": "performance-chromium",
+        "testDir": "/Users/bytedance/dev/crystal/worktrees/test-check/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/performance.spec.ts",
+          "**/lighthouse-performance.spec.ts",
+          "**/devtools-profiling.spec.ts",
+          "**/crystal-ui-performance.spec.ts",
+          "**/react-electron-performance.spec.ts"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm electron-dev",
+      "port": 4521,
+      "reuseExistingServer": true,
+      "timeout": 120000,
+      "env": {
+        "NODE_ENV": "development",
+        "CRYSTAL_PERF_MODE": "1"
+      }
+    }
+  },
+  "suites": [
+    {
+      "title": "crystal-ui-performance.spec.ts",
+      "file": "crystal-ui-performance.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Crystal UI Performance",
+          "file": "crystal-ui-performance.spec.ts",
+          "line": 15,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Message rendering performance with many messages",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "1eab1b558d25473615e1-ad34f1029d07f845c290",
+              "file": "crystal-ui-performance.spec.ts",
+              "line": 53,
+              "column": 7
+            },
+            {
+              "title": "Project switching performance",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "1eab1b558d25473615e1-2dc1fe26f18f30dff382",
+              "file": "crystal-ui-performance.spec.ts",
+              "line": 150,
+              "column": 7
+            },
+            {
+              "title": "Session creation and initialization performance",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "1eab1b558d25473615e1-5f02ed3baa4bd3e7c361",
+              "file": "crystal-ui-performance.spec.ts",
+              "line": 186,
+              "column": 7
+            },
+            {
+              "title": "Terminal output rendering performance",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "1eab1b558d25473615e1-0cf1c7e28c53fdd68f30",
+              "file": "crystal-ui-performance.spec.ts",
+              "line": 230,
+              "column": 7
+            },
+            {
+              "title": "Diff view rendering performance",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "1eab1b558d25473615e1-4242f3d31a75ea21633a",
+              "file": "crystal-ui-performance.spec.ts",
+              "line": 276,
+              "column": 7
+            },
+            {
+              "title": "Memory usage during heavy operations",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "1eab1b558d25473615e1-2c32c7261feb90c427a0",
+              "file": "crystal-ui-performance.spec.ts",
+              "line": 323,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "devtools-profiling.spec.ts",
+      "file": "devtools-profiling.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Crystal DevTools Performance Profiling",
+          "file": "devtools-profiling.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Profile CPU usage during heavy operations",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3626eb27dbc99a355c56-9e54854cfde2428b1937",
+              "file": "devtools-profiling.spec.ts",
+              "line": 5,
+              "column": 7
+            },
+            {
+              "title": "Memory heap profiling",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3626eb27dbc99a355c56-3e71ff770ce231904e4b",
+              "file": "devtools-profiling.spec.ts",
+              "line": 80,
+              "column": 7
+            },
+            {
+              "title": "Network performance monitoring",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "3626eb27dbc99a355c56-d6385de333f34e76a251",
+              "file": "devtools-profiling.spec.ts",
+              "line": 144,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "lighthouse-performance.spec.ts",
+      "file": "lighthouse-performance.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Crystal Performance Audits",
+          "file": "lighthouse-performance.spec.ts",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Lighthouse performance audit - App startup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "d57f571fd67bc979eb43-cc06f4c1fdeb88bd0e83",
+              "file": "lighthouse-performance.spec.ts",
+              "line": 11,
+              "column": 7
+            },
+            {
+              "title": "Memory usage during session operations",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "d57f571fd67bc979eb43-c315fb810932a45f9244",
+              "file": "lighthouse-performance.spec.ts",
+              "line": 82,
+              "column": 7
+            },
+            {
+              "title": "UI responsiveness under load",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "d57f571fd67bc979eb43-cc159d8c08950b74922f",
+              "file": "lighthouse-performance.spec.ts",
+              "line": 125,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "performance.spec.ts",
+      "file": "performance.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Crystal Performance Tests",
+          "file": "performance.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "measure page load performance",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b15d6361b2fc38288977-316b2a7a7f5dfad72b4e",
+              "file": "performance.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "measure session creation performance",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b15d6361b2fc38288977-76a3d4c789612c05de19",
+              "file": "performance.spec.ts",
+              "line": 39,
+              "column": 7
+            },
+            {
+              "title": "measure terminal rendering performance",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b15d6361b2fc38288977-b5bd8bb536421eca0c57",
+              "file": "performance.spec.ts",
+              "line": 60,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "react-electron-performance.spec.ts",
+      "file": "react-electron-performance.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Crystal React & Electron Performance",
+          "file": "react-electron-performance.spec.ts",
+          "line": 16,
+          "column": 6,
+          "specs": [
+            {
+              "title": "React component render performance",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ea5a2ff410bab577b1e3-5929605987fd1914e04a",
+              "file": "react-electron-performance.spec.ts",
+              "line": 148,
+              "column": 7
+            },
+            {
+              "title": "IPC communication latency",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ea5a2ff410bab577b1e3-e4a0f574f34391b90e88",
+              "file": "react-electron-performance.spec.ts",
+              "line": 207,
+              "column": 7
+            },
+            {
+              "title": "Browser process metrics",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ea5a2ff410bab577b1e3-a997bf60571b0e9323ca",
+              "file": "react-electron-performance.spec.ts",
+              "line": 267,
+              "column": 7
+            },
+            {
+              "title": "Database query performance (simulated)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ea5a2ff410bab577b1e3-5c1a9885de51cacb5f4a",
+              "file": "react-electron-performance.spec.ts",
+              "line": 325,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-08-13T17:33:40.167Z",
+    "duration": 1054.284,
+    "expected": 0,
+    "skipped": 19,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

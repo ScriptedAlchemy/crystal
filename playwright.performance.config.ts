@@ -53,7 +53,9 @@ export default defineConfig({
       testMatch: [
         '**/performance.spec.ts',
         '**/lighthouse-performance.spec.ts', 
-        '**/devtools-profiling.spec.ts'
+        '**/devtools-profiling.spec.ts',
+        '**/crystal-ui-performance.spec.ts',
+        '**/react-electron-performance.spec.ts'
       ]
     },
   ],

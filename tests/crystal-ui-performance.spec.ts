@@ -82,14 +82,14 @@ test.describe('Crystal UI Performance', () => {
         
         const measurements: number[] = [];
         const scrollSteps = 10;
-        const scrollAmount = container.scrollHeight / scrollSteps;
+        const scrollAmount = (container as HTMLElement).scrollHeight / scrollSteps;
         
         for (let i = 0; i < scrollSteps; i++) {
           const frameStart = performance.now();
-          container.scrollTop = scrollAmount * i;
+          (container as HTMLElement).scrollTop = scrollAmount * i;
           
           // Force layout/paint
-          void container.offsetHeight;
+          void (container as HTMLElement).offsetHeight;
           
           await new Promise(resolve => requestAnimationFrame(resolve));
           const frameEnd = performance.now();
@@ -250,9 +250,9 @@ test.describe('Crystal UI Performance', () => {
         void (terminal as HTMLElement).offsetHeight;
         
         // Trigger some terminal operations
-        terminal.scrollTop = terminal.scrollHeight;
+        (terminal as HTMLElement).scrollTop = (terminal as HTMLElement).scrollHeight;
         void (terminal as HTMLElement).offsetHeight;
-        terminal.scrollTop = 0;
+        (terminal as HTMLElement).scrollTop = 0;
         void (terminal as HTMLElement).offsetHeight;
         
         const reflowTime = performance.now() - startTime;
@@ -260,8 +260,8 @@ test.describe('Crystal UI Performance', () => {
         return {
           visibleRows: rows.length,
           reflowTime,
-          terminalHeight: terminal.scrollHeight,
-          viewportHeight: terminal.clientHeight
+          terminalHeight: (terminal as HTMLElement).scrollHeight,
+          viewportHeight: (terminal as HTMLElement).clientHeight
         };
       });
       
@@ -300,7 +300,7 @@ test.describe('Crystal UI Performance', () => {
         
         for (let i = 0; i < 5; i++) {
           const start = performance.now();
-          diffContainer.scrollTop = i * 100;
+          (diffContainer as HTMLElement).scrollTop = i * 100;
           await new Promise(resolve => requestAnimationFrame(resolve));
           measurements.push(performance.now() - start);
         }
