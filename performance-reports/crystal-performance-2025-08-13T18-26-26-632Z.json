@@ -1,0 +1,21 @@
+{
+  "memoryMetrics": {
+    "used": 27735779,
+    "total": 34015115,
+    "limit": 4294705152
+  },
+  "browserMetrics": {
+    "navigation": {
+      "domContentLoaded": 0.10000002384185791,
+      "loadComplete": 0.6000000238418579,
+      "domInteractive": 9.699999988079071,
+      "responseTime": 4.099999964237213
+    },
+    "paint": 272,
+    "memory": {
+      "used": 27735779,
+      "total": 34015115,
+      "limit": 4294705152
+    }
+  }
+}

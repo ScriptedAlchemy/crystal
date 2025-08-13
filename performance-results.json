@@ -78,6 +78,227 @@
   },
   "suites": [
     {
+      "title": "crystal-ui-performance.spec.ts",
+      "file": "crystal-ui-performance.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Crystal UI Performance",
+          "file": "crystal-ui-performance.spec.ts",
+          "line": 15,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Message rendering performance with many messages",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1593,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-13T19:29:49.015Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1eab1b558d25473615e1-ad34f1029d07f845c290",
+              "file": "crystal-ui-performance.spec.ts",
+              "line": 53,
+              "column": 7
+            },
+            {
+              "title": "Project switching performance",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 804,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-13T19:29:51.000Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1eab1b558d25473615e1-2dc1fe26f18f30dff382",
+              "file": "crystal-ui-performance.spec.ts",
+              "line": 150,
+              "column": 7
+            },
+            {
+              "title": "Session creation and initialization performance",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 807,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-13T19:29:51.808Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1eab1b558d25473615e1-5f02ed3baa4bd3e7c361",
+              "file": "crystal-ui-performance.spec.ts",
+              "line": 186,
+              "column": 7
+            },
+            {
+              "title": "Terminal output rendering performance",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 805,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-13T19:29:52.619Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1eab1b558d25473615e1-0cf1c7e28c53fdd68f30",
+              "file": "crystal-ui-performance.spec.ts",
+              "line": 230,
+              "column": 7
+            },
+            {
+              "title": "Diff view rendering performance",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 797,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-13T19:29:53.432Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1eab1b558d25473615e1-4242f3d31a75ea21633a",
+              "file": "crystal-ui-performance.spec.ts",
+              "line": 276,
+              "column": 7
+            },
+            {
+              "title": "Memory usage during heavy operations",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 801,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-13T19:29:54.235Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "1eab1b558d25473615e1-2c32c7261feb90c427a0",
+              "file": "crystal-ui-performance.spec.ts",
+              "line": 323,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
       "title": "performance.spec.ts",
       "file": "performance.spec.ts",
       "column": 0,
@@ -106,12 +327,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 899,
+                      "duration": 849,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-08-13T18:10:25.004Z",
+                      "startTime": "2025-08-13T19:29:55.048Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -140,12 +361,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 863,
+                      "duration": 841,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-08-13T18:10:26.107Z",
+                      "startTime": "2025-08-13T19:29:55.904Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -174,12 +395,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 831,
+                      "duration": 845,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-08-13T18:10:26.972Z",
+                      "startTime": "2025-08-13T19:29:56.751Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -208,12 +429,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 830,
+                      "duration": 843,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-08-13T18:10:27.805Z",
+                      "startTime": "2025-08-13T19:29:57.603Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -233,9 +454,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-08-13T18:10:24.530Z",
-    "duration": 4151.509,
-    "expected": 4,
+    "startTime": "2025-08-13T19:29:48.476Z",
+    "duration": 10043.512,
+    "expected": 10,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0
