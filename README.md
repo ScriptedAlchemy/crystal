@@ -94,6 +94,10 @@ pnpm run setup
 
 # Run in development
 pnpm run electron-dev
+
+# Run the frontend in a browser with HTTP API backend
+pnpm run web-dev
+# This runs the API server on port 3030 and serves the UI on port 4521
 ```
 
 ## Building for Production
