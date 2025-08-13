@@ -10,12 +10,12 @@ export interface IPCResponse<T = any> {
 }
 
 // Check if we're running in Electron
-const isElectron = () => {
+export const isElectron = () => {
   return typeof window !== 'undefined' && window.electronAPI;
 };
 
 // Wrapper class for API calls that provides error handling and consistent interface
-export class API {
+class ElectronAPI {
   // Session management
   static sessions = {
     async getAll() {
@@ -466,5 +466,50 @@ export class API {
   };
 }
 
-// Legacy support - removed as migration is complete
-// All HTTP API calls have been migrated to IPC via the API class
+// Helper to call HTTP backend using same IPC channels
+async function invokeHttp(channel: string, ...args: any[]) {
+  const response = await fetch(`/ipc/${encodeURIComponent(channel)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ args }),
+  });
+  return response.json();
+}
+
+function toKebabCase(name: string): string {
+  return name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+}
+
+function createBrowserSection<T extends object>(section: string): T {
+  return new Proxy(
+    {},
+    {
+      get(_target, prop) {
+        return (...args: any[]) => invokeHttp(`${section}:${toKebabCase(String(prop))}`, ...args);
+      },
+    },
+  ) as T;
+}
+
+class BrowserAPI {
+  static sessions = createBrowserSection<any>('sessions');
+  static projects = createBrowserSection<any>('projects');
+  static folders = createBrowserSection<any>('folders');
+  static config = createBrowserSection<any>('config');
+  static prompts = createBrowserSection<any>('prompts');
+  static dialog = createBrowserSection<any>('dialog');
+  static permissions = createBrowserSection<any>('permissions');
+  static stravu = createBrowserSection<any>('stravu');
+  static dashboard = createBrowserSection<any>('dashboard');
+
+  static checkForUpdates() {
+    return invokeHttp('version:check-for-updates');
+  }
+
+  static getVersionInfo() {
+    return invokeHttp('version:get-info');
+  }
+}
+
+export { ElectronAPI, BrowserAPI };
+export const API = isElectron() ? ElectronAPI : BrowserAPI;

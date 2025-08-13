@@ -22,6 +22,7 @@
     "dev": "pnpm run electron-dev",
     "electron-dev": "concurrently \"pnpm run --filter frontend dev\" \"wait-on http://localhost:4521 && electron .\"",
     "electron-dev:custom": "concurrently \"pnpm run --filter frontend dev\" \"wait-on http://localhost:4521 && electron .\"",
+    "web-dev": "concurrently \"pnpm run --filter main server\" \"pnpm run --filter frontend dev\"",
     "build": "pnpm run build:frontend && pnpm run build:main && pnpm run build:electron",
     "build:frontend": "pnpm run --filter frontend build",
     "build:main": "pnpm run --filter main build",
