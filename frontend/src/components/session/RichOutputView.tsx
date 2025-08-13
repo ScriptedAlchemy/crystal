@@ -124,6 +124,9 @@ export const RichOutputView = React.forwardRef<{ scrollToPrompt: (promptIndex: n
           messageDiv.classList.remove('highlight-prompt');
         }, 2000);
       }
+    },
+    scrollToBottom: () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }), []);
 

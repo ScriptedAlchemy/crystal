@@ -84,6 +84,26 @@ export const SessionView = memo(() => {
     }
   }, [activeView, activeProjectId]);
 
+  // Auto-scroll to bottom when session changes and we're in richOutput mode
+  useEffect(() => {
+    if (activeSession && hook.viewMode === 'richOutput') {
+      // Small delay to ensure the component is fully rendered
+      setTimeout(() => {
+        richOutputRef.current?.scrollToBottom();
+      }, 100);
+    }
+  }, [activeSession?.id, hook.viewMode]);
+
+  // Auto-scroll to bottom when switching to richOutput mode
+  useEffect(() => {
+    if (hook.viewMode === 'richOutput' && activeSession) {
+      // Small delay to ensure the view transition is complete
+      setTimeout(() => {
+        richOutputRef.current?.scrollToBottom();
+      }, 100);
+    }
+  }, [hook.viewMode]);
+
   const handleProjectGitPull = async () => {
     if (!activeProjectId || !projectData) return;
     setIsMergingProject(true);
@@ -124,6 +144,7 @@ export const SessionView = memo(() => {
 
   const terminalRef = useRef<HTMLDivElement>(null);
   const scriptTerminalRef = useRef<HTMLDivElement>(null);
+  const richOutputRef = useRef<{ scrollToPrompt: (promptIndex: number) => void; scrollToBottom: () => void }>(null);
 
   const hook = useSessionView(activeSession, terminalRef, scriptTerminalRef);
   
@@ -225,6 +246,7 @@ export const SessionView = memo(() => {
           )}
           <div className={`h-full ${hook.viewMode === 'richOutput' ? 'block' : 'hidden'}`}>
             <RichOutputWithSidebar 
+              ref={richOutputRef}
               sessionId={activeSession.id}
               settings={richOutputSettings}
               onSettingsChange={handleRichOutputSettingsChange}
