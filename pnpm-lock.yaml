@@ -264,10 +264,10 @@ importers:
         specifier: ^4.10.0
         version: 4.10.4
       '@types/cors':
-        specifier: ^2.8.17
+        specifier: ^2.8.19
         version: 2.8.19
       '@types/express':
-        specifier: ^4.17.21
+        specifier: ^4.17.23
         version: 4.17.23
       '@types/glob':
         specifier: ^9.0.0
@@ -312,7 +312,7 @@ importers:
         specifier: ^5.7.2
         version: 5.8.3
       vitest:
-        specifier: ^2.1.8
+        specifier: ^2.1.9
         version: 2.1.9(@types/node@22.16.5)
 
   shared: {}
