@@ -19,6 +19,12 @@ if ! brew list python-setuptools &> /dev/null; then
     brew install python-setuptools
 fi
 
+# Check if nvm is available and auto-switch to correct Node.js version
+if command -v nvm &> /dev/null && [ -f .nvmrc ]; then
+    echo "📋 Found .nvmrc file, switching to recommended Node.js version..."
+    nvm use || (echo "📦 Installing recommended Node.js version..." && nvm install)
+fi
+
 # Check Node version and warn about known issues
 NODE_VERSION=$(node -v)
 NODE_MAJOR=$(node -v | cut -d'.' -f1 | tr -d 'v')
@@ -29,8 +35,8 @@ echo "📌 Using Node.js $NODE_VERSION"
 if [ "$NODE_VERSION" = "v24.4.0" ]; then
     echo "🚨 CRITICAL: Node.js 24.4.0 has a confirmed memory bug with pnpm and large packages!"
     echo "   This causes 'JavaScript heap out of memory' errors when downloading app-builder-bin"
-    echo "   🔧 SOLUTION: Downgrade to Node.js 20.x or 22.x"
-    echo "   Run: nvm install 20 && nvm use 20"
+    echo "   🔧 SOLUTION: Use the .nvmrc file"
+    echo "   Run: nvm use"
     echo "   Issue: https://github.com/pnpm/pnpm/issues/9743"
     echo ""
     read -p "Continue anyway? (y/N): " -n 1 -r
@@ -40,12 +46,11 @@ if [ "$NODE_VERSION" = "v24.4.0" ]; then
     fi
 elif [ "$NODE_MAJOR" -eq 24 ] && [ "$NODE_MINOR" -ge 4 ]; then
     echo "⚠️  Warning: Node.js $NODE_VERSION may have memory issues with pnpm and large packages"
-    echo "   If you encounter 'heap out of memory' errors, downgrade to Node.js 20.x"
+    echo "   💡 Use the recommended version: nvm use"
 fi
 
 if [ "$NODE_MAJOR" -gt 22 ]; then
-    echo "ℹ️  For best compatibility, consider using Node.js v20.x or v22.x"
-    echo "   You can install with: nvm install 20 && nvm use 20"
+    echo "ℹ️  For best compatibility, use the .nvmrc specified version: nvm use"
 fi
 
 # Check if pnpm is installed
@@ -128,10 +133,16 @@ echo "✅ Setup complete!"
 echo ""
 echo "🚀 You can now run the following commands:"
 echo "   • pnpm dev          - Start development server"
-echo "   • pnpm test         - Run tests"
+echo "   • pnpm test         - Run tests" 
 echo "   • pnpm build        - Build for production"
 echo ""
-echo "💡 If you encounter memory issues, try:"
-echo "   • Using Node.js v20 instead of v24"
-echo "   • Running: NODE_OPTIONS=\"--max-old-space-size=8192\" pnpm install"
+echo "📋 Node.js Version Management:"
+echo "   • This project uses Node.js 20 (see .nvmrc)"
+echo "   • Auto-switch: nvm use"
+echo "   • Manual install: nvm install 20 && nvm use 20"
+echo ""
+echo "💡 If you encounter memory issues:"
+echo "   • Ensure you're using Node.js 20: nvm use"
+echo "   • Avoid Node.js 24.4.0 (has memory bugs with pnpm)"
+echo "   • Increase memory: NODE_OPTIONS=\"--max-old-space-size=16384\""
 echo ""
