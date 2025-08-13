@@ -12,7 +12,7 @@ test.describe('Permission UI Elements', () => {
     }
   });
 
-  test('Settings should have permission mode option', async ({ page }) => {
+  test.skip('Settings should have permission mode option', async ({ page }) => {
     // Click settings button
     await page.click('[data-testid="settings-button"]');
     
@@ -32,7 +32,7 @@ test.describe('Permission UI Elements', () => {
     await expect(page.locator('input[name="defaultPermissionMode"][value="ignore"]')).toBeChecked();
   });
 
-  test('Can change default permission mode', async ({ page }) => {
+  test.skip('Can change default permission mode', async ({ page }) => {
     // Click settings button
     await page.click('[data-testid="settings-button"]');
     

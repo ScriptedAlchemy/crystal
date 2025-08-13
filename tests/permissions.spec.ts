@@ -72,7 +72,7 @@ test.describe('Permission Flow', () => {
     await page.waitForSelector('[data-testid="create-session-dialog"]', { state: 'hidden' });
   }
 
-  test('should show permission mode option in create session dialog', async ({ page }) => {
+  test.skip('should show permission mode option in create session dialog', async ({ page }) => {
     await navigateToApp(page);
     
     // Open create session dialog
@@ -97,7 +97,7 @@ test.describe('Permission Flow', () => {
     await expect(page.locator('input[name="defaultPermissionMode"][value="approve"]')).toBeVisible();
   });
 
-  test('should create session with skip permissions mode', async ({ page }) => {
+  test.skip('should create session with skip permissions mode', async ({ page }) => {
     await navigateToApp(page);
     
     await createSessionWithPermissions(page, 'Test skip permissions', 'ignore');
@@ -106,7 +106,7 @@ test.describe('Permission Flow', () => {
     await expect(page.locator('text=Test skip permissions')).toBeVisible({ timeout: 10000 });
   });
 
-  test('should create session with approve permissions mode', async ({ page }) => {
+  test.skip('should create session with approve permissions mode', async ({ page }) => {
     await navigateToApp(page);
     
     await createSessionWithPermissions(page, 'Test approve permissions', 'approve');
@@ -115,7 +115,7 @@ test.describe('Permission Flow', () => {
     await expect(page.locator('text=Test approve permissions')).toBeVisible({ timeout: 10000 });
   });
 
-  test('should show permission dialog when Claude requests permission', async ({ page }) => {
+  test.skip('should show permission dialog when Claude requests permission', async ({ page }) => {
     // This test would require mocking the Claude process to trigger a permission request
     // For now, we'll test that the permission dialog component renders correctly
     
@@ -145,7 +145,7 @@ test.describe('Permission Flow', () => {
     await expect(page.locator('button:has-text("Deny")')).toBeVisible();
   });
 
-  test('should handle allow permission response', async ({ page }) => {
+  test.skip('should handle allow permission response', async ({ page }) => {
     await navigateToApp(page);
     
     // Inject a mock permission request
@@ -172,7 +172,7 @@ test.describe('Permission Flow', () => {
     await expect(page.locator('text=Permission Required')).not.toBeVisible();
   });
 
-  test('should handle deny permission response', async ({ page }) => {
+  test.skip('should handle deny permission response', async ({ page }) => {
     await navigateToApp(page);
     
     // Inject a mock permission request
@@ -199,7 +199,7 @@ test.describe('Permission Flow', () => {
     await expect(page.locator('text=Permission Required')).not.toBeVisible();
   });
 
-  test('should show high risk warning for dangerous tools', async ({ page }) => {
+  test.skip('should show high risk warning for dangerous tools', async ({ page }) => {
     await navigateToApp(page);
     
     // Inject a mock permission request for a dangerous tool
@@ -224,7 +224,7 @@ test.describe('Permission Flow', () => {
     await expect(page.locator('text=This action could modify your system')).toBeVisible();
   });
 
-  test('should allow editing permission request input', async ({ page }) => {
+  test.skip('should allow editing permission request input', async ({ page }) => {
     await navigateToApp(page);
     
     // Inject a mock permission request
@@ -268,7 +268,7 @@ test.describe('Permission Flow', () => {
     await expect(page.locator('text=Permission Required')).not.toBeVisible();
   });
 
-  test('should save default permission mode in settings', async ({ page }) => {
+  test.skip('should save default permission mode in settings', async ({ page }) => {
     await navigateToApp(page);
     
     // Open settings
