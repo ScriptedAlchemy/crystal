@@ -60,7 +60,10 @@
     "test:perf": "playwright test --config=playwright.performance.config.ts",
     "test:perf:ui": "playwright test --config=playwright.performance.config.ts --ui",
     "test:lighthouse": "playwright test tests/lighthouse-performance.spec.ts --config=playwright.performance.config.ts",
-    "test:profiling": "playwright test tests/devtools-profiling.spec.ts --config=playwright.performance.config.ts"
+    "test:profiling": "playwright test tests/devtools-profiling.spec.ts --config=playwright.performance.config.ts",
+    "test:crystal-perf": "playwright test tests/crystal-ui-performance.spec.ts --config=playwright.performance.config.ts",
+    "test:electron-perf": "playwright test tests/react-electron-performance.spec.ts --config=playwright.performance.config.ts",
+    "test:perf:all": "playwright test tests/*performance*.spec.ts --config=playwright.performance.config.ts"
   },
   "dependencies": {
     "@anthropic-ai/claude-code": "^1.0.33",
