@@ -15,8 +15,8 @@ import { writeFileSync } from 'fs';
 test.describe('Crystal UI Performance', () => {
   let page: Page;
   
-  test.beforeAll(async ({ browser }) => {
-    // Create a persistent context to maintain state across tests
+  test.beforeEach(async ({ browser }) => {
+    // Create a context for each test
     const context = await browser.newContext();
     page = await context.newPage();
     
@@ -388,11 +388,13 @@ test.describe('Crystal UI Performance', () => {
     }
   });
 
-  test.afterAll(async () => {
-    // Extract and save performance metrics
-    const metrics = await page.evaluate(() => {
-      return (window as any).performanceMetrics || {};
-    });
+  test.afterEach(async () => {
+    // Extract and save performance metrics if page is available
+    if (page) {
+      try {
+        const metrics = await page.evaluate(() => {
+          return (window as any).performanceMetrics || {};
+        });
     
     if (metrics.renders && metrics.renders.length > 0) {
       console.log(`\n⚛️ React Renders: ${metrics.renders.length}`);
@@ -409,7 +411,11 @@ test.describe('Crystal UI Performance', () => {
         console.log(`Average time between renders: ${avgInterval.toFixed(2)}ms`);
       }
     }
-    
-    await page.close();
+      } catch (error) {
+        console.log('Could not extract performance metrics:', error);
+      }
+      
+      await page.close();
+    }
   });
 });

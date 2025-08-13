@@ -20,6 +20,15 @@ test.describe('Crystal Performance Audits', () => {
     const results = await playAudit({
       page,
       port,
+      thresholds: {
+        performance: 60,        // Overall performance score
+        'first-contentful-paint': 3000,  // 3 seconds
+        'largest-contentful-paint': 4000, // 4 seconds  
+        'speed-index': 4000,    // 4 seconds
+        'cumulative-layout-shift': 0.1,  // CLS score
+        'total-blocking-time': 600,      // 600ms
+        'interactive': 5000     // 5 seconds
+      },
       config: {
         extends: 'lighthouse:default',
         settings: {
@@ -30,23 +39,7 @@ test.describe('Crystal Performance Audits', () => {
             'hreflang',
             'tap-targets',
             'crawlable-anchors'
-          ],
-        },
-        audits: [
-          'first-contentful-paint',
-          'largest-contentful-paint', 
-          'speed-index',
-          'cumulative-layout-shift',
-          'total-blocking-time',
-          'interactive'
-        ]
-      },
-      cdp: {
-        Runtime: {
-          enable: true
-        },
-        Performance: {
-          enable: true
+          ]
         }
       }
     });

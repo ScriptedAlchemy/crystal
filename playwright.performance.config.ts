@@ -24,6 +24,11 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    // Fix recordVideo configuration
+    recordVideo: {
+      dir: './test-results/videos/',
+      size: { width: 1280, height: 720 }
+    },
     // Performance testing specific options
     launchOptions: {
       // Enable performance monitoring
@@ -41,14 +46,7 @@ export default defineConfig({
     {
       name: 'performance-chromium',
       use: { 
-        ...devices['Desktop Chrome'],
-        // Additional performance monitoring
-        contextOptions: {
-          recordVideo: {
-            mode: 'retain-on-failure',
-            size: { width: 1280, height: 720 }
-          }
-        }
+        ...devices['Desktop Chrome']
       },
       testMatch: [
         '**/performance.spec.ts',
