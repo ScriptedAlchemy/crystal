@@ -1146,7 +1146,13 @@ export const useSessionView = (
       return;
     }
     
-    let finalInput = ultrathink ? `${input}\nultrathink` : input;
+    // Clear input immediately for better UX
+    const savedInput = input;
+    const savedUltrathink = ultrathink;
+    setInput('');
+    setUltrathink(false);
+    
+    let finalInput = savedUltrathink ? `${savedInput}\nultrathink` : savedInput;
     
     // Check if we have compacted context to inject
     if (contextCompacted && compactedContext) {
@@ -1181,19 +1187,26 @@ export const useSessionView = (
     }
     
     const response = await API.sessions.sendInput(activeSession.id, `${finalInput}\n`);
-    if (response.success) {
-      setInput('');
-      setUltrathink(false);
+    if (!response.success) {
+      // Restore input on failure
+      setInput(savedInput);
+      setUltrathink(savedUltrathink);
     }
   };
 
   const handleContinueConversation = async (attachedImages?: any[], model?: string) => {
     if (!input.trim() || !activeSession) return;
     
+    // Clear input immediately for better UX
+    const savedInput = input;
+    const savedUltrathink = ultrathink;
+    setInput('');
+    setUltrathink(false);
+    
     // Mark that we're continuing a conversation to prevent output reload
     isContinuingConversationRef.current = true;
     
-    let finalInput = ultrathink ? `${input}\nultrathink` : input;
+    let finalInput = savedUltrathink ? `${savedInput}\nultrathink` : savedInput;
     
     // Check if we have compacted context to inject
     if (contextCompacted && compactedContext) {
@@ -1228,18 +1241,25 @@ export const useSessionView = (
     }
     
     const response = await API.sessions.continue(activeSession.id, finalInput, model);
-    if (response.success) {
-      setInput('');
-      setUltrathink(false);
-      // Output will be loaded automatically when session status changes to 'initializing'
-      // No need to manually reload here as it can cause timing issues
+    if (!response.success) {
+      // Restore input on failure
+      setInput(savedInput);
+      setUltrathink(savedUltrathink);
     }
+    // Output will be loaded automatically when session status changes to 'initializing'
+    // No need to manually reload here as it can cause timing issues
   };
 
   const handleTerminalCommand = async () => {
     if (!input.trim() || !activeSession) return;
-    const response = await API.sessions.runTerminalCommand(activeSession.id, input);
-    if (response.success) setInput('');
+    // Clear input immediately for better UX
+    const savedInput = input;
+    setInput('');
+    const response = await API.sessions.runTerminalCommand(activeSession.id, savedInput);
+    if (!response.success) {
+      // Restore input on failure
+      setInput(savedInput);
+    }
   };
 
   const handleStopSession = async () => {
