@@ -74,6 +74,7 @@ export const useSessionView = (
   const lastProcessedOutputLength = useRef(0);
   const lastProcessedScriptOutputLength = useRef(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const sessionSwitchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previousStatusRef = useRef<string | null>(null);
   const [startTime, setStartTime] = useState<number | null>(null);
   const isContinuingConversationRef = useRef(false);
@@ -321,78 +322,89 @@ export const useSessionView = (
     console.log(`[useSessionView] Session changed from ${previousSessionIdRef.current} to ${currentSessionId}`);
     previousSessionIdRef.current = currentSessionId;
     
-    // Force reset any stuck loading state when switching sessions
-    forceResetLoadingState();
-    
-    // Reset view mode to output when switching sessions
-    setViewMode('richOutput');
-    
-    // Reset unread activity indicators
-    setUnreadActivity({
-      changes: false,
-      terminal: false,
-      editor: false,
-      richOutput: false,
-    });
-    
-    // Reset context compaction state when switching sessions
-    setContextCompacted(false);
-    setCompactedContext(null);
-    
-    // Clear terminal immediately when session changes
-    if (terminalInstance.current) {
-      console.log(`[useSessionView] Clearing terminal for session switch`);
-      terminalInstance.current.clear();
+    // Clear any existing debounce timer
+    if (sessionSwitchDebounceRef.current) {
+      clearTimeout(sessionSwitchDebounceRef.current);
+      sessionSwitchDebounceRef.current = null;
     }
-    setFormattedOutput('');
-    lastProcessedOutputLength.current = 0;
-
-    if (!activeSession) {
-      console.log(`[useSessionView] No active session, returning`);
-      setCurrentSessionIdForOutput(null);
-      // Clear any error states when no session is active
-      setLoadError(null);
-      setOutputLoadState('idle');
-      return;
-    }
-
-    console.log(`[useSessionView] Setting up for session ${activeSession.id}, status: ${activeSession.status}`);
-    setCurrentSessionIdForOutput(activeSession.id);
     
-    // Check if session has conversation history
-    const checkConversationHistory = async () => {
-      try {
-        const response = await API.sessions.getConversationMessages(activeSession.id);
-        if (response.success && response.data) {
-          setHasConversationHistory(response.data.length > 0);
-        }
-      } catch (error) {
-        console.error('Failed to check conversation history:', error);
-        setHasConversationHistory(false);
+    // Debounce session switching to prevent rapid switches from overloading the system
+    sessionSwitchDebounceRef.current = setTimeout(() => {
+      console.log(`[useSessionView] Processing session switch to ${currentSessionId} after debounce`);
+      
+      // Force reset any stuck loading state when switching sessions
+      forceResetLoadingState();
+      
+      // Reset view mode to output when switching sessions
+      setViewMode('richOutput');
+      
+      // Reset unread activity indicators
+      setUnreadActivity({
+        changes: false,
+        terminal: false,
+        editor: false,
+        richOutput: false,
+      });
+      
+      // Reset context compaction state when switching sessions
+      setContextCompacted(false);
+      setCompactedContext(null);
+      
+      // Clear terminal immediately when session changes
+      if (terminalInstance.current) {
+        console.log(`[useSessionView] Clearing terminal for session switch`);
+        terminalInstance.current.clear();
       }
-    };
-    checkConversationHistory();
-    
-    // Don't reset the terminal when switching sessions - preserve the state
-    // if (scriptTerminalInstance.current) {
-    //   scriptTerminalInstance.current.reset();
-    // }
-    
-    // Reset output tracking
-    lastProcessedOutputLength.current = 0;
-    lastProcessedScriptOutputLength.current = 0;
+      setFormattedOutput('');
+      lastProcessedOutputLength.current = 0;
 
-    const hasOutput = activeSession.output && activeSession.output.length > 0;
-    const hasMessages = activeSession.jsonMessages && activeSession.jsonMessages.length > 0;
-    const isNewSession = activeSession.status === 'initializing' || (activeSession.status === 'running' && !hasOutput && !hasMessages);
-    
-    
-    if (isNewSession) {
-      setIsWaitingForFirstOutput(true);
-      setStartTime(Date.now());
-    } else {
-      setIsWaitingForFirstOutput(false);
-    }
+      if (!activeSession) {
+        console.log(`[useSessionView] No active session, returning`);
+        setCurrentSessionIdForOutput(null);
+        // Clear any error states when no session is active
+        setLoadError(null);
+        setOutputLoadState('idle');
+        return;
+      }
+
+      console.log(`[useSessionView] Setting up for session ${activeSession.id}, status: ${activeSession.status}`);
+      setCurrentSessionIdForOutput(activeSession.id);
+      
+      // Check if session has conversation history
+      const checkConversationHistory = async () => {
+        try {
+          const response = await API.sessions.getConversationMessages(activeSession.id);
+          if (response.success && response.data) {
+            setHasConversationHistory(response.data.length > 0);
+          }
+        } catch (error) {
+          console.error('Failed to check conversation history:', error);
+          setHasConversationHistory(false);
+        }
+      };
+      checkConversationHistory();
+      
+      // Don't reset the terminal when switching sessions - preserve the state
+      // if (scriptTerminalInstance.current) {
+      //   scriptTerminalInstance.current.reset();
+      // }
+      
+      // Reset output tracking
+      lastProcessedOutputLength.current = 0;
+      lastProcessedScriptOutputLength.current = 0;
+
+      const hasOutput = activeSession.output && activeSession.output.length > 0;
+      const hasMessages = activeSession.jsonMessages && activeSession.jsonMessages.length > 0;
+      const isNewSession = activeSession.status === 'initializing' || (activeSession.status === 'running' && !hasOutput && !hasMessages);
+      
+      
+      if (isNewSession) {
+        setIsWaitingForFirstOutput(true);
+        setStartTime(Date.now());
+      } else {
+        setIsWaitingForFirstOutput(false);
+      }
+    }, 150); // 150ms debounce delay to prevent rapid session switching
   }, [activeSession?.id, forceResetLoadingState]);
 
   const messageCount = activeSession?.jsonMessages?.length || 0;
@@ -558,7 +570,7 @@ export const useSessionView = (
         convertEol: true,
         rows: 30,
         cols: 80,
-        scrollback: 100000, // Unlimited terminal output support
+        scrollback: 10000, // Reduced from 100k to prevent memory issues and UI freezing
         fastScrollModifier: 'ctrl',
         fastScrollSensitivity: 5,
         scrollSensitivity: 1,

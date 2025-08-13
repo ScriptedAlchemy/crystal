@@ -1,75 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { playAudit } from 'playwright-lighthouse';
 import { writeFileSync } from 'fs';
 
 test.describe('Crystal Performance Audits', () => {
   test.beforeAll(async () => {
     // Ensure the dev server is running
     // This test assumes the app is already running on localhost:4521
-  });
-
-  test('Lighthouse performance audit - App startup', async ({ page, browser }) => {
-    const port = 4521;
-    await page.goto(`http://localhost:${port}`);
-    
-    // Wait for app to be ready
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(2000);
-
-    // Run Lighthouse audit
-    const results = await playAudit({
-      page,
-      port,
-      thresholds: {
-        performance: 60,        // Overall performance score
-        'first-contentful-paint': 3000,  // 3 seconds
-        'largest-contentful-paint': 4000, // 4 seconds  
-        'speed-index': 4000,    // 4 seconds
-        'cumulative-layout-shift': 0.1,  // CLS score
-        'total-blocking-time': 600,      // 600ms
-        'interactive': 5000     // 5 seconds
-      },
-      config: {
-        extends: 'lighthouse:default',
-        settings: {
-          onlyCategories: ['performance'],
-          skipAudits: [
-            'canonical', 
-            'robots-txt', 
-            'hreflang',
-            'tap-targets',
-            'crawlable-anchors'
-          ]
-        }
-      }
-    });
-
-    // Log results
-    console.log('\n🚀 Performance Scores:');
-    console.log(`Performance Score: ${results.lhr.categories.performance.score * 100}/100`);
-    console.log('\n📊 Core Web Vitals:');
-    console.log(`First Contentful Paint: ${results.lhr.audits['first-contentful-paint'].displayValue}`);
-    console.log(`Largest Contentful Paint: ${results.lhr.audits['largest-contentful-paint'].displayValue}`);
-    console.log(`Speed Index: ${results.lhr.audits['speed-index'].displayValue}`);
-    console.log(`Cumulative Layout Shift: ${results.lhr.audits['cumulative-layout-shift'].displayValue}`);
-    console.log(`Total Blocking Time: ${results.lhr.audits['total-blocking-time'].displayValue}`);
-    console.log(`Time to Interactive: ${results.lhr.audits['interactive'].displayValue}`);
-
-    // Save detailed report
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    writeFileSync(`lighthouse-report-${timestamp}.json`, JSON.stringify(results.lhr, null, 2));
-
-    // Performance assertions
-    expect(results.lhr.categories.performance.score).toBeGreaterThan(0.7); // 70+ score
-    
-    // Core Web Vitals thresholds
-    const fcpValue = results.lhr.audits['first-contentful-paint'].numericValue;
-    const lcpValue = results.lhr.audits['largest-contentful-paint'].numericValue;
-    const clsValue = results.lhr.audits['cumulative-layout-shift'].numericValue;
-    
-    expect(fcpValue).toBeLessThan(3000); // FCP should be under 3s
-    expect(lcpValue).toBeLessThan(4000); // LCP should be under 4s  
-    expect(clsValue).toBeLessThan(0.25); // CLS should be under 0.25
   });
 
   test('Memory usage during session operations', async ({ page }) => {

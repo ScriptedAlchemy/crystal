@@ -78,21 +78,21 @@
   },
   "suites": [
     {
-      "title": "lighthouse-performance.spec.ts",
-      "file": "lighthouse-performance.spec.ts",
+      "title": "performance.spec.ts",
+      "file": "performance.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "Crystal Performance Audits",
-          "file": "lighthouse-performance.spec.ts",
-          "line": 5,
+          "title": "Crystal Message & Session Performance",
+          "file": "performance.spec.ts",
+          "line": 4,
           "column": 6,
           "specs": [
             {
-              "title": "Lighthouse performance audit - App startup",
-              "ok": false,
+              "title": "measure message streaming performance and UI responsiveness",
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -105,138 +105,27 @@
                     {
                       "workerIndex": 0,
                       "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 3523,
-                      "error": {
-                        "message": "TypeError: Failed to fetch browser webSocket URL from http://127.0.0.1:4521/json/version: fetch failed",
-                        "stack": "TypeError: Failed to fetch browser webSocket URL from http://127.0.0.1:4521/json/version: fetch failed\n    at getWSEndpoint (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/puppeteer-core@24.16.1/node_modules/puppeteer-core/src/common/BrowserConnector.ts:95:20)\n    at getConnectionTransport (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/puppeteer-core@24.16.1/node_modules/puppeteer-core/src/common/BrowserConnector.ts:79:27)\n    at _connectToBrowser (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/puppeteer-core@24.16.1/node_modules/puppeteer-core/src/common/BrowserConnector.ts:34:5)\n    at gatherFn (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/gather/navigation-runner.js:283:19)\n    at Runner.gather (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/runner.js:211:25)\n    at navigationGather (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/gather/navigation-runner.js:306:21)\n    at navigation (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/index.js:58:24)\n    at lighthouse (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/playwright-lighthouse@4.0.0_lighthouse@12.8.1_playwright-core@1.54.1/node_modules/playwright-lighthouse/src/task.js:83:15)\n    at playAudit (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/playwright-lighthouse@4.0.0_lighthouse@12.8.1_playwright-core@1.54.1/node_modules/playwright-lighthouse/src/audit.js:68:35)\n    at /Users/bytedance/dev/crystal/worktrees/test-check/tests/lighthouse-performance.spec.ts:20:21",
-                        "cause": {
-                          "message": "Error: connect ECONNREFUSED 127.0.0.1:4521",
-                          "stack": "Error: connect ECONNREFUSED 127.0.0.1:4521"
-                        },
-                        "location": {
-                          "file": "/Users/bytedance/dev/crystal/worktrees/test-check/tests/lighthouse-performance.spec.ts",
-                          "column": 21,
-                          "line": 20
-                        },
-                        "snippet": "  18 |\n  19 |     // Run Lighthouse audit\n> 20 |     const results = await playAudit({\n     |                     ^\n  21 |       page,\n  22 |       port,\n  23 |       thresholds: {"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/bytedance/dev/crystal/worktrees/test-check/tests/lighthouse-performance.spec.ts",
-                            "column": 21,
-                            "line": 20
-                          },
-                          "message": "TypeError: Failed to fetch browser webSocket URL from http://127.0.0.1:4521/json/version: fetch failed\n\n  18 |\n  19 |     // Run Lighthouse audit\n> 20 |     const results = await playAudit({\n     |                     ^\n  21 |       page,\n  22 |       port,\n  23 |       thresholds: {\n    at getWSEndpoint (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/puppeteer-core@24.16.1/node_modules/puppeteer-core/src/common/BrowserConnector.ts:95:20)\n    at getConnectionTransport (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/puppeteer-core@24.16.1/node_modules/puppeteer-core/src/common/BrowserConnector.ts:79:27)\n    at _connectToBrowser (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/puppeteer-core@24.16.1/node_modules/puppeteer-core/src/common/BrowserConnector.ts:34:5)\n    at gatherFn (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/gather/navigation-runner.js:283:19)\n    at Runner.gather (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/runner.js:211:25)\n    at navigationGather (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/gather/navigation-runner.js:306:21)\n    at navigation (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/index.js:58:24)\n    at lighthouse (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/playwright-lighthouse@4.0.0_lighthouse@12.8.1_playwright-core@1.54.1/node_modules/playwright-lighthouse/src/task.js:83:15)\n    at playAudit (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/playwright-lighthouse@4.0.0_lighthouse@12.8.1_playwright-core@1.54.1/node_modules/playwright-lighthouse/src/audit.js:68:35)\n    at /Users/bytedance/dev/crystal/worktrees/test-check/tests/lighthouse-performance.spec.ts:20:21\n[cause]: Error: connect ECONNREFUSED 127.0.0.1:4521"
-                        }
-                      ],
+                      "status": "passed",
+                      "duration": 899,
+                      "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-08-13T18:02:26.412Z",
+                      "startTime": "2025-08-13T18:10:25.004Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/bytedance/dev/crystal/worktrees/test-check/test-results/lighthouse-performance-Cry-3008d-ormance-audit---App-startup-performance-chromium/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/bytedance/dev/crystal/worktrees/test-check/test-results/lighthouse-performance-Cry-3008d-ormance-audit---App-startup-performance-chromium/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/bytedance/dev/crystal/worktrees/test-check/test-results/lighthouse-performance-Cry-3008d-ormance-audit---App-startup-performance-chromium/error-context.md"
-                        },
-                        {
-                          "name": "trace",
-                          "contentType": "application/zip",
-                          "path": "/Users/bytedance/dev/crystal/worktrees/test-check/test-results/lighthouse-performance-Cry-3008d-ormance-audit---App-startup-performance-chromium/trace.zip"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/bytedance/dev/crystal/worktrees/test-check/tests/lighthouse-performance.spec.ts",
-                        "column": 21,
-                        "line": 20
-                      }
-                    },
-                    {
-                      "workerIndex": 1,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 6335,
-                      "error": {
-                        "message": "TypeError: Failed to fetch browser webSocket URL from http://127.0.0.1:4521/json/version: fetch failed",
-                        "stack": "TypeError: Failed to fetch browser webSocket URL from http://127.0.0.1:4521/json/version: fetch failed\n    at getWSEndpoint (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/puppeteer-core@24.16.1/node_modules/puppeteer-core/src/common/BrowserConnector.ts:95:20)\n    at getConnectionTransport (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/puppeteer-core@24.16.1/node_modules/puppeteer-core/src/common/BrowserConnector.ts:79:27)\n    at _connectToBrowser (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/puppeteer-core@24.16.1/node_modules/puppeteer-core/src/common/BrowserConnector.ts:34:5)\n    at gatherFn (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/gather/navigation-runner.js:283:19)\n    at Runner.gather (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/runner.js:211:25)\n    at navigationGather (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/gather/navigation-runner.js:306:21)\n    at navigation (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/index.js:58:24)\n    at lighthouse (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/playwright-lighthouse@4.0.0_lighthouse@12.8.1_playwright-core@1.54.1/node_modules/playwright-lighthouse/src/task.js:83:15)\n    at playAudit (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/playwright-lighthouse@4.0.0_lighthouse@12.8.1_playwright-core@1.54.1/node_modules/playwright-lighthouse/src/audit.js:68:35)\n    at /Users/bytedance/dev/crystal/worktrees/test-check/tests/lighthouse-performance.spec.ts:20:21",
-                        "cause": {
-                          "message": "Error: connect ECONNREFUSED 127.0.0.1:4521",
-                          "stack": "Error: connect ECONNREFUSED 127.0.0.1:4521"
-                        },
-                        "location": {
-                          "file": "/Users/bytedance/dev/crystal/worktrees/test-check/tests/lighthouse-performance.spec.ts",
-                          "column": 21,
-                          "line": 20
-                        },
-                        "snippet": "  18 |\n  19 |     // Run Lighthouse audit\n> 20 |     const results = await playAudit({\n     |                     ^\n  21 |       page,\n  22 |       port,\n  23 |       thresholds: {"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "/Users/bytedance/dev/crystal/worktrees/test-check/tests/lighthouse-performance.spec.ts",
-                            "column": 21,
-                            "line": 20
-                          },
-                          "message": "TypeError: Failed to fetch browser webSocket URL from http://127.0.0.1:4521/json/version: fetch failed\n\n  18 |\n  19 |     // Run Lighthouse audit\n> 20 |     const results = await playAudit({\n     |                     ^\n  21 |       page,\n  22 |       port,\n  23 |       thresholds: {\n    at getWSEndpoint (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/puppeteer-core@24.16.1/node_modules/puppeteer-core/src/common/BrowserConnector.ts:95:20)\n    at getConnectionTransport (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/puppeteer-core@24.16.1/node_modules/puppeteer-core/src/common/BrowserConnector.ts:79:27)\n    at _connectToBrowser (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/puppeteer-core@24.16.1/node_modules/puppeteer-core/src/common/BrowserConnector.ts:34:5)\n    at gatherFn (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/gather/navigation-runner.js:283:19)\n    at Runner.gather (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/runner.js:211:25)\n    at navigationGather (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/gather/navigation-runner.js:306:21)\n    at navigation (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/lighthouse@12.8.1/node_modules/lighthouse/core/index.js:58:24)\n    at lighthouse (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/playwright-lighthouse@4.0.0_lighthouse@12.8.1_playwright-core@1.54.1/node_modules/playwright-lighthouse/src/task.js:83:15)\n    at playAudit (/Users/bytedance/dev/crystal/worktrees/test-check/node_modules/.pnpm/playwright-lighthouse@4.0.0_lighthouse@12.8.1_playwright-core@1.54.1/node_modules/playwright-lighthouse/src/audit.js:68:35)\n    at /Users/bytedance/dev/crystal/worktrees/test-check/tests/lighthouse-performance.spec.ts:20:21\n[cause]: Error: connect ECONNREFUSED 127.0.0.1:4521"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 1,
-                      "startTime": "2025-08-13T18:02:31.641Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "/Users/bytedance/dev/crystal/worktrees/test-check/test-results/lighthouse-performance-Cry-3008d-ormance-audit---App-startup-performance-chromium-retry1/test-failed-1.png"
-                        },
-                        {
-                          "name": "video",
-                          "contentType": "video/webm",
-                          "path": "/Users/bytedance/dev/crystal/worktrees/test-check/test-results/lighthouse-performance-Cry-3008d-ormance-audit---App-startup-performance-chromium-retry1/video.webm"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "/Users/bytedance/dev/crystal/worktrees/test-check/test-results/lighthouse-performance-Cry-3008d-ormance-audit---App-startup-performance-chromium-retry1/error-context.md"
-                        },
-                        {
-                          "name": "trace",
-                          "contentType": "application/zip",
-                          "path": "/Users/bytedance/dev/crystal/worktrees/test-check/test-results/lighthouse-performance-Cry-3008d-ormance-audit---App-startup-performance-chromium-retry1/trace.zip"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "/Users/bytedance/dev/crystal/worktrees/test-check/tests/lighthouse-performance.spec.ts",
-                        "column": 21,
-                        "line": 20
-                      }
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
-              "id": "d57f571fd67bc979eb43-cc06f4c1fdeb88bd0e83",
-              "file": "lighthouse-performance.spec.ts",
-              "line": 11,
+              "id": "b15d6361b2fc38288977-406eb8e73165100f9065",
+              "file": "performance.spec.ts",
+              "line": 10,
               "column": 7
             },
             {
-              "title": "Memory usage during session operations",
+              "title": "measure session switching performance and blocking",
               "ok": true,
               "tags": [],
               "tests": [
@@ -248,31 +137,15 @@
                   "projectName": "performance-chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
+                      "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 6756,
+                      "duration": 863,
                       "errors": [],
-                      "stdout": [
-                        {
-                          "text": "Session creation UI elements not found, skipping interaction test\n"
-                        },
-                        {
-                          "text": "\n💾 Memory Usage:\n"
-                        },
-                        {
-                          "text": "Before: 26.44 MB\n"
-                        },
-                        {
-                          "text": "After: 27.56 MB\n"
-                        },
-                        {
-                          "text": "Increase: 1.12 MB\n"
-                        }
-                      ],
+                      "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-08-13T18:02:41.288Z",
+                      "startTime": "2025-08-13T18:10:26.107Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -280,13 +153,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "d57f571fd67bc979eb43-c315fb810932a45f9244",
-              "file": "lighthouse-performance.spec.ts",
-              "line": 75,
+              "id": "b15d6361b2fc38288977-eb089794d2c00c89821b",
+              "file": "performance.spec.ts",
+              "line": 127,
               "column": 7
             },
             {
-              "title": "UI responsiveness under load",
+              "title": "measure terminal rendering with heavy output",
               "ok": true,
               "tags": [],
               "tests": [
@@ -298,28 +171,15 @@
                   "projectName": "performance-chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
+                      "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1853,
+                      "duration": 831,
                       "errors": [],
-                      "stdout": [
-                        {
-                          "text": "\n🎯 UI Responsiveness:\n"
-                        },
-                        {
-                          "text": "Average FPS: 62\n"
-                        },
-                        {
-                          "text": "Average frame time: 16.14ms\n"
-                        },
-                        {
-                          "text": "Max frame time: 16.9ms\n"
-                        }
-                      ],
+                      "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-08-13T18:02:48.412Z",
+                      "startTime": "2025-08-13T18:10:26.972Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -327,9 +187,43 @@
                   "status": "expected"
                 }
               ],
-              "id": "d57f571fd67bc979eb43-cc159d8c08950b74922f",
-              "file": "lighthouse-performance.spec.ts",
-              "line": 118,
+              "id": "b15d6361b2fc38288977-da1726fb5028f4995b97",
+              "file": "performance.spec.ts",
+              "line": 211,
+              "column": 7
+            },
+            {
+              "title": "profile React re-renders during updates",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 120000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "performance-chromium",
+                  "projectName": "performance-chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 830,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-13T18:10:27.805Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b15d6361b2fc38288977-45a0aed416ea649b9214",
+              "file": "performance.spec.ts",
+              "line": 282,
               "column": 7
             }
           ]
@@ -339,11 +233,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-08-13T18:02:24.349Z",
-    "duration": 25983.472999999998,
-    "expected": 2,
+    "startTime": "2025-08-13T18:10:24.530Z",
+    "duration": 4151.509,
+    "expected": 4,
     "skipped": 0,
-    "unexpected": 1,
+    "unexpected": 0,
     "flaky": 0
   }
 }
