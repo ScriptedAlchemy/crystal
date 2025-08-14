@@ -1,7 +1,7 @@
 import React from 'react';
 import { ViewMode } from '../../hooks/useSessionView';
 import { cn } from '../../utils/cn';
-import { GitCompare, Terminal, FileEdit, Eye, Settings, GitBranch, MoreVertical } from 'lucide-react';
+import { GitCompare, Terminal, FileEdit, Eye, Settings, GitBranch, MoreVertical, ScrollText } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Dropdown } from '../ui/Dropdown';
 
@@ -11,6 +11,7 @@ interface ViewTabsProps {
   unreadActivity: {
     changes: boolean;
     terminal: boolean;
+    logs: boolean;
     editor: boolean;
     richOutput: boolean;
   };
@@ -65,8 +66,14 @@ export const ViewTabs: React.FC<ViewTabsProps> = ({
       mode: 'terminal', 
       label: 'Terminal', 
       icon: <Terminal className="w-4 h-4" />,
-      activity: unreadActivity.terminal, 
+      activity: false, // Terminal is independent - no unread indicators
       status: isTerminalRunning 
+    },
+    { 
+      mode: 'logs', 
+      label: 'Logs', 
+      icon: <ScrollText className="w-4 h-4" />,
+      activity: unreadActivity.logs 
     },
     { 
       mode: 'editor', 

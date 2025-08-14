@@ -180,8 +180,8 @@ export const SessionListItem = memo(function SessionListItem({ session, isNested
       // Clear closing state after stop completes
       window.dispatchEvent(new CustomEvent('script-closing', { detail: null }));
       
-      // Clear any previous script output for this session
-      useSessionStore.getState().clearScriptOutput(session.id);
+      // Note: Script output now goes to logs, not terminal
+      // No need to clear terminal output here
       
       // Then run the script for this session
       const response = await API.sessions.runScript(session.id);
