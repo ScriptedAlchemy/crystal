@@ -7,6 +7,9 @@ import type { CreateSessionRequest } from '../types/session';
 import { getCrystalSubdirectory } from '../utils/crystalDirectory';
 import { convertDbFolderToFolder } from './folders';
 
+// Configuration constants for performance optimization
+const DEFAULT_OUTPUT_CHUNK_SIZE = 50; // Process N messages at a time (configurable)
+
 export function registerSessionHandlers(ipcMain: IpcMain, services: AppServices): void {
   const {
     sessionManager,
@@ -452,7 +455,7 @@ export function registerSessionHandlers(ipcMain: IpcMain, services: AppServices)
     }
   });
 
-  ipcMain.handle('sessions:get-output', async (_event, sessionId: string) => {
+  ipcMain.handle('sessions:get-output', async (_event, sessionId: string, limit?: number, offset?: number) => {
     try {
       console.log(`[IPC] sessions:get-output called for session: ${sessionId}`);
       const outputs = await sessionManager.getSessionOutputs(sessionId);
@@ -466,26 +469,40 @@ export function registerSessionHandlers(ipcMain: IpcMain, services: AppServices)
         });
       }
 
-      // Transform JSON messages to formatted stdout on the fly
+      // Process outputs in chunks to avoid blocking the main thread for too long
       const { formatJsonForOutputEnhanced } = await import('../utils/toolFormatter');
-      const transformedOutputs = outputs.map(output => {
-        if (output.type === 'json') {
-          // Generate formatted output from JSON
-          const outputText = formatJsonForOutputEnhanced(output.data);
-          if (outputText) {
-            // Return as stdout for the Output view
-            return {
-              ...output,
-              type: 'stdout' as const,
-              data: outputText
-            };
+      const chunkSize = DEFAULT_OUTPUT_CHUNK_SIZE;
+      const transformedOutputs = [];
+      
+      for (let i = 0; i < outputs.length; i += chunkSize) {
+        const chunk = outputs.slice(i, i + chunkSize);
+        const transformedChunk = chunk.map(output => {
+          if (output.type === 'json') {
+            // Generate formatted output from JSON
+            const outputText = formatJsonForOutputEnhanced(output.data);
+            if (outputText) {
+              // Return as stdout for the Output view
+              return {
+                ...output,
+                type: 'stdout' as const,
+                data: outputText
+              };
+            }
+            // If no output format can be generated, skip this JSON message
+            return null;
           }
-          // If no output format can be generated, skip this JSON message
-          return null;
+          // Pass through all other output types including 'error'
+          return output; 
+        }).filter(Boolean);
+        
+        transformedOutputs.push(...transformedChunk);
+        
+        // Allow other operations to process between chunks to prevent UI freezing
+        if (i + chunkSize < outputs.length) {
+          await new Promise(resolve => setImmediate(resolve));
         }
-        // Pass through all other output types including 'error'
-        return output; 
-      }).filter(Boolean); // Remove any null entries
+      }
+      
       return { success: true, data: transformedOutputs };
     } catch (error) {
       console.error('Failed to get session outputs:', error);

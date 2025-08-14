@@ -167,7 +167,7 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
   const lastProcessedOutputLength = useRef(0);
   
   // Use the same hook as SessionView for output handling
-  const hook = useSessionView(mainRepoSession || undefined, undefined, scriptTerminalRef);
+  const projectHookInstance = useSessionView(mainRepoSession || undefined, undefined, scriptTerminalRef);
   
   // Debug logging
   useEffect(() => {
@@ -525,20 +525,20 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
         <SessionInputWithImages
           activeSession={mainRepoSession}
           viewMode="richOutput"
-          input={hook.input}
-          setInput={hook.setInput}
-          textareaRef={hook.textareaRef}
+          input={projectHookInstance.input}
+          setInput={projectHookInstance.setInput}
+          textareaRef={projectHookInstance.textareaRef}
           handleTerminalCommand={handleTerminalCommand}
-          handleSendInput={hook.handleSendInput}
-          handleContinueConversation={hook.handleContinueConversation}
+          handleSendInput={projectHookInstance.handleSendInput}
+          handleContinueConversation={projectHookInstance.handleContinueConversation}
           isStravuConnected={isStravuConnected}
-          setShowStravuSearch={hook.setShowStravuSearch}
-          ultrathink={hook.ultrathink}
-          setUltrathink={hook.setUltrathink}
-          gitCommands={hook.gitCommands}
-          handleCompactContext={hook.handleCompactContext}
-          hasConversationHistory={hook.hasConversationHistory}
-          contextCompacted={hook.contextCompacted}
+          setShowStravuSearch={projectHookInstance.setShowStravuSearch}
+          ultrathink={projectHookInstance.ultrathink}
+          setUltrathink={projectHookInstance.setUltrathink}
+          gitCommands={projectHookInstance.gitCommands}
+          handleCompactContext={projectHookInstance.handleCompactContext}
+          hasConversationHistory={projectHookInstance.hasConversationHistory}
+          contextCompacted={projectHookInstance.contextCompacted}
         />
       )}
     </div>

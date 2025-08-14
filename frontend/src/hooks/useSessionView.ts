@@ -9,6 +9,12 @@ import { Session, GitCommands, GitErrorDetails } from '../types/session';
 import { getTerminalTheme, getScriptTerminalTheme } from '../utils/terminalTheme';
 import { createVisibilityAwareInterval } from '../utils/performanceUtils';
 
+// Configuration constants for performance optimization
+const SESSION_SWITCH_DEBOUNCE_MS = 150; // Debounce delay to prevent rapid session switching
+const OUTPUT_LOAD_DELAY_INITIALIZING = 500; // Load delay for initializing sessions (ms)
+const OUTPUT_LOAD_DELAY_DEFAULT = 200; // Load delay for other sessions (ms)
+const TERMINAL_SCROLLBACK_SIZE = 10000; // Terminal scrollback buffer size (reduced for performance)
+
 export type ViewMode = 'richOutput' | 'changes' | 'terminal' | 'logs' | 'editor';
 
 export const useSessionView = (
@@ -75,6 +81,7 @@ export const useSessionView = (
   const lastProcessedOutputLength = useRef(0);
   const lastProcessedScriptOutputLength = useRef(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const sessionSwitchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previousStatusRef = useRef<string | null>(null);
   const [startTime, setStartTime] = useState<number | null>(null);
   const isContinuingConversationRef = useRef(false);
@@ -321,6 +328,12 @@ export const useSessionView = (
     console.log(`[useSessionView] Session changed from ${previousSessionIdRef.current} to ${currentSessionId}`);
     previousSessionIdRef.current = currentSessionId;
     
+    // Clear any existing debounce timer
+    if (sessionSwitchDebounceRef.current) {
+      clearTimeout(sessionSwitchDebounceRef.current);
+      sessionSwitchDebounceRef.current = null;
+    }
+    
     // Force reset any stuck loading state when switching sessions
     forceResetLoadingState();
     
@@ -356,44 +369,55 @@ export const useSessionView = (
       setOutputLoadState('idle');
       return;
     }
-
-    console.log(`[useSessionView] Setting up for session ${activeSession.id}, status: ${activeSession.status}`);
-    setCurrentSessionIdForOutput(activeSession.id);
     
-    // Check if session has conversation history
-    const checkConversationHistory = async () => {
-      try {
-        const response = await API.sessions.getConversationMessages(activeSession.id);
-        if (response.success && response.data) {
-          setHasConversationHistory(response.data.length > 0);
-        }
-      } catch (error) {
-        console.error('Failed to check conversation history:', error);
-        setHasConversationHistory(false);
+    // Debounce session switching to prevent rapid switches from overloading the system
+    sessionSwitchDebounceRef.current = setTimeout(() => {
+      console.log(`[useSessionView] Processing session switch to ${currentSessionId} after debounce`);
+
+      if (!activeSession) {
+        console.log(`[useSessionView] No active session, returning`);
+        setCurrentSessionIdForOutput(null);
+        return;
       }
-    };
-    checkConversationHistory();
-    
-    // Don't reset the terminal when switching sessions - preserve the state
-    // if (scriptTerminalInstance.current) {
-    //   scriptTerminalInstance.current.reset();
-    // }
-    
-    // Reset output tracking
-    lastProcessedOutputLength.current = 0;
-    lastProcessedScriptOutputLength.current = 0;
 
-    const hasOutput = activeSession.output && activeSession.output.length > 0;
-    const hasMessages = activeSession.jsonMessages && activeSession.jsonMessages.length > 0;
-    const isNewSession = activeSession.status === 'initializing' || (activeSession.status === 'running' && !hasOutput && !hasMessages);
-    
-    
-    if (isNewSession) {
-      setIsWaitingForFirstOutput(true);
-      setStartTime(Date.now());
-    } else {
-      setIsWaitingForFirstOutput(false);
-    }
+      console.log(`[useSessionView] Setting up for session ${activeSession.id}, status: ${activeSession.status}`);
+      setCurrentSessionIdForOutput(activeSession.id);
+      
+      // Check if session has conversation history
+      const checkConversationHistory = async () => {
+        try {
+          const response = await API.sessions.getConversationMessages(activeSession.id);
+          if (response.success && response.data) {
+            setHasConversationHistory(response.data.length > 0);
+          }
+        } catch (error) {
+          console.error('Failed to check conversation history:', error);
+          setHasConversationHistory(false);
+        }
+      };
+      checkConversationHistory();
+      
+      // Don't reset the terminal when switching sessions - preserve the state
+      // if (scriptTerminalInstance.current) {
+      //   scriptTerminalInstance.current.reset();
+      // }
+      
+      // Reset output tracking
+      lastProcessedOutputLength.current = 0;
+      lastProcessedScriptOutputLength.current = 0;
+
+      const hasOutput = activeSession.output && activeSession.output.length > 0;
+      const hasMessages = activeSession.jsonMessages && activeSession.jsonMessages.length > 0;
+      const isNewSession = activeSession.status === 'initializing' || (activeSession.status === 'running' && !hasOutput && !hasMessages);
+      
+      
+      if (isNewSession) {
+        setIsWaitingForFirstOutput(true);
+        setStartTime(Date.now());
+      } else {
+        setIsWaitingForFirstOutput(false);
+      }
+    }, SESSION_SWITCH_DEBOUNCE_MS); // debounce delay to prevent rapid session switching
   }, [activeSession?.id, forceResetLoadingState]);
 
   const messageCount = activeSession?.jsonMessages?.length || 0;
@@ -483,7 +507,7 @@ export const useSessionView = (
     if (outputLoadState === 'idle') {
       // Always load when idle - let the backend be the source of truth
       shouldLoad = true;
-      loadDelay = activeSession.status === 'initializing' ? 500 : 200;
+      loadDelay = activeSession.status === 'initializing' ? OUTPUT_LOAD_DELAY_INITIALIZING : OUTPUT_LOAD_DELAY_DEFAULT;
     } else if (shouldReloadOutput) {
       // Explicit reload requested
       shouldLoad = true;
@@ -559,7 +583,7 @@ export const useSessionView = (
         convertEol: true,
         rows: 30,
         cols: 80,
-        scrollback: 100000, // Unlimited terminal output support
+        scrollback: TERMINAL_SCROLLBACK_SIZE, // Reduced from 100k to prevent memory issues and UI freezing
         fastScrollModifier: 'ctrl',
         fastScrollSensitivity: 5,
         scrollSensitivity: 1,
@@ -1121,7 +1145,13 @@ export const useSessionView = (
       return;
     }
     
-    let finalInput = ultrathink ? `${input}\nultrathink` : input;
+    // Clear input immediately for better UX
+    const savedInput = input;
+    const savedUltrathink = ultrathink;
+    setInput('');
+    setUltrathink(false);
+    
+    let finalInput = savedUltrathink ? `${savedInput}\nultrathink` : savedInput;
     
     // Check if we have compacted context to inject
     if (contextCompacted && compactedContext) {
@@ -1156,19 +1186,26 @@ export const useSessionView = (
     }
     
     const response = await API.sessions.sendInput(activeSession.id, `${finalInput}\n`);
-    if (response.success) {
-      setInput('');
-      setUltrathink(false);
+    if (!response.success) {
+      // Restore input on failure
+      setInput(savedInput);
+      setUltrathink(savedUltrathink);
     }
   };
 
   const handleContinueConversation = async (attachedImages?: any[], model?: string) => {
     if (!input.trim() || !activeSession) return;
     
+    // Clear input immediately for better UX
+    const savedInput = input;
+    const savedUltrathink = ultrathink;
+    setInput('');
+    setUltrathink(false);
+    
     // Mark that we're continuing a conversation to prevent output reload
     isContinuingConversationRef.current = true;
     
-    let finalInput = ultrathink ? `${input}\nultrathink` : input;
+    let finalInput = savedUltrathink ? `${savedInput}\nultrathink` : savedInput;
     
     // Check if we have compacted context to inject
     if (contextCompacted && compactedContext) {
@@ -1203,18 +1240,25 @@ export const useSessionView = (
     }
     
     const response = await API.sessions.continue(activeSession.id, finalInput, model);
-    if (response.success) {
-      setInput('');
-      setUltrathink(false);
-      // Output will be loaded automatically when session status changes to 'initializing'
-      // No need to manually reload here as it can cause timing issues
+    if (!response.success) {
+      // Restore input on failure
+      setInput(savedInput);
+      setUltrathink(savedUltrathink);
     }
+    // Output will be loaded automatically when session status changes to 'initializing'
+    // No need to manually reload here as it can cause timing issues
   };
 
   const handleTerminalCommand = async () => {
     if (!input.trim() || !activeSession) return;
-    const response = await API.sessions.runTerminalCommand(activeSession.id, input);
-    if (response.success) setInput('');
+    // Clear input immediately for better UX
+    const savedInput = input;
+    setInput('');
+    const response = await API.sessions.runTerminalCommand(activeSession.id, savedInput);
+    if (!response.success) {
+      // Restore input on failure
+      setInput(savedInput);
+    }
   };
 
   const handleStopSession = async () => {

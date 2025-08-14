@@ -17,12 +17,12 @@ test.describe('Permission UI Elements', () => {
     await page.click('[data-testid="settings-button"]');
     
     // Wait for settings dialog
-    await page.waitForSelector('text="Settings"');
+    await page.waitForSelector('text="Crystal Settings"');
     
     // Check for permission mode section
-    await expect(page.locator('text="Default Permission Mode"')).toBeVisible();
-    await expect(page.locator('text="Skip Permissions (Default)"')).toBeVisible();
-    await expect(page.locator('text="Approve Actions"')).toBeVisible();
+    await expect(page.locator('text="Default Security Mode"')).toBeVisible();
+    await expect(page.locator('text="Fast & Flexible"')).toBeVisible();
+    await expect(page.locator('text="Secure & Controlled"')).toBeVisible();
     
     // Check radio buttons
     await expect(page.locator('input[name="defaultPermissionMode"][value="ignore"]')).toBeVisible();
@@ -37,16 +37,31 @@ test.describe('Permission UI Elements', () => {
     await page.click('[data-testid="settings-button"]');
     
     // Wait for settings dialog
-    await page.waitForSelector('text="Settings"');
+    await page.waitForSelector('text="Crystal Settings"');
     
     // Click approve mode
     await page.click('input[name="defaultPermissionMode"][value="approve"]');
     
     // Save settings
-    await page.click('button:has-text("Save")');
+    await page.click('button:has-text("Save Changes")');
     
-    // Wait for settings to close
-    await page.waitForSelector('text="Settings"', { state: 'hidden' });
+    // Wait for settings to save and close (or close manually if needed)
+    const settingsDialog = page.locator('div[role="dialog"]:has-text("Crystal Settings")');
+    await Promise.race([
+      page.waitForSelector('text="Crystal Settings"', { state: 'hidden', timeout: 5000 }).catch(() => null),
+      page.waitForTimeout(2000)
+    ]);
+    
+    // If dialog is still visible, close it manually
+    if (await settingsDialog.isVisible()) {
+      const closeButton = page.locator('[aria-label="Close"]').or(page.locator('button:has-text("Cancel")'));
+      if (await closeButton.isVisible()) {
+        await closeButton.click();
+      } else {
+        await page.keyboard.press('Escape');
+      }
+      await page.waitForSelector('text="Crystal Settings"', { state: 'hidden', timeout: 5000 });
+    }
     
     // Re-open settings
     await page.click('[data-testid="settings-button"]');

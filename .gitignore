@@ -88,6 +88,21 @@ test-results/
 playwright-report/
 test-report/
 
+# Performance reports
+performance-reports/
+performance-report/
+performance-results.json
+stress-test-*-messages-*.json
+realistic-stress-test-*.json
+*.performance.json
+*.cpuprofile
+*.heapprofile
+*.heapsnapshot
+cpu-profiles/
+CPU-*.json
+Profile-*.json
+*-profile.json
+
 # Temporary test files
 test-file.txt
 *.test.tmp

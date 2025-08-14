@@ -10,12 +10,17 @@
   "license": "MIT",
   "main": "main/dist/main/src/index.js",
   "engines": {
-    "node": ">=22.14.0",
+    "node": ">=20.0.0 <24.4.0",
     "pnpm": ">=8.0.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "electron"
+      "@homebridge/node-pty-prebuilt-multiarch",
+      "better-sqlite3",
+      "electron",
+      "esbuild",
+      "lzma-native",
+      "msgpackr-extract"
     ]
   },
   "scripts": {
@@ -51,7 +56,14 @@
     "test:ci": "playwright test --config=playwright.ci.config.ts",
     "test:ci:minimal": "playwright test --config=playwright.ci.minimal.config.ts",
     "test:ui": "playwright test --ui",
-    "test:headed": "playwright test --headed"
+    "test:headed": "playwright test --headed",
+    "test:perf": "playwright test --config=playwright.performance.config.ts",
+    "test:perf:ui": "playwright test --config=playwright.performance.config.ts --ui",
+    "test:lighthouse": "playwright test tests/lighthouse-performance.spec.ts --config=playwright.performance.config.ts",
+    "test:profiling": "playwright test tests/devtools-profiling.spec.ts --config=playwright.performance.config.ts",
+    "test:crystal-perf": "playwright test tests/crystal-ui-performance.spec.ts --config=playwright.performance.config.ts",
+    "test:electron-perf": "playwright test tests/react-electron-performance.spec.ts --config=playwright.performance.config.ts",
+    "test:perf:all": "playwright test tests/*performance*.spec.ts --config=playwright.performance.config.ts"
   },
   "dependencies": {
     "@anthropic-ai/claude-code": "^1.0.33",
@@ -72,7 +84,9 @@
     "electron": "^36.4.0",
     "electron-builder": "^25.1.8",
     "electron-rebuild": "^3.2.9",
+    "lighthouse": "^12.8.1",
     "playwright": "^1.52.0",
+    "playwright-lighthouse": "^4.0.0",
     "vite-plugin-electron": "^0.29.0",
     "vite-plugin-electron-renderer": "^0.14.6",
     "wait-on": "^8.0.1"

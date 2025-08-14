@@ -21,11 +21,14 @@ const SIDEBAR_TAB_KEY = 'crystal-rich-output-sidebar-tab';
 
 type SidebarTab = 'prompts' | 'commits';
 
-export const RichOutputWithSidebar: React.FC<RichOutputWithSidebarProps> = ({
+export const RichOutputWithSidebar = React.forwardRef<
+  { scrollToPrompt: (promptIndex: number) => void; scrollToBottom: () => void },
+  RichOutputWithSidebarProps
+>(({
   sessionId,
   sessionStatus,
   settings,
-}) => {
+}, ref) => {
   // Load collapsed state from localStorage
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const stored = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
@@ -38,7 +41,7 @@ export const RichOutputWithSidebar: React.FC<RichOutputWithSidebarProps> = ({
     return (stored as SidebarTab) || 'prompts';
   });
   
-  const richOutputRef = useRef<{ scrollToPrompt: (promptIndex: number) => void }>(null);
+  const richOutputRef = useRef<{ scrollToPrompt: (promptIndex: number) => void; scrollToBottom: () => void }>(null);
 
   // Save collapsed state to localStorage when it changes
   useEffect(() => {
@@ -58,6 +61,16 @@ export const RichOutputWithSidebar: React.FC<RichOutputWithSidebarProps> = ({
       richOutputRef.current.scrollToPrompt(promptIndex);
     }
   }, []);
+
+  // Expose scroll methods via ref
+  React.useImperativeHandle(ref, () => ({
+    scrollToPrompt: (promptIndex: number) => {
+      richOutputRef.current?.scrollToPrompt(promptIndex);
+    },
+    scrollToBottom: () => {
+      richOutputRef.current?.scrollToBottom();
+    }
+  }), []);
 
   return (
     <div className="flex h-full relative">
@@ -150,4 +163,4 @@ export const RichOutputWithSidebar: React.FC<RichOutputWithSidebarProps> = ({
       </div>
     </div>
   );
-};
+});
