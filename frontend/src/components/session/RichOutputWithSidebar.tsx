@@ -163,4 +163,4 @@ export const RichOutputWithSidebar = React.forwardRef<
       </div>
     </div>
   );
-};
+});
