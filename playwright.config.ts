@@ -38,7 +38,7 @@ export default defineConfig({
 
   // Run your local dev server before starting the tests
   webServer: {
-    command: 'npm run electron-dev',
+    command: 'pnpm run electron-dev',
     port: 4521,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
