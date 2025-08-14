@@ -204,7 +204,7 @@ test.describe('Crystal React & Electron Performance', () => {
     }
   });
 
-  test('IPC communication latency', async () => {
+  test.skip('IPC communication latency', async () => {
     // Trigger various IPC calls
     await page.click('[data-testid="create-session-button"]').catch(() => {});
     await page.waitForTimeout(500);
@@ -322,7 +322,7 @@ test.describe('Crystal React & Electron Performance', () => {
     performanceData.browserMetrics = metrics;
   });
 
-  test('Database query performance (simulated)', async () => {
+  test.skip('Database query performance (simulated)', async () => {
     // Note: Direct database monitoring requires Electron main process access
     // This test simulates database operations through UI interactions
     

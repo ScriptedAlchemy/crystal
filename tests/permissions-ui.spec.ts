@@ -17,7 +17,7 @@ test.describe('Permission UI Elements', () => {
     await page.click('[data-testid="settings-button"]');
     
     // Wait for settings dialog
-    await page.waitForSelector('text="Settings"');
+    await page.waitForSelector('text="Crystal Settings"');
     
     // Check for permission mode section
     await expect(page.locator('text="Default Security Mode"')).toBeVisible();
@@ -37,7 +37,7 @@ test.describe('Permission UI Elements', () => {
     await page.click('[data-testid="settings-button"]');
     
     // Wait for settings dialog
-    await page.waitForSelector('text="Settings"');
+    await page.waitForSelector('text="Crystal Settings"');
     
     // Click approve mode
     await page.click('input[name="defaultPermissionMode"][value="approve"]');
@@ -46,9 +46,9 @@ test.describe('Permission UI Elements', () => {
     await page.click('button:has-text("Save Changes")');
     
     // Wait for settings to save and close (or close manually if needed)
-    const settingsDialog = page.locator('div[role="dialog"]:has-text("Settings")');
+    const settingsDialog = page.locator('div[role="dialog"]:has-text("Crystal Settings")');
     await Promise.race([
-      page.waitForSelector('text="Settings"', { state: 'hidden', timeout: 5000 }).catch(() => null),
+      page.waitForSelector('text="Crystal Settings"', { state: 'hidden', timeout: 5000 }).catch(() => null),
       page.waitForTimeout(2000)
     ]);
     
@@ -60,7 +60,7 @@ test.describe('Permission UI Elements', () => {
       } else {
         await page.keyboard.press('Escape');
       }
-      await page.waitForSelector('text="Settings"', { state: 'hidden', timeout: 5000 });
+      await page.waitForSelector('text="Crystal Settings"', { state: 'hidden', timeout: 5000 });
     }
     
     // Re-open settings

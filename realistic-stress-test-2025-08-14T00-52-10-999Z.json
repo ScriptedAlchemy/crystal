@@ -1,0 +1,17 @@
+{
+  "summary": {
+    "testDuration": 1224,
+    "totalHangs": 0,
+    "totalSpinners": 0,
+    "avgSwitchTime": 0,
+    "avgMessageSendTime": 0,
+    "maxMemoryMB": 0,
+    "longTasksCount": 0,
+    "freezesCount": 0
+  },
+  "hangs": [],
+  "spinners": [],
+  "longTasks": [],
+  "freezes": [],
+  "memorySnapshots": []
+}
