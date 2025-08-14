@@ -167,7 +167,7 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
   const lastProcessedOutputLength = useRef(0);
   
   // Use the same hook as SessionView for output handling
-  const hook = useSessionView(mainRepoSession || undefined, undefined, scriptTerminalRef);
+  const sessionViewHook = useSessionView(mainRepoSession || undefined, undefined, scriptTerminalRef);
   
   // Debug logging
   useEffect(() => {
@@ -525,20 +525,20 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
         <SessionInputWithImages
           activeSession={mainRepoSession}
           viewMode="richOutput"
-          input={hook.input}
-          setInput={hook.setInput}
-          textareaRef={hook.textareaRef}
+          input={sessionViewHook.input}
+          setInput={sessionViewHook.setInput}
+          textareaRef={sessionViewHook.textareaRef}
           handleTerminalCommand={handleTerminalCommand}
-          handleSendInput={hook.handleSendInput}
-          handleContinueConversation={hook.handleContinueConversation}
+          handleSendInput={sessionViewHook.handleSendInput}
+          handleContinueConversation={sessionViewHook.handleContinueConversation}
           isStravuConnected={isStravuConnected}
-          setShowStravuSearch={hook.setShowStravuSearch}
-          ultrathink={hook.ultrathink}
-          setUltrathink={hook.setUltrathink}
-          gitCommands={hook.gitCommands}
-          handleCompactContext={hook.handleCompactContext}
-          hasConversationHistory={hook.hasConversationHistory}
-          contextCompacted={hook.contextCompacted}
+          setShowStravuSearch={sessionViewHook.setShowStravuSearch}
+          ultrathink={sessionViewHook.ultrathink}
+          setUltrathink={sessionViewHook.setUltrathink}
+          gitCommands={sessionViewHook.gitCommands}
+          handleCompactContext={sessionViewHook.handleCompactContext}
+          hasConversationHistory={sessionViewHook.hasConversationHistory}
+          contextCompacted={sessionViewHook.contextCompacted}
         />
       )}
     </div>
