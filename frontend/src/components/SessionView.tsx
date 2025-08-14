@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, memo, useMemo } from 'react';
+import React, { useRef, useEffect, useState, memo, useMemo, Suspense } from 'react';
 import { useSessionStore } from '../stores/sessionStore';
 import { useNavigationStore } from '../stores/navigationStore';
 import { EmptyState } from './EmptyState';
@@ -12,7 +12,8 @@ import { SessionInputWithImages } from './session/SessionInputWithImages';
 import { GitErrorDialog } from './session/GitErrorDialog';
 import { CommitMessageDialog } from './session/CommitMessageDialog';
 import { FileEditor } from './FileEditor';
-import { ProjectView } from './ProjectView';
+// Dynamic import to break circular dependency
+const ProjectView = React.lazy(() => import('./ProjectView').then(module => ({ default: module.ProjectView })));
 import { API } from '../utils/api';
 import { RichOutputWithSidebar } from './session/RichOutputWithSidebar';
 import { RichOutputSettings } from './session/RichOutputView';
@@ -36,6 +37,13 @@ export const SessionView = memo(() => {
         : sessions.find(s => s.id === activeSessionId))
     : undefined;
 
+  // Define refs early so they can be used in the hook
+  const terminalRef = useRef<HTMLDivElement>(null);
+  const scriptTerminalRef = useRef<HTMLDivElement>(null);
+  const richOutputRef = useRef<{ scrollToPrompt: (promptIndex: number) => void; scrollToBottom: () => void }>(null);
+
+  // Hook must be declared BEFORE any useEffect that references it
+  const sessionHookInstance = useSessionView(activeSession, terminalRef, scriptTerminalRef);
 
   // Load project data for active session
   useEffect(() => {
@@ -87,23 +95,23 @@ export const SessionView = memo(() => {
 
   // Auto-scroll to bottom when session changes and we're in richOutput mode
   useEffect(() => {
-    if (activeSession && sessionViewHook.viewMode === 'richOutput') {
+    if (activeSession && sessionHookInstance.viewMode === 'richOutput') {
       // Small delay to ensure the component is fully rendered
       setTimeout(() => {
         richOutputRef.current?.scrollToBottom();
       }, 100);
     }
-  }, [activeSession?.id, sessionViewHook.viewMode]);
+  }, [activeSession?.id, sessionHookInstance.viewMode]);
 
   // Auto-scroll to bottom when switching to richOutput mode
   useEffect(() => {
-    if (sessionViewHook.viewMode === 'richOutput' && activeSession) {
+    if (sessionHookInstance.viewMode === 'richOutput' && activeSession) {
       // Small delay to ensure the view transition is complete
       setTimeout(() => {
         richOutputRef.current?.scrollToBottom();
       }, 100);
     }
-  }, [sessionViewHook.viewMode]);
+  }, [sessionHookInstance.viewMode]);
 
   const handleProjectGitPull = async () => {
     if (!activeProjectId || !projectData) return;
@@ -142,12 +150,6 @@ export const SessionView = memo(() => {
       setIsMergingProject(false);
     }
   };
-
-  const terminalRef = useRef<HTMLDivElement>(null);
-  const scriptTerminalRef = useRef<HTMLDivElement>(null);
-  const richOutputRef = useRef<{ scrollToPrompt: (promptIndex: number) => void; scrollToBottom: () => void }>(null);
-
-  const sessionViewHook = useSessionView(activeSession, terminalRef, scriptTerminalRef);
   
   // Settings state for Rich Output view
   const [showRichOutputSettings, setShowRichOutputSettings] = useState(false);
@@ -188,13 +190,15 @@ export const SessionView = memo(() => {
     }
 
     return (
-      <ProjectView
-        projectId={activeProjectId}
-        projectName={projectData.name || 'Project'}
-        onGitPull={handleProjectGitPull}
-        onGitPush={handleProjectGitPush}
-        isMerging={isMergingProject}
-      />
+      <Suspense fallback={<div className="flex-1 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-interactive"></div></div>}>
+        <ProjectView
+          projectId={activeProjectId}
+          projectName={projectData.name || 'Project'}
+          onGitPull={handleProjectGitPull}
+          onGitPush={handleProjectGitPush}
+          isMerging={isMergingProject}
+        />
+      </Suspense>
     );
   }
 
@@ -215,37 +219,37 @@ export const SessionView = memo(() => {
     <div className="flex-1 flex flex-col overflow-hidden bg-bg-primary">
       <SessionHeader
         activeSession={activeSession}
-        isEditingName={sessionViewHook.isEditingName}
-        editName={sessionViewHook.editName}
-        setEditName={sessionViewHook.setEditName}
-        handleNameKeyDown={sessionViewHook.handleNameKeyDown}
-        handleSaveEditName={sessionViewHook.handleSaveEditName}
-        handleStartEditName={sessionViewHook.handleStartEditName}
-        isMerging={sessionViewHook.isMerging}
-        handleGitPull={sessionViewHook.handleGitPull}
-        handleGitPush={sessionViewHook.handleGitPush}
-        handleRebaseMainIntoWorktree={sessionViewHook.handleRebaseMainIntoWorktree}
-        hasChangesToRebase={sessionViewHook.hasChangesToRebase}
-        gitCommands={sessionViewHook.gitCommands}
-        handleSquashAndRebaseToMain={sessionViewHook.handleSquashAndRebaseToMain}
-        handleOpenIDE={sessionViewHook.handleOpenIDE}
-        isOpeningIDE={sessionViewHook.isOpeningIDE}
+        isEditingName={sessionHookInstance.isEditingName}
+        editName={sessionHookInstance.editName}
+        setEditName={sessionHookInstance.setEditName}
+        handleNameKeyDown={sessionHookInstance.handleNameKeyDown}
+        handleSaveEditName={sessionHookInstance.handleSaveEditName}
+        handleStartEditName={sessionHookInstance.handleStartEditName}
+        isMerging={sessionHookInstance.isMerging}
+        handleGitPull={sessionHookInstance.handleGitPull}
+        handleGitPush={sessionHookInstance.handleGitPush}
+        handleRebaseMainIntoWorktree={sessionHookInstance.handleRebaseMainIntoWorktree}
+        hasChangesToRebase={sessionHookInstance.hasChangesToRebase}
+        gitCommands={sessionHookInstance.gitCommands}
+        handleSquashAndRebaseToMain={sessionHookInstance.handleSquashAndRebaseToMain}
+        handleOpenIDE={sessionHookInstance.handleOpenIDE}
+        isOpeningIDE={sessionHookInstance.isOpeningIDE}
         hasIdeCommand={!!sessionProject?.open_ide_command}
-        mergeError={sessionViewHook.mergeError}
-        viewMode={sessionViewHook.viewMode}
-        setViewMode={sessionViewHook.setViewMode}
-        unreadActivity={sessionViewHook.unreadActivity}
-        setUnreadActivity={sessionViewHook.setUnreadActivity}
+        mergeError={sessionHookInstance.mergeError}
+        viewMode={sessionHookInstance.viewMode}
+        setViewMode={sessionHookInstance.setViewMode}
+        unreadActivity={sessionHookInstance.unreadActivity}
+        setUnreadActivity={sessionHookInstance.setUnreadActivity}
         onSettingsClick={() => setShowRichOutputSettings(!showRichOutputSettings)}
         showSettings={showRichOutputSettings}
       />
       
       <div className="flex-1 flex relative min-h-0">
         <div className="flex-1 relative">
-          {sessionViewHook.isLoadingOutput && sessionViewHook.viewMode !== 'richOutput' && (
+          {sessionHookInstance.isLoadingOutput && sessionHookInstance.viewMode !== 'richOutput' && (
             <div className="absolute top-4 left-4 text-text-secondary z-10">Loading output...</div>
           )}
-          <div className={`h-full ${sessionViewHook.viewMode === 'richOutput' ? 'block' : 'hidden'}`}>
+          <div className={`h-full ${sessionHookInstance.viewMode === 'richOutput' ? 'block' : 'hidden'}`}>
             <RichOutputWithSidebar 
               ref={richOutputRef}
               sessionId={activeSession.id}
@@ -253,23 +257,23 @@ export const SessionView = memo(() => {
               onSettingsChange={handleRichOutputSettingsChange}
             />
           </div>
-          <div className={`h-full ${sessionViewHook.viewMode === 'changes' ? 'block' : 'hidden'} overflow-hidden`}>
+          <div className={`h-full ${sessionHookInstance.viewMode === 'changes' ? 'block' : 'hidden'} overflow-hidden`}>
             <CombinedDiffView 
               sessionId={activeSession.id} 
               selectedExecutions={emptySelectedExecutions} 
-              isGitOperationRunning={sessionViewHook.isMerging}
+              isGitOperationRunning={sessionHookInstance.isMerging}
               isMainRepo={isMainRepo}
-              isVisible={sessionViewHook.viewMode === 'changes'}
+              isVisible={sessionHookInstance.viewMode === 'changes'}
             />
           </div>
-          <div className={`h-full ${sessionViewHook.viewMode === 'terminal' ? 'flex flex-col' : 'hidden'} bg-bg-primary`}>
+          <div className={`h-full ${sessionHookInstance.viewMode === 'terminal' ? 'flex flex-col' : 'hidden'} bg-bg-primary`}>
             <div className="flex items-center justify-between px-4 py-2 bg-surface-secondary border-b border-border-primary">
               <div className="text-sm text-text-secondary">
                 Terminal
               </div>
               {!activeSession.archived && (
                 <button
-                  onClick={sessionViewHook.handleClearTerminal}
+                  onClick={sessionHookInstance.handleClearTerminal}
                   className="p-1.5 text-text-secondary hover:text-text-primary hover:bg-surface-hover rounded transition-colors"
                   title="Clear terminal"
                 >
@@ -315,66 +319,66 @@ export const SessionView = memo(() => {
               </>
             )}
           </div>
-          <div className={`h-full ${sessionViewHook.viewMode === 'logs' ? 'block' : 'hidden'}`}>
-            <LogView sessionId={activeSession.id} isVisible={sessionViewHook.viewMode === 'logs'} />
+          <div className={`h-full ${sessionHookInstance.viewMode === 'logs' ? 'block' : 'hidden'}`}>
+            <LogView sessionId={activeSession.id} isVisible={sessionHookInstance.viewMode === 'logs'} />
           </div>
-          <div className={`h-full ${sessionViewHook.viewMode === 'editor' ? 'block' : 'hidden'}`}>
+          <div className={`h-full ${sessionHookInstance.viewMode === 'editor' ? 'block' : 'hidden'}`}>
             <FileEditor sessionId={activeSession.id} />
           </div>
         </div>
       </div>
       
-      {sessionViewHook.viewMode !== 'terminal' && (
+      {sessionHookInstance.viewMode !== 'terminal' && (
         <SessionInputWithImages
           activeSession={activeSession}
-          viewMode={sessionViewHook.viewMode}
-          input={sessionViewHook.input}
-          setInput={sessionViewHook.setInput}
-          textareaRef={sessionViewHook.textareaRef}
-          handleTerminalCommand={sessionViewHook.handleTerminalCommand}
-          handleSendInput={sessionViewHook.handleSendInput}
-          handleContinueConversation={sessionViewHook.handleContinueConversation}
-          isStravuConnected={sessionViewHook.isStravuConnected}
-          setShowStravuSearch={sessionViewHook.setShowStravuSearch}
-          ultrathink={sessionViewHook.ultrathink}
-          setUltrathink={sessionViewHook.setUltrathink}
-          gitCommands={sessionViewHook.gitCommands}
-          handleCompactContext={sessionViewHook.handleCompactContext}
-          hasConversationHistory={sessionViewHook.hasConversationHistory}
-          contextCompacted={sessionViewHook.contextCompacted}
-          handleCancelRequest={sessionViewHook.handleStopSession}
+          viewMode={sessionHookInstance.viewMode}
+          input={sessionHookInstance.input}
+          setInput={sessionHookInstance.setInput}
+          textareaRef={sessionHookInstance.textareaRef}
+          handleTerminalCommand={sessionHookInstance.handleTerminalCommand}
+          handleSendInput={sessionHookInstance.handleSendInput}
+          handleContinueConversation={sessionHookInstance.handleContinueConversation}
+          isStravuConnected={sessionHookInstance.isStravuConnected}
+          setShowStravuSearch={sessionHookInstance.setShowStravuSearch}
+          ultrathink={sessionHookInstance.ultrathink}
+          setUltrathink={sessionHookInstance.setUltrathink}
+          gitCommands={sessionHookInstance.gitCommands}
+          handleCompactContext={sessionHookInstance.handleCompactContext}
+          hasConversationHistory={sessionHookInstance.hasConversationHistory}
+          contextCompacted={sessionHookInstance.contextCompacted}
+          handleCancelRequest={sessionHookInstance.handleStopSession}
         />
       )}
 
       <CommitMessageDialog
-        isOpen={sessionViewHook.showCommitMessageDialog}
-        onClose={() => sessionViewHook.setShowCommitMessageDialog(false)}
-        dialogType={sessionViewHook.dialogType}
-        gitCommands={sessionViewHook.gitCommands}
-        commitMessage={sessionViewHook.commitMessage}
-        setCommitMessage={sessionViewHook.setCommitMessage}
-        shouldSquash={sessionViewHook.shouldSquash}
-        setShouldSquash={sessionViewHook.setShouldSquash}
-        onConfirm={sessionViewHook.performSquashWithCommitMessage}
-        isMerging={sessionViewHook.isMerging}
+        isOpen={sessionHookInstance.showCommitMessageDialog}
+        onClose={() => sessionHookInstance.setShowCommitMessageDialog(false)}
+        dialogType={sessionHookInstance.dialogType}
+        gitCommands={sessionHookInstance.gitCommands}
+        commitMessage={sessionHookInstance.commitMessage}
+        setCommitMessage={sessionHookInstance.setCommitMessage}
+        shouldSquash={sessionHookInstance.shouldSquash}
+        setShouldSquash={sessionHookInstance.setShouldSquash}
+        onConfirm={sessionHookInstance.performSquashWithCommitMessage}
+        isMerging={sessionHookInstance.isMerging}
       />
 
       <GitErrorDialog
-        isOpen={sessionViewHook.showGitErrorDialog}
-        onClose={() => sessionViewHook.setShowGitErrorDialog(false)}
-        errorDetails={sessionViewHook.gitErrorDetails}
-        getGitErrorTips={sessionViewHook.getGitErrorTips}
-        onAbortAndUseClaude={sessionViewHook.handleAbortRebaseAndUseClaude}
+        isOpen={sessionHookInstance.showGitErrorDialog}
+        onClose={() => sessionHookInstance.setShowGitErrorDialog(false)}
+        errorDetails={sessionHookInstance.gitErrorDetails}
+        getGitErrorTips={sessionHookInstance.getGitErrorTips}
+        onAbortAndUseClaude={sessionHookInstance.handleAbortRebaseAndUseClaude}
       />
 
       <StravuFileSearch
-        isOpen={sessionViewHook.showStravuSearch}
-        onClose={() => sessionViewHook.setShowStravuSearch(false)}
-        onFileSelect={sessionViewHook.handleStravuFileSelect}
+        isOpen={sessionHookInstance.showStravuSearch}
+        onClose={() => sessionHookInstance.setShowStravuSearch(false)}
+        onFileSelect={sessionHookInstance.handleStravuFileSelect}
       />
       
       {/* Rich Output Settings Panel */}
-      {sessionViewHook.viewMode === 'richOutput' && showRichOutputSettings && (
+      {sessionHookInstance.viewMode === 'richOutput' && showRichOutputSettings && (
         <RichOutputSettingsPanel
           settings={richOutputSettings}
           onSettingsChange={handleRichOutputSettingsChange}
