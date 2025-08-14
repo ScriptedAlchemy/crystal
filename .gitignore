@@ -93,7 +93,12 @@ performance-reports/
 performance-report/
 *.performance.json
 *.cpuprofile
+*.heapprofile
+*.heapsnapshot
 cpu-profiles/
+CPU-*.json
+Profile-*.json
+*-profile.json
 
 # Temporary test files
 test-file.txt
