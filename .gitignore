@@ -88,6 +88,13 @@ test-results/
 playwright-report/
 test-report/
 
+# Performance reports
+performance-reports/
+performance-report/
+*.performance.json
+*.cpuprofile
+cpu-profiles/
+
 # Temporary test files
 test-file.txt
 *.test.tmp
