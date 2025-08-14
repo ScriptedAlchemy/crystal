@@ -17,6 +17,7 @@ import { API } from '../utils/api';
 import { RichOutputWithSidebar } from './session/RichOutputWithSidebar';
 import { RichOutputSettings } from './session/RichOutputView';
 import { RichOutputSettingsPanel } from './session/RichOutputSettingsPanel';
+import { LogView } from './session/LogView';
 
 export const SessionView = memo(() => {
   const activeSessionId = useSessionStore((state) => state.activeSessionId);
@@ -313,6 +314,9 @@ export const SessionView = memo(() => {
                 <div className="h-2" />
               </>
             )}
+          </div>
+          <div className={`h-full ${hook.viewMode === 'logs' ? 'block' : 'hidden'}`}>
+            <LogView sessionId={activeSession.id} isVisible={hook.viewMode === 'logs'} />
           </div>
           <div className={`h-full ${hook.viewMode === 'editor' ? 'block' : 'hidden'}`}>
             <FileEditor sessionId={activeSession.id} />

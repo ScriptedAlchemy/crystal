@@ -70,11 +70,8 @@ export class TerminalSessionManager extends EventEmitter {
       this.terminalSessions.delete(sessionId);
     });
 
-    // Send a newline to trigger the shell prompt to appear
-    // This ensures the terminal shows output immediately when opened
-    setTimeout(() => {
-      ptyProcess.write('\r');
-    }, 50);
+    // Don't send any initial input - let the user interact with the terminal
+    // This prevents unnecessary terminal output and activity indicators
   }
 
   sendCommand(sessionId: string, command: string): void {

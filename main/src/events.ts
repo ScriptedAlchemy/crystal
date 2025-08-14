@@ -2,6 +2,7 @@ import type { BrowserWindow } from 'electron';
 import { execSync } from './utils/commandExecutor';
 import type { AppServices } from './ipc/types';
 import type { VersionInfo } from './services/versionChecker';
+import { addSessionLog } from './ipc/logs';
 
 export function setupEventListeners(services: AppServices, getMainWindow: () => BrowserWindow | null): void {
   const {
@@ -412,36 +413,40 @@ export function setupEventListeners(services: AppServices, getMainWindow: () => 
     }
   });
 
-  // Listen to script output events
-  sessionManager.on('script-output', (output) => {
-    // Broadcast script output to renderer
+  // Listen to terminal output events (independent terminal, not run scripts)
+  sessionManager.on('terminal-output', (output) => {
+    // Broadcast terminal output to renderer
     const mw = getMainWindow();
     if (mw) {
-      mw.webContents.send('script:output', output);
+      mw.webContents.send('terminal:output', output);
     }
   });
 
-  // Listen to run command manager events
+  // Listen to run command manager events (these should go to logs, not terminal)
   runCommandManager.on('output', (output) => {
-    // Store run command output with the session's script output
+    // Send run command output to logs
     if (output.sessionId && output.data) {
-      sessionManager.addScriptOutput(output.sessionId, output.data);
+      // Split by lines and add to logs
+      const lines = output.data.split('\n').filter((line: string) => line.trim());
+      lines.forEach((line: string) => {
+        addSessionLog(output.sessionId, 'info', line, 'RunCommand');
+      });
     }
   });
 
   runCommandManager.on('error', (error) => {
     console.error(`Run command error for session ${error.sessionId}:`, error.error);
-    // Add error to script output
+    // Add error to logs
     if (error.sessionId) {
-      sessionManager.addScriptOutput(error.sessionId, `\n[Error] ${error.displayName}: ${error.error}\n`);
+      addSessionLog(error.sessionId, 'error', `${error.displayName}: ${error.error}`, 'RunCommand');
     }
   });
 
   runCommandManager.on('exit', (info) => {
     console.log(`Run command exited: ${info.displayName}, exitCode: ${info.exitCode}`);
-    // Add exit info to script output
+    // Add exit info to logs
     if (info.sessionId && info.exitCode !== 0) {
-      sessionManager.addScriptOutput(info.sessionId, `\n[Exit] ${info.displayName} exited with code ${info.exitCode}\n`);
+      addSessionLog(info.sessionId, 'warn', `${info.displayName} exited with code ${info.exitCode}`, 'RunCommand');
     }
   });
 

@@ -176,12 +176,12 @@ export function useIPCEvents() {
     });
     unsubscribeFunctions.push(unsubscribeSessionOutput);
 
-    const unsubscribeScriptOutput = window.electronAPI.events.onScriptOutput((output: { sessionId: string; type: 'stdout' | 'stderr'; data: string }) => {
-      console.log(`[useIPCEvents] Received script output for ${output.sessionId}`);
-      // Store script output in session store for display
-      useSessionStore.getState().addScriptOutput(output);
+    const unsubscribeTerminalOutput = window.electronAPI.events.onTerminalOutput((output: { sessionId: string; type: 'stdout' | 'stderr'; data: string }) => {
+      console.log(`[useIPCEvents] Received terminal output for ${output.sessionId}`);
+      // Store terminal output in session store for display
+      useSessionStore.getState().addTerminalOutput(output);
     });
-    unsubscribeFunctions.push(unsubscribeScriptOutput);
+    unsubscribeFunctions.push(unsubscribeTerminalOutput);
     
     const unsubscribeOutputAvailable = window.electronAPI.events.onSessionOutputAvailable((info: { sessionId: string }) => {
       console.log(`[useIPCEvents] Output available notification for session ${info.sessionId}`);

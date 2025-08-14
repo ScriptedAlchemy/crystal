@@ -36,7 +36,7 @@ import { ClaudeCodeManager } from './services/claudeCodeManager';
 import { setupConsoleWrapper } from './utils/consoleWrapper';
 import * as fs from 'fs';
 
-let mainWindow: BrowserWindow | null = null;
+export let mainWindow: BrowserWindow | null = null;
 
 /**
  * Set the application title based on development mode and worktree

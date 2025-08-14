@@ -103,6 +103,10 @@ interface ElectronAPI {
     // Image operations
     saveImages: (sessionId: string, images: Array<{ name: string; dataUrl: string; type: string }>) => Promise<string[]>;
     
+    // Log operations
+    getLogs: (sessionId: string) => Promise<IPCResponse>;
+    clearLogs: (sessionId: string) => Promise<IPCResponse>;
+    addLog: (sessionId: string, entry: any) => Promise<IPCResponse>;
   };
 
   // Project management
@@ -199,6 +203,7 @@ interface ElectronAPI {
     onSessionDeleted: (callback: (session: any) => void) => () => void;
     onSessionsLoaded: (callback: (sessions: any[]) => void) => () => void;
     onSessionOutput: (callback: (output: any) => void) => () => void;
+    onSessionLog: (callback: (data: any) => void) => () => void;
     onSessionOutputAvailable: (callback: (info: any) => void) => () => void;
     onGitStatusUpdated: (callback: (data: { sessionId: string; gitStatus: any }) => void) => () => void;
     onGitStatusLoading: (callback: (data: { sessionId: string }) => void) => () => void;
@@ -213,7 +218,7 @@ interface ElectronAPI {
     onFolderUpdated: (callback: (folder: any) => void) => () => void;
     onFolderDeleted: (callback: (folderId: string) => void) => () => void;
     
-    onScriptOutput: (callback: (output: any) => void) => () => void;
+    onTerminalOutput: (callback: (output: any) => void) => () => void;
     onMainLog: (callback: (level: string, message: string) => void) => () => void;
     onVersionUpdateAvailable: (callback: (versionInfo: any) => void) => () => void;
     

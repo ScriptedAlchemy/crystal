@@ -98,9 +98,12 @@ function buildTooltipContent(gitStatus: GitStatus, config: GitStatusConfig): str
   const isFullySynced = isGitStatusFullySynced(gitStatus);
   const hasCommitsToMerge = gitStatus.ahead && gitStatus.ahead > 0 && !gitStatus.hasUncommittedChanges && !gitStatus.hasUntrackedFiles && (!gitStatus.behind || gitStatus.behind === 0);
   const hasConflictRisk = gitStatus.ahead && gitStatus.ahead > 0 && gitStatus.behind && gitStatus.behind > 0;
+  const isMostlyBehind = hasConflictRisk && gitStatus.behind && gitStatus.ahead && gitStatus.behind >= 5 * gitStatus.ahead && gitStatus.ahead <= 2;
   
   if (hasCommitsToMerge || gitStatus.isReadyToMerge) {
     actionableInfo = '🔀 Ready to merge - no conflicts expected';
+  } else if (isMostlyBehind) {
+    actionableInfo = '📊 Mostly behind main - minimal unique changes, consider rebasing or removing';
   } else if (hasConflictRisk) {
     actionableInfo = '⚠️ Rebase from main before merging to avoid conflicts';
   } else if (gitStatus.state === 'conflict') {
@@ -142,7 +145,24 @@ function getGitStatusConfig(gitStatus: GitStatus): GitStatusConfig {
   }
   
   // 2. Conflict Risk (HIGH PRIORITY) - Has commits but also behind main
+  // Special case: If significantly behind with minimal ahead, treat as "Mostly Behind" instead of conflict risk
   if (gitStatus.ahead && gitStatus.ahead > 0 && gitStatus.behind && gitStatus.behind > 0) {
+    // If the branch is significantly more behind than ahead (5:1 ratio), and has few commits ahead (<=2),
+    // treat it more like a "behind" branch than a conflict risk
+    const mostlyBehind = gitStatus.behind >= 5 * gitStatus.ahead && gitStatus.ahead <= 2;
+    
+    if (mostlyBehind) {
+      // Show as "Mostly Behind" with gray color like other low-priority statuses
+      return {
+        color: 'text-gray-500 dark:text-gray-400',
+        bgColor: 'bg-gray-100 dark:bg-gray-800/30',
+        icon: <CircleArrowDown {...iconProps} />,
+        label: 'Mostly Behind',
+        description: `${gitStatus.behind} behind, ${gitStatus.ahead} ahead - consider rebasing`
+      };
+    }
+    
+    // Normal conflict risk for branches with significant divergence
     return {
       color: 'text-amber-600 dark:text-amber-400',
       bgColor: 'bg-amber-100 dark:bg-amber-900/30',

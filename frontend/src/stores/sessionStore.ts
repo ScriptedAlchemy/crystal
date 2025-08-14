@@ -13,7 +13,7 @@ interface SessionStore {
   activeSessionId: string | null;
   activeMainRepoSession: Session | null; // Special storage for main repo session
   isLoaded: boolean;
-  scriptOutput: Record<string, string[]>; // sessionId -> script output lines
+  terminalOutput: Record<string, string[]>; // sessionId -> terminal output lines
   deletingSessionIds: Set<string>; // Track sessions currently being deleted
   gitStatusLoading: Set<string>; // Track sessions currently loading git status
   
@@ -32,9 +32,9 @@ interface SessionStore {
   setSessionOutput: (sessionId: string, output: string) => void;
   setSessionOutputs: (sessionId: string, outputs: SessionOutput[]) => void;
   clearSessionOutput: (sessionId: string) => void;
-  addScriptOutput: (output: { sessionId: string; type: 'stdout' | 'stderr'; data: string }) => void;
-  clearScriptOutput: (sessionId: string) => void;
-  getScriptOutput: (sessionId: string) => string[];
+  addTerminalOutput: (output: { sessionId: string; type: 'stdout' | 'stderr'; data: string }) => void;
+  clearTerminalOutput: (sessionId: string) => void;
+  getTerminalOutput: (sessionId: string) => string[];
   createSession: (request: CreateSessionRequest) => Promise<void>;
   markSessionAsViewed: (sessionId: string) => Promise<void>;
   
@@ -59,7 +59,7 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
   activeSessionId: null,
   activeMainRepoSession: null,
   isLoaded: false,
-  scriptOutput: {},
+  terminalOutput: {},
   deletingSessionIds: new Set(),
   gitStatusLoading: new Set(),
   
@@ -377,26 +377,26 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
     }
   },
   
-  addScriptOutput: (output) => set((state) => ({
-    scriptOutput: {
-      ...state.scriptOutput,
+  addTerminalOutput: (output) => set((state) => ({
+    terminalOutput: {
+      ...state.terminalOutput,
       [output.sessionId]: [
-        ...(state.scriptOutput[output.sessionId] || []),
+        ...(state.terminalOutput[output.sessionId] || []),
         output.data
       ]
     }
   })),
 
-  clearScriptOutput: (sessionId: string) => set((state) => ({
-    scriptOutput: {
-      ...state.scriptOutput,
+  clearTerminalOutput: (sessionId: string) => set((state) => ({
+    terminalOutput: {
+      ...state.terminalOutput,
       [sessionId]: []
     }
   })),
 
-  getScriptOutput: (sessionId) => {
+  getTerminalOutput: (sessionId) => {
     const state = get();
-    return state.scriptOutput[sessionId] || [];
+    return state.terminalOutput[sessionId] || [];
   },
   
   getActiveSession: () => {

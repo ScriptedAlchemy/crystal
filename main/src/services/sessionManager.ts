@@ -8,6 +8,7 @@ import type { Session as DbSession, CreateSessionData, UpdateSessionData, Conver
 import { getShellPath } from '../utils/shellPath';
 import { TerminalSessionManager } from './terminalSessionManager';
 import { formatForDisplay } from '../utils/timestampUtils';
+import { addSessionLog } from '../ipc/logs';
 import * as os from 'os';
 
 export class SessionManager extends EventEmitter {
@@ -23,9 +24,11 @@ export class SessionManager extends EventEmitter {
     this.setMaxListeners(50);
     this.terminalSessionManager = new TerminalSessionManager();
     
-    // Forward terminal output events
+    // Forward terminal output events to the terminal display
     this.terminalSessionManager.on('terminal-output', ({ sessionId, data, type }) => {
-      this.addScriptOutput(sessionId, data, type);
+      // Terminal PTY output goes directly to the terminal view
+      // Terminal is now independent and not used for run scripts
+      this.emit('terminal-output', { sessionId, data, type });
     });
     
     // Forward zombie process detection events
@@ -174,6 +177,9 @@ export class SessionManager extends EventEmitter {
   createSessionWithId(id: string, name: string, worktreePath: string, prompt: string, worktreeName: string, permissionMode?: 'approve' | 'ignore', projectId?: number, isMainRepo?: boolean, autoCommit?: boolean, folderId?: string, model?: string, baseCommit?: string, baseBranch?: string, commitMode?: 'structured' | 'checkpoint' | 'disabled', commitModeSettings?: string): Session {
     console.log(`[SessionManager] Creating session with ID ${id}: ${name}`);
     
+    // Add log entry for session creation
+    addSessionLog(id, 'info', `Creating session: ${name}`, 'SessionManager');
+    
     let targetProject;
     
     if (projectId) {
@@ -276,6 +282,14 @@ export class SessionManager extends EventEmitter {
 
   updateSession(id: string, update: SessionUpdate): void {
     console.log(`[SessionManager] updateSession called for ${id} with update:`, update);
+    
+    // Add log entry for important status changes
+    if (update.status) {
+      addSessionLog(id, 'info', `Session status changed to: ${update.status}`, 'SessionManager');
+    }
+    if (update.error) {
+      addSessionLog(id, 'error', `Session error: ${update.error}`, 'SessionManager');
+    }
     
     const dbUpdate: UpdateSessionData = {};
     
@@ -665,24 +679,30 @@ export class SessionManager extends EventEmitter {
       }
     });
 
-    // Handle output
+    // Handle output - send to logs instead of terminal
     this.runningScriptProcess.stdout?.on('data', (data: Buffer) => {
       const output = data.toString();
-      this.emit('script-output', { sessionId, type: 'stdout', data: output });
+      // Split by lines and add each as a log entry
+      const lines = output.split('\n').filter(line => line.trim());
+      lines.forEach(line => {
+        addSessionLog(sessionId, 'info', line, 'Application');
+      });
+      // Log output is now handled via addSessionLog above
     });
 
     this.runningScriptProcess.stderr?.on('data', (data: Buffer) => {
       const output = data.toString();
-      this.emit('script-output', { sessionId, type: 'stderr', data: output });
+      // Split by lines and add each as a log entry
+      const lines = output.split('\n').filter(line => line.trim());
+      lines.forEach(line => {
+        addSessionLog(sessionId, 'error', line, 'Application');
+      });
+      // Log output is now handled via addSessionLog above
     });
 
     // Handle process exit
     this.runningScriptProcess.on('exit', (code) => {
-      this.emit('script-output', { 
-        sessionId, 
-        type: 'stdout', 
-        data: `\nProcess exited with code: ${code}\n` 
-      });
+      addSessionLog(sessionId, 'info', `Process exited with code: ${code}`, 'Application');
       
       this.setSessionRunning(sessionId, false);
       this.currentRunningSessionId = null;
@@ -690,11 +710,7 @@ export class SessionManager extends EventEmitter {
     });
 
     this.runningScriptProcess.on('error', (error) => {
-      this.emit('script-output', { 
-        sessionId, 
-        type: 'stderr', 
-        data: `Error: ${error.message}\n` 
-      });
+      addSessionLog(sessionId, 'error', `Error: ${error.message}`, 'Application');
       
       this.setSessionRunning(sessionId, false);
       this.currentRunningSessionId = null;
@@ -706,34 +722,21 @@ export class SessionManager extends EventEmitter {
     // Get enhanced shell PATH
     const shellPath = getShellPath();
     
-    // Add build start message to script output (terminal tab)
+    // Add build start message to logs
     const timestamp = new Date().toLocaleTimeString();
-    const buildStartMessage = `\r\n\x1b[36m[${timestamp}]\x1b[0m \x1b[1m\x1b[44m\x1b[37m 🔨 BUILD SCRIPT RUNNING \x1b[0m\r\n`;
-    this.emit('script-output', { sessionId, type: 'stdout', data: buildStartMessage });
+    addSessionLog(sessionId, 'info', `🔨 BUILD SCRIPT RUNNING at ${timestamp}`, 'Build');
     
-    // Show PATH information for debugging in terminal
-    this.emit('script-output', { 
-      sessionId, 
-      type: 'stdout', 
-      data: `\x1b[1m\x1b[33mUsing PATH:\x1b[0m ${shellPath.split(':').slice(0, 5).join(':')}\x1b[2m...\x1b[0m\n` 
-    });
+    // Show PATH information for debugging in logs
+    addSessionLog(sessionId, 'debug', `Using PATH: ${shellPath.split(':').slice(0, 5).join(':')}...`, 'Build');
     
     // Check if yarn is available
     try {
       const { stdout: yarnPath } = await this.execWithShellPath('which yarn', { cwd: workingDirectory });
       if (yarnPath.trim()) {
-        this.emit('script-output', { 
-          sessionId, 
-          type: 'stdout', 
-          data: `\x1b[1m\x1b[32myarn found at:\x1b[0m ${yarnPath.trim()}\n` 
-        });
+        addSessionLog(sessionId, 'debug', `yarn found at: ${yarnPath.trim()}`, 'Build');
       }
     } catch {
-      this.emit('script-output', { 
-        sessionId, 
-        type: 'stdout', 
-        data: `\x1b[1m\x1b[31myarn not found in PATH\x1b[0m\n` 
-      });
+      addSessionLog(sessionId, 'warn', `yarn not found in PATH`, 'Build');
     }
     
     let allOutput = '';
@@ -744,34 +747,35 @@ export class SessionManager extends EventEmitter {
       if (command.trim()) {
         console.log(`[SessionManager] Executing build command: ${command}`);
         
-        // Add command to script output (terminal tab)
-        this.emit('script-output', { 
-          sessionId, 
-          type: 'stdout', 
-          data: `\x1b[1m\x1b[34m$ ${command}\x1b[0m\n` 
-        });
+        // Add command to logs
+        addSessionLog(sessionId, 'info', `$ ${command}`, 'Build');
         
         try {
           const { stdout, stderr } = await this.execWithShellPath(command, { cwd: workingDirectory });
           
           if (stdout) {
             allOutput += stdout;
-            this.emit('script-output', { sessionId, type: 'stdout', data: stdout });
+            // Split stdout by lines and add to logs
+            const lines = stdout.split('\n').filter(line => line.trim());
+            lines.forEach(line => {
+              addSessionLog(sessionId, 'info', line, 'Build');
+            });
           }
           if (stderr) {
             allOutput += stderr;
-            this.emit('script-output', { sessionId, type: 'stderr', data: stderr });
+            // Split stderr by lines and add to logs
+            const lines = stderr.split('\n').filter(line => line.trim());
+            lines.forEach(line => {
+              addSessionLog(sessionId, 'warn', line, 'Build');
+            });
           }
         } catch (cmdError: any) {
           console.error(`[SessionManager] Build command failed: ${command}`, cmdError);
           const errorMessage = cmdError.stderr || cmdError.stdout || cmdError.message || String(cmdError);
           allOutput += errorMessage;
           
-          this.emit('script-output', { 
-            sessionId, 
-            type: 'stderr', 
-            data: `\x1b[1m\x1b[31mCommand failed:\x1b[0m ${command}\n${errorMessage}\n` 
-          });
+          addSessionLog(sessionId, 'error', `Command failed: ${command}`, 'Build');
+          addSessionLog(sessionId, 'error', errorMessage, 'Build');
           
           overallSuccess = false;
           // Continue with next command instead of stopping entirely
@@ -779,13 +783,13 @@ export class SessionManager extends EventEmitter {
       }
     }
     
-    // Add completion message to script output (terminal tab)
+    // Add completion message to logs
     const buildEndTimestamp = new Date().toLocaleTimeString();
-    const buildEndMessage = overallSuccess
-      ? `\r\n\x1b[36m[${buildEndTimestamp}]\x1b[0m \x1b[1m\x1b[42m\x1b[30m ✅ BUILD COMPLETED \x1b[0m\r\n\r\n`
-      : `\r\n\x1b[36m[${buildEndTimestamp}]\x1b[0m \x1b[1m\x1b[41m\x1b[37m ❌ BUILD FAILED \x1b[0m\r\n\r\n`;
-    
-    this.emit('script-output', { sessionId, type: 'stdout', data: buildEndMessage });
+    if (overallSuccess) {
+      addSessionLog(sessionId, 'info', `✅ BUILD COMPLETED at ${buildEndTimestamp}`, 'Build');
+    } else {
+      addSessionLog(sessionId, 'error', `❌ BUILD FAILED at ${buildEndTimestamp}`, 'Build');
+    }
     
     return { success: overallSuccess, output: allOutput };
   }
@@ -806,11 +810,11 @@ export class SessionManager extends EventEmitter {
   }
 
   addScriptOutput(sessionId: string, data: string, type: 'stdout' | 'stderr' = 'stdout'): void {
-    // Emit script output event that will be handled by the frontend
-    this.emit('script-output', { 
-      sessionId, 
-      type, 
-      data 
+    // Send output to logs instead of terminal
+    const lines = data.split('\n').filter(line => line.trim());
+    lines.forEach(line => {
+      const level = type === 'stderr' ? 'error' : 'info';
+      addSessionLog(sessionId, level, line, 'Terminal');
     });
   }
 
@@ -893,39 +897,19 @@ export class SessionManager extends EventEmitter {
           const descendantPids = this.getAllDescendantPids(process.pid);
           console.log(`Found ${descendantPids.length} descendant processes: ${descendantPids.join(', ')}`);
           
-          // Emit detailed termination info to terminal
-          this.emit('script-output', { 
-            sessionId, 
-            type: 'stdout', 
-            data: `\n[Terminating process ${process.pid}]\n` 
-          });
-          
-          if (descendantPids.length > 0) {
-            this.emit('script-output', { 
-              sessionId, 
-              type: 'stdout', 
-              data: `[Found ${descendantPids.length} child process${descendantPids.length > 1 ? 'es' : ''}: ${descendantPids.join(', ')}]\n` 
-            });
-          }
+          // Add a simple log entry for stopping the script
+          addSessionLog(sessionId, 'info', `Stopping application process...`, 'Application');
           
           const platform = os.platform();
           
           if (platform === 'win32') {
             // On Windows, use taskkill to terminate the process tree
-            this.emit('script-output', { 
-              sessionId, 
-              type: 'stdout', 
-              data: `[Using taskkill to terminate process tree ${process.pid}]\n` 
-            });
+            addSessionLog(sessionId, 'info', `[Using taskkill to terminate process tree ${process.pid}]`, 'System');
             
             exec(`taskkill /F /T /PID ${process.pid}`, (error) => {
               if (error) {
                 console.warn(`Error killing Windows process tree: ${error.message}`);
-                this.emit('script-output', { 
-                  sessionId, 
-                  type: 'stderr', 
-                  data: `[Error terminating process tree: ${error.message}]\n` 
-                });
+                addSessionLog(sessionId, 'error', `[Error terminating process tree: ${error.message}]`, 'System');
                 
                 // Fallback: kill individual processes
                 try {
@@ -952,11 +936,7 @@ export class SessionManager extends EventEmitter {
                     
                     // Report after all attempts
                     if (processedCount === descendantPids.length) {
-                      this.emit('script-output', { 
-                        sessionId, 
-                        type: 'stdout', 
-                        data: `[Terminated ${killedCount} processes using fallback method]\n` 
-                      });
+                      addSessionLog(sessionId, 'info', `[Terminated ${killedCount} processes using fallback method]`, 'System');
                       this.finishStopScript(sessionId);
                       resolve();
                     }
@@ -964,11 +944,7 @@ export class SessionManager extends EventEmitter {
                 });
               } else {
                 console.log(`Successfully killed Windows process tree ${process.pid}`);
-                this.emit('script-output', { 
-                  sessionId, 
-                  type: 'stdout', 
-                  data: `[Successfully terminated process tree]\n` 
-                });
+                addSessionLog(sessionId, 'info', '[Successfully terminated process tree]', 'System');
                 this.finishStopScript(sessionId);
                 resolve();
               }
@@ -976,11 +952,7 @@ export class SessionManager extends EventEmitter {
           } else {
             // On Unix-like systems (macOS, Linux)
             // First, try SIGTERM for graceful shutdown
-            this.emit('script-output', { 
-              sessionId, 
-              type: 'stdout', 
-              data: `[Sending SIGTERM to process ${process.pid} and its group]\n` 
-            });
+            addSessionLog(sessionId, 'info', `[Sending SIGTERM to process ${process.pid} and its group]`, 'System');
             
             try {
               process.kill('SIGTERM');
@@ -996,52 +968,28 @@ export class SessionManager extends EventEmitter {
             });
             
             // Give processes a chance to clean up gracefully
-            this.emit('script-output', { 
-              sessionId, 
-              type: 'stdout', 
-              data: '[Waiting 10 seconds for graceful shutdown...]\n' 
-            });
+            addSessionLog(sessionId, 'info', '[Waiting 10 seconds for graceful shutdown...]', 'System');
             
             // Use a shorter timeout for faster cleanup
             setTimeout(() => {
-              this.emit('script-output', { 
-                sessionId, 
-                type: 'stdout', 
-                data: '\n[Grace period expired, using forceful termination]\n' 
-              });
+              addSessionLog(sessionId, 'info', '\n[Grace period expired, using forceful termination]', 'System');
               
               // Now forcefully kill the main process
               try {
                 process.kill('SIGKILL');
-                this.emit('script-output', { 
-                  sessionId, 
-                  type: 'stdout', 
-                  data: `[Sent SIGKILL to process ${process.pid}]\n` 
-                });
+                addSessionLog(sessionId, 'info', `[Sent SIGKILL to process ${process.pid}]`, 'System');
               } catch (error) {
                 // Process might already be dead
-                this.emit('script-output', { 
-                  sessionId, 
-                  type: 'stdout', 
-                  data: `[Process ${process.pid} already terminated]\n` 
-                });
+                addSessionLog(sessionId, 'info', `[Process ${process.pid} already terminated]`, 'System');
               }
               
               // Kill the process group with SIGKILL
               exec(`kill -9 -${process.pid}`, (error) => {
                 if (error) {
                   console.warn(`Error sending SIGKILL to process group: ${error.message}`);
-                  this.emit('script-output', { 
-                    sessionId, 
-                    type: 'stderr', 
-                    data: `[Warning: Could not kill process group: ${error.message}]\n` 
-                  });
+                  addSessionLog(sessionId, 'warn', `[Warning: Could not kill process group: ${error.message}]`, 'System');
                 } else {
-                  this.emit('script-output', { 
-                    sessionId, 
-                    type: 'stdout', 
-                    data: `[Sent SIGKILL to process group ${process.pid}]\n` 
-                  });
+                  addSessionLog(sessionId, 'info', `[Sent SIGKILL to process group ${process.pid}]`, 'System');
                 }
               });
               
@@ -1062,18 +1010,10 @@ export class SessionManager extends EventEmitter {
                   // Report results after processing all descendants
                   if (killedCount + alreadyDeadCount === descendantPids.length) {
                     if (killedCount > 0) {
-                      this.emit('script-output', { 
-                        sessionId, 
-                        type: 'stdout', 
-                        data: `[Forcefully terminated ${killedCount} child process${killedCount > 1 ? 'es' : ''}]\n` 
-                      });
+                      addSessionLog(sessionId, 'info', `[Forcefully terminated ${killedCount} child process${killedCount > 1 ? 'es' : ''}]`, 'System');
                     }
                     if (alreadyDeadCount > 0) {
-                      this.emit('script-output', { 
-                        sessionId, 
-                        type: 'stdout', 
-                        data: `[${alreadyDeadCount} process${alreadyDeadCount > 1 ? 'es' : ''} had already terminated gracefully]\n` 
-                      });
+                      addSessionLog(sessionId, 'info', `[${alreadyDeadCount} process${alreadyDeadCount > 1 ? 'es' : ''} had already terminated gracefully]`, 'System');
                     }
                   }
                 });
@@ -1089,22 +1029,10 @@ export class SessionManager extends EventEmitter {
                 if (process.pid) {
                   const remainingPids = this.getAllDescendantPids(process.pid);
                   if (remainingPids.length > 0) {
-                    this.emit('script-output', { 
-                      sessionId, 
-                      type: 'stderr', 
-                      data: `\n[WARNING: ${remainingPids.length} zombie process${remainingPids.length > 1 ? 'es' : ''} could not be terminated: ${remainingPids.join(', ')}]\n` 
-                    });
-                    this.emit('script-output', { 
-                      sessionId, 
-                      type: 'stderr', 
-                      data: `[Please manually kill these processes using: kill -9 ${remainingPids.join(' ')}]\n` 
-                    });
+                    addSessionLog(sessionId, 'warn', `[WARNING: ${remainingPids.length} zombie process${remainingPids.length > 1 ? 'es' : ''} could not be terminated: ${remainingPids.join(', ')}]`, 'System');
+                    addSessionLog(sessionId, 'error', `[Please manually kill these processes using: kill -9 ${remainingPids.join(' ')}]`, 'System');
                   } else {
-                    this.emit('script-output', { 
-                      sessionId, 
-                      type: 'stdout', 
-                      data: '\n[All processes terminated successfully]\n' 
-                    });
+                    addSessionLog(sessionId, 'info', '\n[All processes terminated successfully]', 'System');
                   }
                 }
                 this.finishStopScript(sessionId);
@@ -1130,11 +1058,7 @@ export class SessionManager extends EventEmitter {
     this.setSessionRunning(sessionId, false);
     
     // Emit a final message to indicate the script was stopped
-    this.emit('script-output', { 
-      sessionId, 
-      type: 'stdout', 
-      data: '\n[Script stopped by user]\n' 
-    });
+    addSessionLog(sessionId, 'info', '\n[Script stopped by user]', 'System');
   }
 
   private setSessionRunning(sessionId: string, isRunning: boolean): void {
@@ -1155,6 +1079,9 @@ export class SessionManager extends EventEmitter {
   }
 
   async runTerminalCommand(sessionId: string, command: string): Promise<void> {
+    // Add log entry for terminal command
+    addSessionLog(sessionId, 'info', `Running terminal command: ${command}`, 'Terminal');
+    
     const session = this.activeSessions.get(sessionId);
     if (!session) {
       // Check if session exists in database and is archived

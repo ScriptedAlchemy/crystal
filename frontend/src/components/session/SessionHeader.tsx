@@ -30,6 +30,7 @@ interface SessionHeaderProps {
   unreadActivity: {
     changes: boolean;
     terminal: boolean;
+    logs: boolean;
     editor: boolean;
     richOutput: boolean;
   };

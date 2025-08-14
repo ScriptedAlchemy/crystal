@@ -316,12 +316,12 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
     if (!mainRepoSessionId) return;
 
     const unsubscribe = useSessionStore.subscribe((state) => {
-      const sessionOutput = state.scriptOutput[mainRepoSessionId] || [];
+      const sessionOutput = state.terminalOutput[mainRepoSessionId] || [];
       setScriptOutput(sessionOutput);
     });
 
     // Get initial state
-    const initialOutput = useSessionStore.getState().scriptOutput[mainRepoSessionId] || [];
+    const initialOutput = useSessionStore.getState().terminalOutput[mainRepoSessionId] || [];
     setScriptOutput(initialOutput);
 
     return unsubscribe;

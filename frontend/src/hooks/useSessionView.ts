@@ -9,7 +9,7 @@ import { Session, GitCommands, GitErrorDetails } from '../types/session';
 import { getTerminalTheme, getScriptTerminalTheme } from '../utils/terminalTheme';
 import { createVisibilityAwareInterval } from '../utils/performanceUtils';
 
-export type ViewMode = 'richOutput' | 'changes' | 'terminal' | 'editor';
+export type ViewMode = 'richOutput' | 'changes' | 'terminal' | 'logs' | 'editor';
 
 export const useSessionView = (
   activeSession: Session | undefined,
@@ -30,6 +30,7 @@ export const useSessionView = (
   const [unreadActivity, setUnreadActivity] = useState({
     changes: false,
     terminal: false,
+    logs: false,
     editor: false,
     richOutput: false,
   });
@@ -305,13 +306,12 @@ export const useSessionView = (
       return;
     }
     const unsubscribe = useSessionStore.subscribe((state) => {
-      const sessionScriptOutput = state.scriptOutput[activeSession.id] || [];
-      setScriptOutput(sessionScriptOutput);
-      if (viewMode !== 'terminal' && sessionScriptOutput.length > 0) {
-        setUnreadActivity(prev => ({ ...prev, terminal: true }));
-      }
+      const sessionTerminalOutput = state.terminalOutput[activeSession.id] || [];
+      setScriptOutput(sessionTerminalOutput);
+      // Terminal is now independent - no automatic unread indicators
+      // Users explicitly interact with the terminal, so they know when there's output
     });
-    setScriptOutput(useSessionStore.getState().scriptOutput[activeSession.id] || []);
+    setScriptOutput(useSessionStore.getState().terminalOutput[activeSession.id] || []);
     return unsubscribe;
   }, [activeSession?.id, viewMode]);
 
@@ -328,42 +328,49 @@ export const useSessionView = (
       sessionSwitchDebounceRef.current = null;
     }
     
+    // Force reset any stuck loading state when switching sessions
+    forceResetLoadingState();
+    
+    // Reset view mode to output when switching sessions
+    setViewMode('richOutput');
+    
+    // Reset unread activity indicators
+    setUnreadActivity({
+      changes: false,
+      terminal: false,
+      logs: false,
+      editor: false,
+      richOutput: false,
+    });
+    
+    // Reset context compaction state when switching sessions
+    setContextCompacted(false);
+    setCompactedContext(null);
+    
+    // Clear terminal immediately when session changes
+    if (terminalInstance.current) {
+      console.log(`[useSessionView] Clearing terminal for session switch`);
+      terminalInstance.current.clear();
+    }
+    setFormattedOutput('');
+    lastProcessedOutputLength.current = 0;
+
+    if (!activeSession) {
+      console.log(`[useSessionView] No active session, returning`);
+      setCurrentSessionIdForOutput(null);
+      // Clear any error states when no session is active
+      setLoadError(null);
+      setOutputLoadState('idle');
+      return;
+    }
+    
     // Debounce session switching to prevent rapid switches from overloading the system
     sessionSwitchDebounceRef.current = setTimeout(() => {
       console.log(`[useSessionView] Processing session switch to ${currentSessionId} after debounce`);
-      
-      // Force reset any stuck loading state when switching sessions
-      forceResetLoadingState();
-      
-      // Reset view mode to output when switching sessions
-      setViewMode('richOutput');
-      
-      // Reset unread activity indicators
-      setUnreadActivity({
-        changes: false,
-        terminal: false,
-        editor: false,
-        richOutput: false,
-      });
-      
-      // Reset context compaction state when switching sessions
-      setContextCompacted(false);
-      setCompactedContext(null);
-      
-      // Clear terminal immediately when session changes
-      if (terminalInstance.current) {
-        console.log(`[useSessionView] Clearing terminal for session switch`);
-        terminalInstance.current.clear();
-      }
-      setFormattedOutput('');
-      lastProcessedOutputLength.current = 0;
 
       if (!activeSession) {
         console.log(`[useSessionView] No active session, returning`);
         setCurrentSessionIdForOutput(null);
-        // Clear any error states when no session is active
-        setLoadError(null);
-        setOutputLoadState('idle');
         return;
       }
 
@@ -618,22 +625,8 @@ export const useSessionView = (
   }, [theme, activeSession]);
 
   // Terminal output view has been removed - no terminal initialization needed  
-  // Pre-initialize script terminal when session becomes active
-  useEffect(() => {
-    if (activeSession && scriptTerminalRef.current && !scriptTerminalInstance.current) {
-      console.log('[Terminal] Pre-initializing script terminal for session', activeSession.id);
-      initTerminal(scriptTerminalRef, scriptTerminalInstance, scriptFitAddon, true);
-      
-      // Also pre-create the backend PTY session
-      API.sessions.preCreateTerminal(activeSession.id).then(response => {
-        if (response.success) {
-          console.log('[Terminal] Backend PTY pre-created for session', activeSession.id);
-        }
-      }).catch(error => {
-        console.error('[Terminal] Failed to pre-create backend PTY:', error);
-      });
-    }
-  }, [activeSession?.id, scriptTerminalRef, initTerminal]);
+  // Terminal is now created on-demand when user clicks the terminal tab
+  // No pre-initialization to avoid unnecessary terminal output and activity indicators
 
   useEffect(() => {
     if (viewMode === 'terminal') {
@@ -646,9 +639,9 @@ export const useSessionView = (
       if (activeSession) {
         // Use setTimeout to ensure terminal is fully initialized
         setTimeout(() => {
-          const currentScriptOutput = useSessionStore.getState().scriptOutput[activeSession.id] || [];
-          if (scriptTerminalInstance.current && currentScriptOutput.length > 0 && lastProcessedScriptOutputLength.current === 0) {
-            const existingOutput = currentScriptOutput.join('');
+          const currentTerminalOutput = useSessionStore.getState().terminalOutput[activeSession.id] || [];
+          if (scriptTerminalInstance.current && currentTerminalOutput.length > 0 && lastProcessedScriptOutputLength.current === 0) {
+            const existingOutput = currentTerminalOutput.join('');
             console.log('[Terminal] Writing existing output to newly initialized terminal', existingOutput.length, 'chars');
             scriptTerminalInstance.current.write(existingOutput);
             lastProcessedScriptOutputLength.current = existingOutput.length;
@@ -715,9 +708,9 @@ export const useSessionView = (
   
   useEffect(() => {
     if (!scriptTerminalInstance.current || viewMode !== 'terminal' || !activeSession) return;
-    const currentScriptOutput = useSessionStore.getState().scriptOutput[activeSession.id] || [];
-    if (lastProcessedScriptOutputLength.current === 0 && currentScriptOutput.length > 0) {
-      const existingOutput = currentScriptOutput.join('');
+    const currentTerminalOutput = useSessionStore.getState().terminalOutput[activeSession.id] || [];
+    if (lastProcessedScriptOutputLength.current === 0 && currentTerminalOutput.length > 0) {
+      const existingOutput = currentTerminalOutput.join('');
       scriptTerminalInstance.current.write(existingOutput);
       lastProcessedScriptOutputLength.current = existingOutput.length;
     }
@@ -1002,7 +995,7 @@ export const useSessionView = (
   }, [activeSession?.status, activeSession?.runStartedAt, activeSessionId]);
 
   useEffect(() => {
-    setUnreadActivity({ changes: false, terminal: false, editor: false, richOutput: false });
+    setUnreadActivity({ changes: false, terminal: false, logs: false, editor: false, richOutput: false });
   }, [activeSessionId]);
 
 
@@ -1562,7 +1555,7 @@ export const useSessionView = (
       
       // Also clear the stored script output for this session
       if (activeSession) {
-        useSessionStore.getState().clearScriptOutput(activeSession.id);
+        useSessionStore.getState().clearTerminalOutput(activeSession.id);
         lastProcessedScriptOutputLength.current = 0;
       }
     }
