@@ -91,6 +91,9 @@ test-report/
 # Performance reports
 performance-reports/
 performance-report/
+performance-results.json
+stress-test-*-messages-*.json
+realistic-stress-test-*.json
 *.performance.json
 *.cpuprofile
 *.heapprofile

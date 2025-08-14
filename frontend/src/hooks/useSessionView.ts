@@ -9,6 +9,12 @@ import { Session, GitCommands, GitErrorDetails } from '../types/session';
 import { getTerminalTheme, getScriptTerminalTheme } from '../utils/terminalTheme';
 import { createVisibilityAwareInterval } from '../utils/performanceUtils';
 
+// Configuration constants for performance optimization
+const SESSION_SWITCH_DEBOUNCE_MS = 150; // Debounce delay to prevent rapid session switching
+const OUTPUT_LOAD_DELAY_INITIALIZING = 500; // Load delay for initializing sessions (ms)
+const OUTPUT_LOAD_DELAY_DEFAULT = 200; // Load delay for other sessions (ms)
+const TERMINAL_SCROLLBACK_SIZE = 10000; // Terminal scrollback buffer size (reduced for performance)
+
 export type ViewMode = 'richOutput' | 'changes' | 'terminal' | 'logs' | 'editor';
 
 export const useSessionView = (
@@ -411,7 +417,7 @@ export const useSessionView = (
       } else {
         setIsWaitingForFirstOutput(false);
       }
-    }, 150); // 150ms debounce delay to prevent rapid session switching
+    }, SESSION_SWITCH_DEBOUNCE_MS); // debounce delay to prevent rapid session switching
   }, [activeSession?.id, forceResetLoadingState]);
 
   const messageCount = activeSession?.jsonMessages?.length || 0;
@@ -501,7 +507,7 @@ export const useSessionView = (
     if (outputLoadState === 'idle') {
       // Always load when idle - let the backend be the source of truth
       shouldLoad = true;
-      loadDelay = activeSession.status === 'initializing' ? 500 : 200;
+      loadDelay = activeSession.status === 'initializing' ? OUTPUT_LOAD_DELAY_INITIALIZING : OUTPUT_LOAD_DELAY_DEFAULT;
     } else if (shouldReloadOutput) {
       // Explicit reload requested
       shouldLoad = true;
@@ -577,7 +583,7 @@ export const useSessionView = (
         convertEol: true,
         rows: 30,
         cols: 80,
-        scrollback: 10000, // Reduced from 100k to prevent memory issues and UI freezing
+        scrollback: TERMINAL_SCROLLBACK_SIZE, // Reduced from 100k to prevent memory issues and UI freezing
         fastScrollModifier: 'ctrl',
         fastScrollSensitivity: 5,
         scrollSensitivity: 1,

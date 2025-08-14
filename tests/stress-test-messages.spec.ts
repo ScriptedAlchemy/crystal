@@ -119,27 +119,40 @@ test.describe('Crystal Stress Test - Massive Message Threads', () => {
         
         console.log(`  Batch ${batch + 1}/${batches}: Messages ${startMessage + 1}-${endMessage}`);
         
-        // Inject messages directly into the DOM to simulate rapid message flow
-        await page.evaluate(async ({ start, end }) => {
-          const messageContainer = document.querySelector('[data-testid="message-container"], .xterm-screen, .output-container, [class*="output"]');
-          
-          if (messageContainer) {
-            for (let i = start; i < end; i++) {
-              // Simulate adding a message
-              const messageDiv = document.createElement('div');
-              messageDiv.className = 'test-message';
-              messageDiv.textContent = `Test message ${i + 1}: This is a simulated message to test performance with large volumes of content. Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
-              messageContainer.appendChild(messageDiv);
-              
-              (window as any).stressTestMetrics.messageCount = i + 1;
-              
-              // Small delay between messages to simulate real-time flow
-              if (i % 10 === 0) {
-                await new Promise(resolve => setTimeout(resolve, 10));
+        // Use evaluateHandle to get a persistent handle to the message container for better memory management
+        let messageContainerHandle: any;
+        if (batch === 0) {
+          // Only get the handle once, before the first batch
+          messageContainerHandle = await page.evaluateHandle(() => 
+            document.querySelector('[data-testid="message-container"], .xterm-screen, .output-container, [class*="output"]')
+          );
+          (global as any).messageContainerHandle = messageContainerHandle;
+        } else {
+          messageContainerHandle = (global as any).messageContainerHandle;
+        }
+        
+        // Use the handle to append messages in this batch for better performance
+        await messageContainerHandle.evaluate(
+          async (messageContainer: Element, { start, end }) => {
+            if (messageContainer) {
+              for (let i = start; i < end; i++) {
+                // Simulate adding a message
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'test-message';
+                messageDiv.textContent = `Test message ${i + 1}: This is a simulated message to test performance with large volumes of content. Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+                messageContainer.appendChild(messageDiv);
+
+                (window as any).stressTestMetrics.messageCount = i + 1;
+
+                // Small delay between messages to simulate real-time flow
+                if (i % 10 === 0) {
+                  await new Promise(resolve => setTimeout(resolve, 10));
+                }
               }
             }
-          }
-        }, { start: startMessage, end: endMessage });
+          },
+          { start: startMessage, end: endMessage }
+        );
         
         // Check performance after each batch
         const metrics = await page.evaluate(() => (window as any).stressTestMetrics);

@@ -7,6 +7,9 @@ import type { CreateSessionRequest } from '../types/session';
 import { getCrystalSubdirectory } from '../utils/crystalDirectory';
 import { convertDbFolderToFolder } from './folders';
 
+// Configuration constants for performance optimization
+const DEFAULT_OUTPUT_CHUNK_SIZE = 50; // Process N messages at a time (configurable)
+
 export function registerSessionHandlers(ipcMain: IpcMain, services: AppServices): void {
   const {
     sessionManager,
@@ -468,7 +471,7 @@ export function registerSessionHandlers(ipcMain: IpcMain, services: AppServices)
 
       // Process outputs in chunks to avoid blocking the main thread for too long
       const { formatJsonForOutputEnhanced } = await import('../utils/toolFormatter');
-      const chunkSize = 50; // Process 50 messages at a time
+      const chunkSize = DEFAULT_OUTPUT_CHUNK_SIZE;
       const transformedOutputs = [];
       
       for (let i = 0; i < outputs.length; i += chunkSize) {

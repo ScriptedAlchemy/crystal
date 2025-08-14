@@ -30,7 +30,7 @@ test.describe('Crystal Realistic Stress Test - UI Hang Prevention', () => {
     // Check for spinning wheels or loading indicators
     const spinnerCheck = page.waitForSelector(
       '[class*="spinner"], [class*="loading"], [class*="spin"], .animate-spin, [role="progressbar"]',
-      { timeout: 100, state: 'visible' }
+      { timeout: 250, state: 'visible' }
     ).then(() => {
       spinnerDetected = true;
       return true;
@@ -446,7 +446,7 @@ test.describe('Crystal Realistic Stress Test - UI Hang Prevention', () => {
           // Check for spinner appearance
           const spinnerPromise = page.waitForSelector(
             '[class*="spinner"], [class*="loading"], [class*="spin"], .animate-spin',
-            { timeout: 50, state: 'visible' }
+            { timeout: 250, state: 'visible' }
           ).then(() => true).catch(() => false);
           
           // Send message

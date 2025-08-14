@@ -31,20 +31,27 @@ NODE_MAJOR=$(node -v | cut -d'.' -f1 | tr -d 'v')
 NODE_MINOR=$(node -v | cut -d'.' -f2)
 echo "📌 Using Node.js $NODE_VERSION"
 
-# Check for Node.js 24.4.0 specific memory bug
-if [ "$NODE_VERSION" = "v24.4.0" ]; then
-    echo "🚨 CRITICAL: Node.js 24.4.0 has a confirmed memory bug with pnpm and large packages!"
-    echo "   This causes 'JavaScript heap out of memory' errors when downloading app-builder-bin"
-    echo "   🔧 SOLUTION: Use the .nvmrc file"
-    echo "   Run: nvm use"
-    echo "   Issue: https://github.com/pnpm/pnpm/issues/9743"
-    echo ""
-    read -p "Continue anyway? (y/N): " -n 1 -r
-    echo ""
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        exit 1
+# Check for known problematic Node.js versions
+PROBLEMATIC_NODE_VERSIONS=("v24.4.0")
+for bad_version in "${PROBLEMATIC_NODE_VERSIONS[@]}"; do
+    if [ "$NODE_VERSION" = "$bad_version" ]; then
+        echo "🚨 CRITICAL: Node.js $NODE_VERSION has a confirmed memory bug with pnpm and large packages!"
+        echo "   This causes 'JavaScript heap out of memory' errors when downloading app-builder-bin"
+        echo "   🔧 SOLUTION: Use the .nvmrc file"
+        echo "   Run: nvm use"
+        echo "   Issue: https://github.com/pnpm/pnpm/issues/9743"
+        echo ""
+        read -p "Continue anyway? (y/N): " -n 1 -r
+        echo ""
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            exit 1
+        fi
+        break
     fi
-elif [ "$NODE_MAJOR" -eq 24 ] && [ "$NODE_MINOR" -ge 4 ]; then
+done
+
+# Warn for Node.js 24.4.0 and above (potential issues)
+if [ "$NODE_MAJOR" -eq 24 ] && [ "$NODE_MINOR" -ge 4 ]; then
     echo "⚠️  Warning: Node.js $NODE_VERSION may have memory issues with pnpm and large packages"
     echo "   💡 Use the recommended version: nvm use"
 fi
