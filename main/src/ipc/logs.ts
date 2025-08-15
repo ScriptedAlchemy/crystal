@@ -89,7 +89,12 @@ export function addSessionLog(sessionId: string, level: LogEntry['level'], messa
   }
 }
 
-// Helper to clean up logs when a session is deleted
+// Helper to clean up logs when a session is deleted or when starting a new run
 export function cleanupSessionLogs(sessionId: string) {
   sessionLogs.delete(sessionId);
+  
+  // Notify the frontend to clear logs
+  if (mainWindow) {
+    mainWindow.webContents.send('session-logs-cleared', { sessionId });
+  }
 }

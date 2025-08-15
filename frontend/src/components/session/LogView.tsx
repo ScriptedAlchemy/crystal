@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Search, X, Download, Trash2, ChevronUp, ChevronDown, Filter } from 'lucide-react';
 import { cn } from '../../utils/cn';
+import AnsiToHtml from 'ansi-to-html';
 
 interface LogEntry {
   timestamp: string;
@@ -25,6 +26,32 @@ export const LogView: React.FC<LogViewProps> = ({ sessionId, isVisible }) => {
   const logContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const lastLogCount = useRef(0);
+  
+  // Create ANSI to HTML converter with dark theme colors
+  const ansiConverter = useMemo(() => new AnsiToHtml({
+    fg: '#e5e7eb', // text-gray-200
+    bg: '#0a0a0a', // bg-primary
+    newline: true,
+    escapeXML: true,
+    colors: {
+      0: '#000000', // Black
+      1: '#ef4444', // Red
+      2: '#10b981', // Green  
+      3: '#f59e0b', // Yellow
+      4: '#3b82f6', // Blue
+      5: '#a855f7', // Magenta
+      6: '#06b6d4', // Cyan
+      7: '#e5e7eb', // White
+      8: '#6b7280', // Bright Black (Gray)
+      9: '#f87171', // Bright Red
+      10: '#34d399', // Bright Green
+      11: '#fbbf24', // Bright Yellow
+      12: '#60a5fa', // Bright Blue
+      13: '#c084fc', // Bright Magenta
+      14: '#22d3ee', // Bright Cyan
+      15: '#ffffff', // Bright White
+    }
+  }), []);
 
   // Load existing logs when component mounts or session changes
   useEffect(() => {
@@ -45,11 +72,11 @@ export const LogView: React.FC<LogViewProps> = ({ sessionId, isVisible }) => {
     loadLogs();
   }, [sessionId, isVisible]);
 
-  // Subscribe to new log entries
+  // Subscribe to new log entries and clear events
   useEffect(() => {
     if (!sessionId) return;
 
-    const unsubscribe = window.electronAPI?.events?.onSessionLog?.((data: {
+    const unsubscribeLog = window.electronAPI?.events?.onSessionLog?.((data: {
       sessionId: string;
       entry: LogEntry;
     }) => {
@@ -58,8 +85,18 @@ export const LogView: React.FC<LogViewProps> = ({ sessionId, isVisible }) => {
       }
     });
 
+    const unsubscribeClear = window.electronAPI?.events?.onSessionLogsCleared?.((data: {
+      sessionId: string;
+    }) => {
+      if (data.sessionId === sessionId) {
+        setLogs([]);
+        lastLogCount.current = 0;
+      }
+    });
+
     return () => {
-      unsubscribe?.();
+      unsubscribeLog?.();
+      unsubscribeClear?.();
     };
   }, [sessionId]);
 
@@ -321,16 +358,22 @@ export const LogView: React.FC<LogViewProps> = ({ sessionId, isVisible }) => {
               const isCurrentMatch = searchVisible && searchMatches.includes(index) && searchMatches[currentSearchIndex] === index;
               const isMatch = searchVisible && searchTerm && searchMatches.includes(index);
               
+              // Convert ANSI codes to HTML
+              const htmlContent = ansiConverter.toHtml(log.message);
+              
               if (!searchTerm || !searchVisible) {
                 return (
-                  <div key={index} className="log-line">
-                    {log.message}
-                  </div>
+                  <div 
+                    key={index} 
+                    className="log-line"
+                    dangerouslySetInnerHTML={{ __html: htmlContent }}
+                  />
                 );
               }
               
-              // Highlight search matches
-              const parts = log.message.split(new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
+              // For search highlighting, we need to work with the raw text
+              // but still preserve the ANSI styling
+              const isHighlighted = isMatch || isCurrentMatch;
               
               return (
                 <div 
@@ -341,14 +384,22 @@ export const LogView: React.FC<LogViewProps> = ({ sessionId, isVisible }) => {
                     isMatch && !isCurrentMatch && "bg-yellow-500/10"
                   )}
                 >
-                  {parts.map((part, i) => 
-                    part.toLowerCase() === searchTerm.toLowerCase() ? (
-                      <span key={i} className="bg-yellow-500/50 text-black px-0.5">
-                        {part}
-                      </span>
-                    ) : (
-                      <span key={i}>{part}</span>
-                    )
+                  {isHighlighted ? (
+                    // When highlighting search results, show raw text with highlight
+                    // This is a trade-off: we lose ANSI colors but gain search highlighting
+                    log.message.split(new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'))
+                      .map((part, i) => 
+                        part.toLowerCase() === searchTerm.toLowerCase() ? (
+                          <span key={i} className="bg-yellow-500/50 text-black px-0.5">
+                            {part}
+                          </span>
+                        ) : (
+                          <span key={i}>{part}</span>
+                        )
+                      )
+                  ) : (
+                    // When not highlighting, show with ANSI colors
+                    <span dangerouslySetInnerHTML={{ __html: htmlContent }} />
                   )}
                 </div>
               );

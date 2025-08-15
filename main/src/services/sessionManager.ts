@@ -8,7 +8,7 @@ import type { Session as DbSession, CreateSessionData, UpdateSessionData, Conver
 import { getShellPath } from '../utils/shellPath';
 import { TerminalSessionManager } from './terminalSessionManager';
 import { formatForDisplay } from '../utils/timestampUtils';
-import { addSessionLog } from '../ipc/logs';
+import { addSessionLog, cleanupSessionLogs } from '../ipc/logs';
 import * as os from 'os';
 
 export class SessionManager extends EventEmitter {
@@ -654,6 +654,9 @@ export class SessionManager extends EventEmitter {
   async runScript(sessionId: string, commands: string[], workingDirectory: string): Promise<void> {
     // Stop any currently running script and wait for it to fully terminate
     await this.stopRunningScript();
+    
+    // Clear previous logs when starting a new run
+    cleanupSessionLogs(sessionId);
     
     // Mark session as running
     this.setSessionRunning(sessionId, true);

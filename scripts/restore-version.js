@@ -6,15 +6,16 @@ const { execSync } = require('child_process');
 
 // In CI environment, skip restoration since it's not needed
 // The CI runs in a fresh environment each time
-if (process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true') {
+// GitHub Actions sets GITHUB_ACTIONS=true (boolean true, not string 'true')
+if (process.env.CI || process.env.GITHUB_ACTIONS) {
   console.log('Skipping package.json restoration in CI environment');
+  console.log('CI:', process.env.CI, 'GITHUB_ACTIONS:', process.env.GITHUB_ACTIONS);
   process.exit(0);
 }
 
-// Restore the original package.json version from git
+// Restore the original package.json version from git (for local development only)
 try {
   // First, discard any uncommitted changes to package.json
-  // Use --force to ensure it doesn't prompt for input
   execSync('git checkout HEAD -- package.json', { 
     stdio: 'inherit',
     // Add timeout to prevent hanging
@@ -24,7 +25,7 @@ try {
 } catch (err) {
   console.error('Failed to restore package.json:', err.message);
   // In CI, don't fail the build over this
-  if (process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true') {
+  if (process.env.CI || process.env.GITHUB_ACTIONS) {
     console.log('Continuing despite restore failure in CI');
     process.exit(0);
   }

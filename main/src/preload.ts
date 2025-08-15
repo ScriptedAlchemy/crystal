@@ -289,6 +289,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
       ipcRenderer.on('session-log', wrappedCallback);
       return () => ipcRenderer.removeListener('session-log', wrappedCallback);
     },
+    onSessionLogsCleared: (callback: (data: { sessionId: string }) => void) => {
+      const wrappedCallback = (_event: any, data: { sessionId: string }) => callback(data);
+      ipcRenderer.on('session-logs-cleared', wrappedCallback);
+      return () => ipcRenderer.removeListener('session-logs-cleared', wrappedCallback);
+    },
     onSessionOutputAvailable: (callback: (info: any) => void) => {
       const wrappedCallback = (_event: any, info: any) => callback(info);
       ipcRenderer.on('session:output-available', wrappedCallback);
