@@ -11,14 +11,18 @@ This file includes only packages with licenses that require attribution. Public 
 
 The following packages are licensed under the MIT license:
 
+  - @adobe/css-tools (4.4.4) - TJ Holowaychuk <tj@vision-media.ca>
   - @alloc/quick-lru (5.2.0) - Sindre Sorhus
   - @antfu/install-pkg (1.1.0) - Anthony Fu <anthonyfu117@hotmail.com>
   - @antfu/utils (8.1.1) - Anthony Fu <anthonyfu117@hotmail.com>
   - @anthropic-ai/sdk (0.53.0) - Anthropic <support@anthropic.com>
+  - @asamuzakjp/css-color (3.2.0) - asamuzaK
   - @babel/code-frame (7.27.1) - The Babel Team (https://babel.dev/team)
   - @babel/compat-data (7.28.0) - The Babel Team (https://babel.dev/team)
   - @babel/core (7.28.0) - The Babel Team (https://babel.dev/team)
+  - @babel/core (7.28.3) - The Babel Team (https://babel.dev/team)
   - @babel/generator (7.28.0) - The Babel Team (https://babel.dev/team)
+  - @babel/generator (7.28.3) - The Babel Team (https://babel.dev/team)
   - @babel/helper-compilation-targets (7.27.2) - The Babel Team (https://babel.dev/team)
   - @babel/helper-globals (7.28.0) - The Babel Team (https://babel.dev/team)
   - @babel/helper-module-imports (7.27.1) - The Babel Team (https://babel.dev/team)
@@ -27,14 +31,20 @@ The following packages are licensed under the MIT license:
   - @babel/helper-validator-identifier (7.27.1) - The Babel Team (https://babel.dev/team)
   - @babel/helper-validator-option (7.27.1) - The Babel Team (https://babel.dev/team)
   - @babel/helpers (7.27.6) - The Babel Team (https://babel.dev/team)
+  - @babel/helpers (7.28.3) - The Babel Team (https://babel.dev/team)
   - @babel/parser (7.28.0) - The Babel Team (https://babel.dev/team)
+  - @babel/parser (7.28.3) - The Babel Team (https://babel.dev/team)
   - @babel/runtime (7.27.6) - The Babel Team (https://babel.dev/team)
+  - @babel/runtime (7.28.3) - The Babel Team (https://babel.dev/team)
   - @babel/template (7.27.2) - The Babel Team (https://babel.dev/team)
   - @babel/traverse (7.28.0) - The Babel Team (https://babel.dev/team)
+  - @babel/traverse (7.28.3) - The Babel Team (https://babel.dev/team)
   - @babel/types (7.28.1) - The Babel Team (https://babel.dev/team)
+  - @babel/types (7.28.2) - The Babel Team (https://babel.dev/team)
   - @bcoe/v8-coverage (0.2.3) - Charles Samborski <demurgos@demurgos.net> (https://demurgos.net)
   - @braintree/sanitize-url (7.1.1)
   - @cspotcode/source-map-support (0.8.1)
+  - @csstools/css-tokenizer (3.0.4)
   - @develar/schema-utils (2.6.5) - webpack Contrib (https://github.com/webpack-contrib)
   - @electron/asar (3.4.1)
   - @electron/get (2.0.3) - Samuel Attard
@@ -53,9 +63,12 @@ The following packages are licensed under the MIT license:
   - @emotion/weak-memoize (0.4.0)
   - @esbuild/darwin-arm64 (0.21.5)
   - @esbuild/darwin-arm64 (0.25.7)
+  - @esbuild/darwin-arm64 (0.25.9)
   - @eslint-community/regexpp (4.12.1) - Toru Nagashima
   - @floating-ui/core (1.7.2) - atomiks
+  - @floating-ui/core (1.7.3) - atomiks
   - @floating-ui/dom (1.7.2) - atomiks
+  - @floating-ui/dom (1.7.3) - atomiks
   - @floating-ui/utils (0.2.10) - atomiks
   - @formatjs/ecma402-abstract (2.3.4) - Long Ho <holevietlong@gmail.com
   - @formatjs/fast-memoize (2.2.7) - Long Ho <holevietlong@gmail.com>
@@ -67,17 +80,22 @@ The following packages are licensed under the MIT license:
   - @iconify/types (2.0.0) - Vjacheslav Trushkin
   - @iconify/utils (2.3.0) - Vjacheslav Trushkin
   - @ioredis/commands (1.2.0) - Zihua Li <i@zihua.li> (http://zihua.li)
+  - @ioredis/commands (1.3.0) - Zihua Li <i@zihua.li> (http://zihua.li)
   - @isaacs/balanced-match (4.0.1)
   - @isaacs/brace-expansion (5.0.0)
   - @istanbuljs/schema (0.1.3) - Corey Farrell
   - @jridgewell/gen-mapping (0.3.12) - Justin Ridgewell <justin@ridgewell.name>
+  - @jridgewell/gen-mapping (0.3.13) - Justin Ridgewell <justin@ridgewell.name>
   - @jridgewell/resolve-uri (3.1.2) - Justin Ridgewell <justin@ridgewell.name>
   - @jridgewell/sourcemap-codec (1.5.4) - Justin Ridgewell <justin@ridgewell.name>
+  - @jridgewell/sourcemap-codec (1.5.5) - Justin Ridgewell <justin@ridgewell.name>
   - @jridgewell/trace-mapping (0.3.29) - Justin Ridgewell <justin@ridgewell.name>
+  - @jridgewell/trace-mapping (0.3.30) - Justin Ridgewell <justin@ridgewell.name>
   - @jridgewell/trace-mapping (0.3.9) - Justin Ridgewell <justin@ridgewell.name>
   - @malept/flatpak-bundler (0.4.0) - Matt Watson <mattdangerw@gmail.com>
   - @mermaid-js/parser (0.6.2) - Yokozuna59
   - @modelcontextprotocol/sdk (1.16.0) - Anthropic, PBC (https://anthropic.com)
+  - @modelcontextprotocol/sdk (1.17.3) - Anthropic, PBC (https://anthropic.com)
   - @monaco-editor/loader (1.5.0) - Suren Atoyan <contact@surenatoyan.com>
   - @msgpackr-extract/msgpackr-extract-darwin-arm64 (3.0.3) - Kris Zyp
   - @noble/hashes (1.8.0) - Paul Miller (https://paulmillr.com)
@@ -89,13 +107,18 @@ The following packages are licensed under the MIT license:
   - @pkgjs/parseargs (0.11.0)
   - @radix-ui/number (1.1.1)
   - @radix-ui/primitive (1.1.2)
+  - @radix-ui/primitive (1.1.3)
   - @radix-ui/rect (1.1.1)
   - @rolldown/pluginutils (1.0.0-beta.27)
   - @rollup/rollup-darwin-arm64 (4.45.1) - Lukas Taegert-Atkinson
-  - @sentry/core (9.45.0) - Sentry
-  - @sentry/node (9.45.0) - Sentry
+  - @rollup/rollup-darwin-arm64 (4.46.2) - Lukas Taegert-Atkinson
+  - @sentry/core (9.46.0) - Sentry
+  - @sentry/node (9.46.0) - Sentry
   - @sindresorhus/is (4.6.0) - Sindre Sorhus
   - @szmarczak/http-timer (4.0.6) - Szymon Marczak
+  - @testing-library/dom (10.4.1) - Kent C. Dodds <me@kentcdodds.com> (https://kentcdodds.com)
+  - @testing-library/jest-dom (6.7.0) - Ernesto Garcia <gnapse@gmail.com> (http://gnapse.github.io)
+  - @testing-library/user-event (14.6.1) - Giorgio Polvara <polvara@gmail.com>
   - @tootallnate/once (2.0.0) - Nathan Rajlich <nathan@tootallnate.net> (http://n8.io/)
   - @tootallnate/quickjs-emscripten (0.23.0)
   - @tsconfig/node10 (1.0.11)
@@ -129,7 +152,9 @@ The following packages are licensed under the MIT license:
   - ansi-regex (5.0.1) - Sindre Sorhus
   - ansi-regex (6.1.0) - Sindre Sorhus
   - ansi-styles (4.3.0) - Sindre Sorhus
+  - ansi-styles (5.2.0) - Sindre Sorhus
   - ansi-styles (6.2.1) - Sindre Sorhus
+  - ansi-to-html (0.7.2) - Rob Burns
   - any-promise (1.3.0) - Kevin Beaty
   - app-builder-bin (5.0.0-alpha.10)
   - app-builder-lib (25.1.8) - Vladimir Krivosheev
@@ -146,6 +171,7 @@ The following packages are licensed under the MIT license:
   - async-exit-hook (2.0.1) - Tapani Moilanen
   - asynckit (0.4.0) - Alex Indigo <iam@alexindigo.com>
   - axios (1.10.0) - Matt Zabriskie
+  - axios (1.11.0) - Matt Zabriskie
   - babel-plugin-macros (3.1.0) - Kent C. Dodds <me@kentcdodds.com> (https://kentcdodds.com)
   - bail (2.0.2) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
   - balanced-match (1.0.2) - Julian Gruber
@@ -164,6 +190,7 @@ The following packages are licensed under the MIT license:
   - brace-expansion (2.0.2) - Julian Gruber
   - braces (3.0.3) - Jon Schlinkert (https://github.com/jonschlinkert)
   - browserslist (4.25.1) - Andrey Sitnik <andrey@sitnik.ru>
+  - browserslist (4.25.2) - Andrey Sitnik <andrey@sitnik.ru>
   - buffer (5.7.1) - Feross Aboukhadijeh
   - buffer-crc32 (0.2.13) - Brian J. Brennan <brianloveswords@gmail.com>
   - buffer-from (1.1.2)
@@ -234,13 +261,17 @@ The following packages are licensed under the MIT license:
   - create-require (1.1.1)
   - cron-parser (4.9.0) - Harri Siirak
   - cross-spawn (7.0.6) - André Cruz <andre@moxy.studio>
+  - css.escape (1.5.1) - Mathias Bynens
   - cssesc (3.0.0) - Mathias Bynens
+  - cssstyle (4.6.0)
   - csstype (3.1.3) - Fredrik Nicol <fredrik.nicol@gmail.com>
   - cytoscape (3.32.1)
+  - cytoscape (3.33.1)
   - cytoscape-cose-bilkent (4.1.0)
   - cytoscape-fcose (2.2.0) - iVis-at-Bilkent
   - dagre-d3-es (7.0.11)
   - data-uri-to-buffer (6.0.2) - Nathan Rajlich <nathan@tootallnate.net> (http://n8.io/)
+  - data-urls (5.0.0) - Domenic Denicola <d@domenic.me> (https://domenic.me/)
   - date-fns (4.1.0)
   - dayjs (1.11.13) - iamkun
   - debounce-fn (6.0.0) - Sindre Sorhus
@@ -270,11 +301,14 @@ The following packages are licensed under the MIT license:
   - dlv (1.1.3) - Jason Miller <jason@developit.ca> (http://jasonformat.com)
   - dmg-builder (25.1.8) - Vladimir Krivosheev
   - dmg-license (1.0.11) - argvminusone
+  - dom-accessibility-api (0.5.16)
+  - dom-accessibility-api (0.6.3)
   - dot-prop (9.0.0) - Sindre Sorhus
   - dunder-proto (1.0.1) - Jordan Harband <ljharb@gmail.com>
   - eastasianwidth (0.2.0) - Masaki Komagata
   - ee-first (1.1.1) - Jonathan Ong
   - electron (36.7.1) - Electron Community
+  - electron (36.7.4) - Electron Community
   - electron-publish (25.1.7) - Vladimir Krivosheev
   - electron-store (10.1.0) - Sindre Sorhus
   - electron-updater (6.6.2) - Vladimir Krivosheev
@@ -297,6 +331,7 @@ The following packages are licensed under the MIT license:
   - es6-error (4.1.1) - Ben Youngblood
   - esbuild (0.21.5)
   - esbuild (0.25.7)
+  - esbuild (0.25.9)
   - escalade (3.2.0) - Luke Edwards
   - escape-html (1.0.3)
   - escape-string-regexp (4.0.0) - Sindre Sorhus
@@ -320,6 +355,7 @@ The following packages are licensed under the MIT license:
   - fast-safe-stringify (2.1.1) - David Mark Clements
   - fd-slicer (1.1.0) - Andrew Kelley <superjoe30@gmail.com>
   - fdir (6.4.6) - thecodrr <thecodrr@protonmail.com>
+  - fdir (6.5.0) - thecodrr <thecodrr@protonmail.com>
   - file-entry-cache (8.0.0) - Jared Wray
   - file-uri-to-path (1.0.0) - Nathan Rajlich <nathan@tootallnate.net> (http://n8.io/)
   - fill-range (7.1.1) - Jon Schlinkert (https://github.com/jonschlinkert)
@@ -328,6 +364,7 @@ The following packages are licensed under the MIT license:
   - find-root (1.1.0) - jsdnxx
   - find-up (5.0.0) - Sindre Sorhus
   - flat-cache (4.0.1) - Jared Wray
+  - follow-redirects (1.15.11) - Ruben Verborgh <ruben@verborgh.org> (https://ruben.verborgh.org/)
   - follow-redirects (1.15.9) - Ruben Verborgh <ruben@verborgh.org> (https://ruben.verborgh.org/)
   - form-data (4.0.4) - Felix Geisendörfer <felix@debuggable.com> (http://debuggable.com/)
   - formidable (3.5.4)
@@ -339,6 +376,7 @@ The following packages are licensed under the MIT license:
   - fs-constants (1.0.0) - Mathias Buus (@mafintosh)
   - fs-extra (10.1.0) - JP Richardson <jprichardson@gmail.com>
   - fs-extra (11.3.0) - JP Richardson <jprichardson@gmail.com>
+  - fs-extra (11.3.1) - JP Richardson <jprichardson@gmail.com>
   - fs-extra (8.1.0) - JP Richardson <jprichardson@gmail.com>
   - fs-extra (9.1.0) - JP Richardson <jprichardson@gmail.com>
   - fsevents (2.3.2)
@@ -364,6 +402,7 @@ The following packages are licensed under the MIT license:
   - hasown (2.0.2) - Jordan Harband <ljharb@gmail.com>
   - hast-util-to-jsx-runtime (2.3.6) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
   - hast-util-whitespace (3.0.0) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
+  - html-encoding-sniffer (4.0.0) - Domenic Denicola <d@domenic.me> (https://domenic.me/)
   - html-escaper (2.0.2) - Andrea Giammarchi
   - html-url-attributes (3.0.1) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
   - http-errors (2.0.0) - Jonathan Ong <me@jongleberry.com> (http://jongleberry.com)
@@ -385,6 +424,8 @@ The following packages are licensed under the MIT license:
   - indent-string (4.0.0) - Sindre Sorhus
   - inline-style-parser (0.2.4)
   - ioredis (5.6.1) - Zihua Li <i@zihua.li> (http://zihua.li)
+  - ioredis (5.7.0) - Zihua Li <i@zihua.li> (http://zihua.li)
+  - ip-address (10.0.1) - Beau Gunderson <beau@beaugunderson.com> (https://beaugunderson.com/)
   - ip-address (9.0.5) - Beau Gunderson <beau@beaugunderson.com> (https://beaugunderson.com/)
   - ipaddr.js (1.9.1) - whitequark <whitequark@whitequark.org>
   - is-alphabetical (2.0.1) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
@@ -403,6 +444,7 @@ The following packages are licensed under the MIT license:
   - is-lambda (1.0.1) - Thomas Watson Steen <w@tson.dk> (https://twitter.com/wa7son)
   - is-number (7.0.0) - Jon Schlinkert (https://github.com/jonschlinkert)
   - is-plain-obj (4.1.0) - Sindre Sorhus
+  - is-potential-custom-element-name (1.0.1) - Mathias Bynens
   - is-promise (4.0.0) - ForbesLindesay
   - is-unicode-supported (0.1.0) - Sindre Sorhus
   - is-wsl (2.2.0) - Sindre Sorhus
@@ -413,6 +455,7 @@ The following packages are licensed under the MIT license:
   - js-tokens (4.0.0) - Simon Lydell
   - js-yaml (4.1.0) - Vladimir Zapparov <dervus.grim@gmail.com>
   - jsbn (1.1.0) - Tom Wu
+  - jsdom (25.0.1)
   - jsesc (3.1.0) - Mathias Bynens
   - json-buffer (3.0.1) - Dominic Tarr <dominic.tarr@gmail.com> (http://dominictarr.com)
   - json-parse-even-better-errors (2.3.1) - Kat Marchán
@@ -422,6 +465,7 @@ The following packages are licensed under the MIT license:
   - json5 (2.2.3) - Aseem Kishore <aseem.kishore@gmail.com>
   - jsonfile (4.0.0) - JP Richardson <jprichardson@gmail.com>
   - jsonfile (6.1.0) - JP Richardson <jprichardson@gmail.com>
+  - jsonfile (6.2.0) - JP Richardson <jprichardson@gmail.com>
   - katex (0.16.22)
   - keyv (4.5.4) - Jared Wray <me@jaredwray.com> (http://jaredwray.com)
   - kolorist (1.8.0) - Marvin Hagemeister <hello@marvinh.dev>
@@ -446,14 +490,17 @@ The following packages are licensed under the MIT license:
   - lookup-closest-locale (6.2.0) - Andy VanWagoner <andy@vanwago.net>
   - loose-envify (1.4.0) - Andres Suarez <zertosh@gmail.com>
   - loupe (3.1.4) - Veselin Todorov <hi@vesln.com>
+  - loupe (3.2.0) - Veselin Todorov <hi@vesln.com>
   - lowercase-keys (2.0.0) - Sindre Sorhus
   - luxon (3.7.1) - Isaac Cambron
+  - lz-string (1.5.0) - pieroxy <pieroxy@pieroxy.net>
   - lzma-native (8.0.6) - Anna Henningsen
   - magic-string (0.30.17) - Rich Harris
   - magicast (0.3.5)
   - make-dir (4.0.0) - Sindre Sorhus
   - markdown-table (3.0.4) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
   - marked (16.1.1) - Christopher Jeffrey
+  - marked (16.1.2) - Christopher Jeffrey
   - matcher (3.0.0) - Sindre Sorhus
   - math-intrinsics (1.1.0) - Jordan Harband <ljharb@gmail.com>
   - mdast-util-find-and-replace (3.0.2) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
@@ -519,6 +566,7 @@ The following packages are licensed under the MIT license:
   - mimic-function (5.0.1) - Sindre Sorhus
   - mimic-response (1.0.1) - Sindre Sorhus
   - mimic-response (3.1.0) - Sindre Sorhus
+  - min-indent (1.0.1) - James Kyle
   - minimist (1.2.8) - James Halliday
   - minipass-fetch (2.1.2) - GitHub Inc.
   - minizlib (2.1.2) - Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me/)
@@ -551,6 +599,7 @@ The following packages are licensed under the MIT license:
   - normalize-path (3.0.0) - Jon Schlinkert (https://github.com/jonschlinkert)
   - normalize-range (0.1.2) - James Talmage
   - normalize-url (6.1.0) - Sindre Sorhus
+  - nwsapi (2.2.21) - Diego Perini
   - object-assign (4.1.1) - Sindre Sorhus
   - object-hash (3.0.0) - Scott Puleo <puleos@gmail.com>
   - object-inspect (1.13.4) - James Halliday
@@ -570,6 +619,7 @@ The following packages are licensed under the MIT license:
   - parent-module (1.0.1) - Sindre Sorhus
   - parse-entities (4.0.2) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
   - parse-json (5.2.0) - Sindre Sorhus
+  - parse5 (7.3.0) - Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)
   - parseurl (1.3.3)
   - path-data-parser (0.1.0) - Preet Shihn
   - path-exists (4.0.0) - Sindre Sorhus
@@ -602,6 +652,7 @@ The following packages are licensed under the MIT license:
   - postgres-interval (1.2.0) - Ben Drucker
   - prebuild-install (7.1.3) - Mathias Buus (@mafintosh)
   - prelude-ls (1.2.1) - George Zahariev <z@georgezahariev.com>
+  - pretty-format (27.5.1) - James Kyle <me@thejameskyle.com>
   - progress (2.0.3) - TJ Holowaychuk <tj@vision-media.ca>
   - promise-retry (2.0.1) - IndigoUnited <hello@indigounited.com> (http://indigounited.com)
   - prop-types (15.8.1)
@@ -618,15 +669,19 @@ The following packages are licensed under the MIT license:
   - raw-body (2.5.2) - Jonathan Ong <me@jongleberry.com> (http://jongleberry.com)
   - raw-body (3.0.0) - Jonathan Ong <me@jongleberry.com> (http://jongleberry.com)
   - react (19.1.0)
+  - react (19.1.1)
   - react-diff-viewer-continued (3.4.0)
   - react-dom (19.1.0)
+  - react-dom (19.1.1)
   - react-is (16.13.1)
+  - react-is (17.0.2)
   - react-json-view-lite (1.5.0) - AnyRoad
   - react-refresh (0.17.0)
   - read-binary-file-arch (1.0.6) - Samuel Maddock
   - read-cache (1.0.0) - Bogdan Chadkin <trysound@yandex.ru>
   - readable-stream (3.6.2)
   - readdirp (3.6.0) - Thorsten Lorenz <thlorenz@gmx.de> (thlorenz.com)
+  - redent (3.0.0) - Sindre Sorhus
   - redis-errors (1.2.0) - Ruben Bridgewater
   - redis-parser (3.0.0) - Ruben Bridgewater
   - remark-gfm (4.0.1) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
@@ -646,8 +701,11 @@ The following packages are licensed under the MIT license:
   - reusify (1.1.0) - Matteo Collina <hello@matteocollina.com>
   - robots-parser (3.0.1) - Sam Clarke <sam@samclarke.com>
   - rollup (4.45.1) - Rich Harris
+  - rollup (4.46.2) - Rich Harris
   - roughjs (4.6.6) - Preet Shihn <preetshihn@gmail.com>
   - router (2.2.0) - Douglas Christopher Wilson <doug@somethingdoug.com>
+  - rrweb-cssom (0.7.1) - Nikita Vasilyev <me@elv1s.ru>
+  - rrweb-cssom (0.8.0) - Nikita Vasilyev <me@elv1s.ru>
   - run-parallel (1.2.0) - Feross Aboukhadijeh
   - safe-buffer (5.2.1) - Feross Aboukhadijeh
   - safer-buffer (2.1.2) - Nikita Skovoroda
@@ -671,6 +729,7 @@ The following packages are licensed under the MIT license:
   - slice-ansi (3.0.0)
   - smart-buffer (4.2.0) - Josh Glazebrook
   - socks (2.8.6) - Josh Glazebrook
+  - socks (2.8.7) - Josh Glazebrook
   - socks-proxy-agent (7.0.0) - Nathan Rajlich
   - socks-proxy-agent (8.0.5) - Nathan Rajlich
   - source-map-support (0.5.21)
@@ -690,6 +749,7 @@ The following packages are licensed under the MIT license:
   - stringify-entities (4.0.4) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
   - strip-ansi (6.0.1) - Sindre Sorhus
   - strip-ansi (7.1.0) - Sindre Sorhus
+  - strip-indent (3.0.0) - Sindre Sorhus
   - strip-json-comments (2.0.1) - Sindre Sorhus
   - strip-json-comments (3.1.1) - Sindre Sorhus
   - style-to-js (1.1.17) - Mark <mark@remarkablemark.org>
@@ -702,6 +762,7 @@ The following packages are licensed under the MIT license:
   - supports-color (7.2.0) - Sindre Sorhus
   - supports-color (8.1.1) - Sindre Sorhus
   - supports-preserve-symlinks-flag (1.0.0) - Jordan Harband <ljharb@gmail.com>
+  - symbol-tree (3.2.4) - Joris van der Wel <joris@jorisvanderwel.com>
   - tailwind-merge (2.6.0) - Dany Castillo
   - tar-fs (2.1.3) - Mathias Buus
   - tar-fs (3.1.0) - Mathias Buus
@@ -719,12 +780,15 @@ The following packages are licensed under the MIT license:
   - tinypool (1.1.1)
   - tinyrainbow (1.2.0)
   - tinyspy (3.0.2)
+  - tldts (6.1.86) - Rémi Berson
   - tldts-core (6.1.86) - Rémi Berson
   - tldts-icann (6.1.86) - Rémi Berson
   - tmp (0.2.3) - KARASZI István <github@spam.raszi.hu> (http://raszi.hu/)
+  - tmp (0.2.5) - KARASZI István <github@spam.raszi.hu>
   - tmp-promise (3.0.3) - Benjamin Gruenbaum and Collaborators.
   - to-regex-range (5.0.1) - Jon Schlinkert (https://github.com/jonschlinkert)
   - toidentifier (1.0.1) - Douglas Christopher Wilson <doug@somethingdoug.com>
+  - tr46 (5.1.1) - Sebastian Mayr <npm@smayr.name>
   - tree-kill (1.2.2) - Peteris Krumins
   - trim-lines (3.0.1) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
   - trough (2.2.0) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
@@ -737,6 +801,7 @@ The following packages are licensed under the MIT license:
   - ua-parser-js (1.0.40) - Faisal Salman <f@faisalman.com> (http://faisalman.com)
   - ufo (1.6.1)
   - uint8array-extras (1.4.0) - Sindre Sorhus
+  - uint8array-extras (1.4.1) - Sindre Sorhus
   - undici-types (6.21.0)
   - unified (11.0.5) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
   - unist-util-is (6.0.0) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
@@ -757,14 +822,19 @@ The following packages are licensed under the MIT license:
   - verror (1.10.1)
   - vfile (6.0.3) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
   - vfile-message (4.0.2) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
+  - vfile-message (4.0.3) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
   - vscode-jsonrpc (8.2.0) - Microsoft Corporation
   - vscode-languageserver (9.0.1) - Microsoft Corporation
   - vscode-languageserver-protocol (3.17.5) - Microsoft Corporation
   - vscode-languageserver-textdocument (1.0.12) - Microsoft Corporation
   - vscode-languageserver-types (3.17.5) - Microsoft Corporation
   - vscode-uri (3.0.8) - Microsoft
+  - w3c-xmlserializer (5.0.0)
   - wcwidth (1.0.1) - Tim Oxley
   - web-streams-polyfill (3.3.3) - Mattias Buelens <mattias@buelens.com>
+  - whatwg-encoding (3.1.1) - Domenic Denicola <d@domenic.me> (https://domenic.me/)
+  - whatwg-mimetype (4.0.0) - Domenic Denicola <d@domenic.me> (https://domenic.me/)
+  - whatwg-url (14.2.0) - Sebastian Mayr <github@smayr.name>
   - when-exit (2.1.4)
   - why-is-node-running (2.3.0) - Mathias Buus (@mafintosh)
   - word-wrap (1.2.5) - Jon Schlinkert (https://github.com/jonschlinkert)
@@ -774,6 +844,7 @@ The following packages are licensed under the MIT license:
   - ws (8.18.3) - Einar Otto Stangvik <einaros@gmail.com> (http://2x.io)
   - xdg-basedir (5.1.0) - Sindre Sorhus
   - xmlbuilder (15.1.1) - Ozgur Ozcitak <oozcitak@gmail.com>
+  - xmlchars (2.2.0) - Louis-Dominique Dubeau <ldd@lddubeau.com>
   - xtend (4.0.2) - Raynos <raynos2@gmail.com>
   - yargs (17.7.2)
   - yauzl (2.10.0) - Josh Wolfe <thejoshwolfe@gmail.com>
@@ -782,15 +853,16 @@ The following packages are licensed under the MIT license:
   - zod (3.25.76) - Colin McDonnell <zod@colinhacks.com>
   - zwitch (2.0.4) - Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)
 
-MIT License
+(The MIT License)
 
-Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+Copyright (c) 2012 TJ Holowaychuk <tj@vision-media.ca>
+Copyright (c) 2022 Jean-Philippe Zolesio <holblin@gmail.com>
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ================================================================================
 ## ISC LICENSE
@@ -845,6 +917,7 @@ The following packages are licensed under the ISC license:
   - delaunator (5.0.1) - Vladimir Agafonkin
   - dezalgo (1.0.4) - Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me/)
   - electron-to-chromium (1.5.187) - Kilian Valkhof
+  - electron-to-chromium (1.5.201) - Kilian Valkhof
   - fastq (1.19.1) - Matteo Collina <hello@matteocollina.com>
   - flatted (3.3.3) - Andrea Giammarchi
   - foreground-child (3.3.1) - Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me/)
@@ -895,6 +968,7 @@ The following packages are licensed under the ISC license:
   - picocolors (1.1.1) - Alexey Raspopov
   - promise-inflight (1.0.1) - Rebecca Turner <me@re-becca.org> (http://re-becca.org/)
   - sax (1.4.1) - Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me/)
+  - saxes (6.0.0) - Louis-Dominique Dubeau <ldd@lddubeau.com>
   - semver (5.7.2) - GitHub Inc.
   - semver (6.3.1) - GitHub Inc.
   - semver (7.7.2) - GitHub Inc.
@@ -916,6 +990,7 @@ The following packages are licensed under the ISC license:
   - yallist (4.0.0) - Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me/)
   - yaml (1.10.2) - Eemeli Aro <eemeli@gmail.com>
   - yaml (2.8.0) - Eemeli Aro <eemeli@gmail.com>
+  - yaml (2.8.1) - Eemeli Aro <eemeli@gmail.com>
   - yargs-parser (21.1.1) - Ben Coe <ben@npmjs.com>
   - zod-to-json-schema (3.24.6) - Stefan Terdell
 
@@ -959,12 +1034,14 @@ The following packages are licensed under the Apache-2.0 license:
   - @opentelemetry/semantic-conventions (1.28.0) - OpenTelemetry Authors
   - @opentelemetry/semantic-conventions (1.36.0) - OpenTelemetry Authors
   - @puppeteer/browsers (2.10.6) - The Chromium Authors
+  - aria-query (5.3.0) - Jesse Beach <splendidnoise@gmail.com>
+  - aria-query (5.3.2) - Jesse Beach <splendidnoise@gmail.com>
   - b4a (1.6.7) - Holepunch
   - bare-events (2.6.1) - Holepunch
   - bare-fs (4.2.0) - Holepunch
   - bare-os (3.6.1) - Holepunch
   - bare-path (3.0.0) - Holepunch
-  - bare-stream (2.6.5) - Holepunch
+  - bare-stream (2.7.0) - Holepunch
   - chevrotain (11.0.3) - Shahar Soel
   - chrome-launcher (1.2.0) - The Chromium Authors
   - chromium-bidi (7.3.1) - The Chromium Authors
@@ -980,18 +1057,21 @@ The following packages are licensed under the Apache-2.0 license:
   - filelist (1.0.4) - Matthew Eernisse <mde@fleegix.org> (http://fleegix.org)
   - import-in-the-middle (1.14.2) - Bryan English <bryan.english@datadoghq.com>
   - jake (10.9.2) - Matthew Eernisse <mde@fleegix.org> (http://fleegix.org)
+  - jake (10.9.4) - Matthew Eernisse <mde@fleegix.org> (http://fleegix.org)
   - legacy-javascript (0.0.1) - Google LLC
   - lighthouse (12.8.1) - Google LLC
   - lighthouse-logger (2.0.2)
   - lighthouse-stack-packs (1.12.2) - The Chromium Authors
   - marky (1.3.0) - Nolan Lawson <nolan@nolanlawson.com>
   - openai (5.10.1) - OpenAI <support@openai.com>
-  - puppeteer-core (24.16.1) - The Chromium Authors
+  - openai (5.12.2) - OpenAI <support@openai.com>
+  - puppeteer-core (24.16.2) - The Chromium Authors
   - rxjs (7.8.2) - Ben Lesh <ben@benlesh.com>
   - sumchecker (3.0.1) - Mark Lee
   - text-decoder (1.2.3) - Holepunch
   - ts-interface-checker (0.1.13) - Dmitry S, Grist Labs
   - tunnel-agent (0.6.0) - Mikeal Rogers <mikeal.rogers@gmail.com> (http://www.futurealoof.com)
+  - xml-name-validator (5.0.0) - Domenic Denicola <d@domenic.me> (https://domenic.me/)
 
 Apache License
                            Version 2.0, January 2004
@@ -2253,6 +2333,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --------------------------------------------------------------------------------
 
+Package: tough-cookie
+Version: 5.1.2
+Author: Jeremy Stashewsky
+Homepage: https://github.com/salesforce/tough-cookie
+
+Copyright (c) 2015, Salesforce.com, Inc.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+3. Neither the name of Salesforce.com nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+--------------------------------------------------------------------------------
+
 ================================================================================
 ## BSD-2-Clause LICENSE
 ================================================================================
@@ -2263,6 +2363,8 @@ The following packages are licensed under the BSD-2-Clause license:
   - configstore (7.0.0) - Sindre Sorhus
   - dotenv (16.6.1)
   - dotenv-expand (11.0.7) - motdotla
+  - entities (2.2.0) - Felix Boehm <me@feedic.com>
+  - entities (6.0.1) - Felix Boehm <me@feedic.com>
   - escodegen (2.1.0)
   - espree (10.4.0) - Nicholas C. Zakas <nicholas+npm@nczconsulting.com>
   - esprima (4.0.1) - Ariya Hidayat
@@ -2274,6 +2376,7 @@ The following packages are licensed under the BSD-2-Clause license:
   - json-schema-typed (8.0.1) - Jeremy Rylan
   - shimmer (1.2.1) - Forrest L Norvell <ogd@aoaioxxysz.net>
   - uri-js (4.4.1) - Gary Court <gary.court@gmail.com>
+  - webidl-conversions (7.0.0) - Domenic Denicola <d@domenic.me> (https://domenic.me/)
 
 Copyright (c) Electron contributors
 Copyright (c) 2015-2016 Zhuo Lu, Jason Hinkle, et al.
@@ -2745,6 +2848,838 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
+
+--------------------------------------------------------------------------------
+
+================================================================================
+## CC-BY-4.0 LICENSE
+================================================================================
+
+Package: caniuse-lite
+Version: 1.0.30001727
+Author: Ben Briggs
+Repository: browserslist/caniuse-lite
+
+Attribution 4.0 International
+
+=======================================================================
+
+Creative Commons Corporation ("Creative Commons") is not a law firm and
+does not provide legal services or legal advice. Distribution of
+Creative Commons public licenses does not create a lawyer-client or
+other relationship. Creative Commons makes its licenses and related
+information available on an "as-is" basis. Creative Commons gives no
+warranties regarding its licenses, any material licensed under their
+terms and conditions, or any related information. Creative Commons
+disclaims all liability for damages resulting from their use to the
+fullest extent possible.
+
+Using Creative Commons Public Licenses
+
+Creative Commons public licenses provide a standard set of terms and
+conditions that creators and other rights holders may use to share
+original works of authorship and other material subject to copyright
+and certain other rights specified in the public license below. The
+following considerations are for informational purposes only, are not
+exhaustive, and do not form part of our licenses.
+
+     Considerations for licensors: Our public licenses are
+     intended for use by those authorized to give the public
+     permission to use material in ways otherwise restricted by
+     copyright and certain other rights. Our licenses are
+     irrevocable. Licensors should read and understand the terms
+     and conditions of the license they choose before applying it.
+     Licensors should also secure all rights necessary before
+     applying our licenses so that the public can reuse the
+     material as expected. Licensors should clearly mark any
+     material not subject to the license. This includes other CC-
+     licensed material, or material used under an exception or
+     limitation to copyright. More considerations for licensors:
+	wiki.creativecommons.org/Considerations_for_licensors
+
+     Considerations for the public: By using one of our public
+     licenses, a licensor grants the public permission to use the
+     licensed material under specified terms and conditions. If
+     the licensor's permission is not necessary for any reason--for
+     example, because of any applicable exception or limitation to
+     copyright--then that use is not regulated by the license. Our
+     licenses grant only permissions under copyright and certain
+     other rights that a licensor has authority to grant. Use of
+     the licensed material may still be restricted for other
+     reasons, including because others have copyright or other
+     rights in the material. A licensor may make special requests,
+     such as asking that all changes be marked or described.
+     Although not required by our licenses, you are encouraged to
+     respect those requests where reasonable. More_considerations
+     for the public: 
+	wiki.creativecommons.org/Considerations_for_licensees
+
+=======================================================================
+
+Creative Commons Attribution 4.0 International Public License
+
+By exercising the Licensed Rights (defined below), You accept and agree
+to be bound by the terms and conditions of this Creative Commons
+Attribution 4.0 International Public License ("Public License"). To the
+extent this Public License may be interpreted as a contract, You are
+granted the Licensed Rights in consideration of Your acceptance of
+these terms and conditions, and the Licensor grants You such rights in
+consideration of benefits the Licensor receives from making the
+Licensed Material available under these terms and conditions.
+
+
+Section 1 -- Definitions.
+
+  a. Adapted Material means material subject to Copyright and Similar
+     Rights that is derived from or based upon the Licensed Material
+     and in which the Licensed Material is translated, altered,
+     arranged, transformed, or otherwise modified in a manner requiring
+     permission under the Copyright and Similar Rights held by the
+     Licensor. For purposes of this Public License, where the Licensed
+     Material is a musical work, performance, or sound recording,
+     Adapted Material is always produced where the Licensed Material is
+     synched in timed relation with a moving image.
+
+  b. Adapter's License means the license You apply to Your Copyright
+     and Similar Rights in Your contributions to Adapted Material in
+     accordance with the terms and conditions of this Public License.
+
+  c. Copyright and Similar Rights means copyright and/or similar rights
+     closely related to copyright including, without limitation,
+     performance, broadcast, sound recording, and Sui Generis Database
+     Rights, without regard to how the rights are labeled or
+     categorized. For purposes of this Public License, the rights
+     specified in Section 2(b)(1)-(2) are not Copyright and Similar
+     Rights.
+
+  d. Effective Technological Measures means those measures that, in the
+     absence of proper authority, may not be circumvented under laws
+     fulfilling obligations under Article 11 of the WIPO Copyright
+     Treaty adopted on December 20, 1996, and/or similar international
+     agreements.
+
+  e. Exceptions and Limitations means fair use, fair dealing, and/or
+     any other exception or limitation to Copyright and Similar Rights
+     that applies to Your use of the Licensed Material.
+
+  f. Licensed Material means the artistic or literary work, database,
+     or other material to which the Licensor applied this Public
+     License.
+
+  g. Licensed Rights means the rights granted to You subject to the
+     terms and conditions of this Public License, which are limited to
+     all Copyright and Similar Rights that apply to Your use of the
+     Licensed Material and that the Licensor has authority to license.
+
+  h. Licensor means the individual(s) or entity(ies) granting rights
+     under this Public License.
+
+  i. Share means to provide material to the public by any means or
+     process that requires permission under the Licensed Rights, such
+     as reproduction, public display, public performance, distribution,
+     dissemination, communication, or importation, and to make material
+     available to the public including in ways that members of the
+     public may access the material from a place and at a time
+     individually chosen by them.
+
+  j. Sui Generis Database Rights means rights other than copyright
+     resulting from Directive 96/9/EC of the European Parliament and of
+     the Council of 11 March 1996 on the legal protection of databases,
+     as amended and/or succeeded, as well as other essentially
+     equivalent rights anywhere in the world.
+
+  k. You means the individual or entity exercising the Licensed Rights
+     under this Public License. Your has a corresponding meaning.
+
+
+Section 2 -- Scope.
+
+  a. License grant.
+
+       1. Subject to the terms and conditions of this Public License,
+          the Licensor hereby grants You a worldwide, royalty-free,
+          non-sublicensable, non-exclusive, irrevocable license to
+          exercise the Licensed Rights in the Licensed Material to:
+
+            a. reproduce and Share the Licensed Material, in whole or
+               in part; and
+
+            b. produce, reproduce, and Share Adapted Material.
+
+       2. Exceptions and Limitations. For the avoidance of doubt, where
+          Exceptions and Limitations apply to Your use, this Public
+          License does not apply, and You do not need to comply with
+          its terms and conditions.
+
+       3. Term. The term of this Public License is specified in Section
+          6(a).
+
+       4. Media and formats; technical modifications allowed. The
+          Licensor authorizes You to exercise the Licensed Rights in
+          all media and formats whether now known or hereafter created,
+          and to make technical modifications necessary to do so. The
+          Licensor waives and/or agrees not to assert any right or
+          authority to forbid You from making technical modifications
+          necessary to exercise the Licensed Rights, including
+          technical modifications necessary to circumvent Effective
+          Technological Measures. For purposes of this Public License,
+          simply making modifications authorized by this Section 2(a)
+          (4) never produces Adapted Material.
+
+       5. Downstream recipients.
+
+            a. Offer from the Licensor -- Licensed Material. Every
+               recipient of the Licensed Material automatically
+               receives an offer from the Licensor to exercise the
+               Licensed Rights under the terms and conditions of this
+               Public License.
+
+            b. No downstream restrictions. You may not offer or impose
+               any additional or different terms or conditions on, or
+               apply any Effective Technological Measures to, the
+               Licensed Material if doing so restricts exercise of the
+               Licensed Rights by any recipient of the Licensed
+               Material.
+
+       6. No endorsement. Nothing in this Public License constitutes or
+          may be construed as permission to assert or imply that You
+          are, or that Your use of the Licensed Material is, connected
+          with, or sponsored, endorsed, or granted official status by,
+          the Licensor or others designated to receive attribution as
+          provided in Section 3(a)(1)(A)(i).
+
+  b. Other rights.
+
+       1. Moral rights, such as the right of integrity, are not
+          licensed under this Public License, nor are publicity,
+          privacy, and/or other similar personality rights; however, to
+          the extent possible, the Licensor waives and/or agrees not to
+          assert any such rights held by the Licensor to the limited
+          extent necessary to allow You to exercise the Licensed
+          Rights, but not otherwise.
+
+       2. Patent and trademark rights are not licensed under this
+          Public License.
+
+       3. To the extent possible, the Licensor waives any right to
+          collect royalties from You for the exercise of the Licensed
+          Rights, whether directly or through a collecting society
+          under any voluntary or waivable statutory or compulsory
+          licensing scheme. In all other cases the Licensor expressly
+          reserves any right to collect such royalties.
+
+
+Section 3 -- License Conditions.
+
+Your exercise of the Licensed Rights is expressly made subject to the
+following conditions.
+
+  a. Attribution.
+
+       1. If You Share the Licensed Material (including in modified
+          form), You must:
+
+            a. retain the following if it is supplied by the Licensor
+               with the Licensed Material:
+
+                 i. identification of the creator(s) of the Licensed
+                    Material and any others designated to receive
+                    attribution, in any reasonable manner requested by
+                    the Licensor (including by pseudonym if
+                    designated);
+
+                ii. a copyright notice;
+
+               iii. a notice that refers to this Public License;
+
+                iv. a notice that refers to the disclaimer of
+                    warranties;
+
+                 v. a URI or hyperlink to the Licensed Material to the
+                    extent reasonably practicable;
+
+            b. indicate if You modified the Licensed Material and
+               retain an indication of any previous modifications; and
+
+            c. indicate the Licensed Material is licensed under this
+               Public License, and include the text of, or the URI or
+               hyperlink to, this Public License.
+
+       2. You may satisfy the conditions in Section 3(a)(1) in any
+          reasonable manner based on the medium, means, and context in
+          which You Share the Licensed Material. For example, it may be
+          reasonable to satisfy the conditions by providing a URI or
+          hyperlink to a resource that includes the required
+          information.
+
+       3. If requested by the Licensor, You must remove any of the
+          information required by Section 3(a)(1)(A) to the extent
+          reasonably practicable.
+
+       4. If You Share Adapted Material You produce, the Adapter's
+          License You apply must not prevent recipients of the Adapted
+          Material from complying with this Public License.
+
+
+Section 4 -- Sui Generis Database Rights.
+
+Where the Licensed Rights include Sui Generis Database Rights that
+apply to Your use of the Licensed Material:
+
+  a. for the avoidance of doubt, Section 2(a)(1) grants You the right
+     to extract, reuse, reproduce, and Share all or a substantial
+     portion of the contents of the database;
+
+  b. if You include all or a substantial portion of the database
+     contents in a database in which You have Sui Generis Database
+     Rights, then the database in which You have Sui Generis Database
+     Rights (but not its individual contents) is Adapted Material; and
+
+  c. You must comply with the conditions in Section 3(a) if You Share
+     all or a substantial portion of the contents of the database.
+
+For the avoidance of doubt, this Section 4 supplements and does not
+replace Your obligations under this Public License where the Licensed
+Rights include other Copyright and Similar Rights.
+
+
+Section 5 -- Disclaimer of Warranties and Limitation of Liability.
+
+  a. UNLESS OTHERWISE SEPARATELY UNDERTAKEN BY THE LICENSOR, TO THE
+     EXTENT POSSIBLE, THE LICENSOR OFFERS THE LICENSED MATERIAL AS-IS
+     AND AS-AVAILABLE, AND MAKES NO REPRESENTATIONS OR WARRANTIES OF
+     ANY KIND CONCERNING THE LICENSED MATERIAL, WHETHER EXPRESS,
+     IMPLIED, STATUTORY, OR OTHER. THIS INCLUDES, WITHOUT LIMITATION,
+     WARRANTIES OF TITLE, MERCHANTABILITY, FITNESS FOR A PARTICULAR
+     PURPOSE, NON-INFRINGEMENT, ABSENCE OF LATENT OR OTHER DEFECTS,
+     ACCURACY, OR THE PRESENCE OR ABSENCE OF ERRORS, WHETHER OR NOT
+     KNOWN OR DISCOVERABLE. WHERE DISCLAIMERS OF WARRANTIES ARE NOT
+     ALLOWED IN FULL OR IN PART, THIS DISCLAIMER MAY NOT APPLY TO YOU.
+
+  b. TO THE EXTENT POSSIBLE, IN NO EVENT WILL THE LICENSOR BE LIABLE
+     TO YOU ON ANY LEGAL THEORY (INCLUDING, WITHOUT LIMITATION,
+     NEGLIGENCE) OR OTHERWISE FOR ANY DIRECT, SPECIAL, INDIRECT,
+     INCIDENTAL, CONSEQUENTIAL, PUNITIVE, EXEMPLARY, OR OTHER LOSSES,
+     COSTS, EXPENSES, OR DAMAGES ARISING OUT OF THIS PUBLIC LICENSE OR
+     USE OF THE LICENSED MATERIAL, EVEN IF THE LICENSOR HAS BEEN
+     ADVISED OF THE POSSIBILITY OF SUCH LOSSES, COSTS, EXPENSES, OR
+     DAMAGES. WHERE A LIMITATION OF LIABILITY IS NOT ALLOWED IN FULL OR
+     IN PART, THIS LIMITATION MAY NOT APPLY TO YOU.
+
+  c. The disclaimer of warranties and limitation of liability provided
+     above shall be interpreted in a manner that, to the extent
+     possible, most closely approximates an absolute disclaimer and
+     waiver of all liability.
+
+
+Section 6 -- Term and Termination.
+
+  a. This Public License applies for the term of the Copyright and
+     Similar Rights licensed here. However, if You fail to comply with
+     this Public License, then Your rights under this Public License
+     terminate automatically.
+
+  b. Where Your right to use the Licensed Material has terminated under
+     Section 6(a), it reinstates:
+
+       1. automatically as of the date the violation is cured, provided
+          it is cured within 30 days of Your discovery of the
+          violation; or
+
+       2. upon express reinstatement by the Licensor.
+
+     For the avoidance of doubt, this Section 6(b) does not affect any
+     right the Licensor may have to seek remedies for Your violations
+     of this Public License.
+
+  c. For the avoidance of doubt, the Licensor may also offer the
+     Licensed Material under separate terms or conditions or stop
+     distributing the Licensed Material at any time; however, doing so
+     will not terminate this Public License.
+
+  d. Sections 1, 5, 6, 7, and 8 survive termination of this Public
+     License.
+
+
+Section 7 -- Other Terms and Conditions.
+
+  a. The Licensor shall not be bound by any additional or different
+     terms or conditions communicated by You unless expressly agreed.
+
+  b. Any arrangements, understandings, or agreements regarding the
+     Licensed Material not stated herein are separate from and
+     independent of the terms and conditions of this Public License.
+
+
+Section 8 -- Interpretation.
+
+  a. For the avoidance of doubt, this Public License does not, and
+     shall not be interpreted to, reduce, limit, restrict, or impose
+     conditions on any use of the Licensed Material that could lawfully
+     be made without permission under this Public License.
+
+  b. To the extent possible, if any provision of this Public License is
+     deemed unenforceable, it shall be automatically reformed to the
+     minimum extent necessary to make it enforceable. If the provision
+     cannot be reformed, it shall be severed from this Public License
+     without affecting the enforceability of the remaining terms and
+     conditions.
+
+  c. No term or condition of this Public License will be waived and no
+     failure to comply consented to unless expressly agreed to by the
+     Licensor.
+
+  d. Nothing in this Public License constitutes or may be interpreted
+     as a limitation upon, or waiver of, any privileges and immunities
+     that apply to the Licensor or You, including from the legal
+     processes of any jurisdiction or authority.
+
+
+=======================================================================
+
+Creative Commons is not a party to its public
+licenses. Notwithstanding, Creative Commons may elect to apply one of
+its public licenses to material it publishes and in those instances
+will be considered the “Licensor.” The text of the Creative Commons
+public licenses is dedicated to the public domain under the CC0 Public
+Domain Dedication. Except for the limited purpose of indicating that
+material is shared under a Creative Commons public license or as
+otherwise permitted by the Creative Commons policies published at
+creativecommons.org/policies, Creative Commons does not authorize the
+use of the trademark "Creative Commons" or any other trademark or logo
+of Creative Commons without its prior written consent including,
+without limitation, in connection with any unauthorized modifications
+to any of its public licenses or any other arrangements,
+understandings, or agreements concerning use of licensed material. For
+the avoidance of doubt, this paragraph does not form part of the
+public licenses.
+
+Creative Commons may be contacted at creativecommons.org.
+
+--------------------------------------------------------------------------------
+
+Package: caniuse-lite
+Version: 1.0.30001735
+Author: Ben Briggs
+Repository: browserslist/caniuse-lite
+
+Attribution 4.0 International
+
+=======================================================================
+
+Creative Commons Corporation ("Creative Commons") is not a law firm and
+does not provide legal services or legal advice. Distribution of
+Creative Commons public licenses does not create a lawyer-client or
+other relationship. Creative Commons makes its licenses and related
+information available on an "as-is" basis. Creative Commons gives no
+warranties regarding its licenses, any material licensed under their
+terms and conditions, or any related information. Creative Commons
+disclaims all liability for damages resulting from their use to the
+fullest extent possible.
+
+Using Creative Commons Public Licenses
+
+Creative Commons public licenses provide a standard set of terms and
+conditions that creators and other rights holders may use to share
+original works of authorship and other material subject to copyright
+and certain other rights specified in the public license below. The
+following considerations are for informational purposes only, are not
+exhaustive, and do not form part of our licenses.
+
+     Considerations for licensors: Our public licenses are
+     intended for use by those authorized to give the public
+     permission to use material in ways otherwise restricted by
+     copyright and certain other rights. Our licenses are
+     irrevocable. Licensors should read and understand the terms
+     and conditions of the license they choose before applying it.
+     Licensors should also secure all rights necessary before
+     applying our licenses so that the public can reuse the
+     material as expected. Licensors should clearly mark any
+     material not subject to the license. This includes other CC-
+     licensed material, or material used under an exception or
+     limitation to copyright. More considerations for licensors:
+	wiki.creativecommons.org/Considerations_for_licensors
+
+     Considerations for the public: By using one of our public
+     licenses, a licensor grants the public permission to use the
+     licensed material under specified terms and conditions. If
+     the licensor's permission is not necessary for any reason--for
+     example, because of any applicable exception or limitation to
+     copyright--then that use is not regulated by the license. Our
+     licenses grant only permissions under copyright and certain
+     other rights that a licensor has authority to grant. Use of
+     the licensed material may still be restricted for other
+     reasons, including because others have copyright or other
+     rights in the material. A licensor may make special requests,
+     such as asking that all changes be marked or described.
+     Although not required by our licenses, you are encouraged to
+     respect those requests where reasonable. More_considerations
+     for the public: 
+	wiki.creativecommons.org/Considerations_for_licensees
+
+=======================================================================
+
+Creative Commons Attribution 4.0 International Public License
+
+By exercising the Licensed Rights (defined below), You accept and agree
+to be bound by the terms and conditions of this Creative Commons
+Attribution 4.0 International Public License ("Public License"). To the
+extent this Public License may be interpreted as a contract, You are
+granted the Licensed Rights in consideration of Your acceptance of
+these terms and conditions, and the Licensor grants You such rights in
+consideration of benefits the Licensor receives from making the
+Licensed Material available under these terms and conditions.
+
+
+Section 1 -- Definitions.
+
+  a. Adapted Material means material subject to Copyright and Similar
+     Rights that is derived from or based upon the Licensed Material
+     and in which the Licensed Material is translated, altered,
+     arranged, transformed, or otherwise modified in a manner requiring
+     permission under the Copyright and Similar Rights held by the
+     Licensor. For purposes of this Public License, where the Licensed
+     Material is a musical work, performance, or sound recording,
+     Adapted Material is always produced where the Licensed Material is
+     synched in timed relation with a moving image.
+
+  b. Adapter's License means the license You apply to Your Copyright
+     and Similar Rights in Your contributions to Adapted Material in
+     accordance with the terms and conditions of this Public License.
+
+  c. Copyright and Similar Rights means copyright and/or similar rights
+     closely related to copyright including, without limitation,
+     performance, broadcast, sound recording, and Sui Generis Database
+     Rights, without regard to how the rights are labeled or
+     categorized. For purposes of this Public License, the rights
+     specified in Section 2(b)(1)-(2) are not Copyright and Similar
+     Rights.
+
+  d. Effective Technological Measures means those measures that, in the
+     absence of proper authority, may not be circumvented under laws
+     fulfilling obligations under Article 11 of the WIPO Copyright
+     Treaty adopted on December 20, 1996, and/or similar international
+     agreements.
+
+  e. Exceptions and Limitations means fair use, fair dealing, and/or
+     any other exception or limitation to Copyright and Similar Rights
+     that applies to Your use of the Licensed Material.
+
+  f. Licensed Material means the artistic or literary work, database,
+     or other material to which the Licensor applied this Public
+     License.
+
+  g. Licensed Rights means the rights granted to You subject to the
+     terms and conditions of this Public License, which are limited to
+     all Copyright and Similar Rights that apply to Your use of the
+     Licensed Material and that the Licensor has authority to license.
+
+  h. Licensor means the individual(s) or entity(ies) granting rights
+     under this Public License.
+
+  i. Share means to provide material to the public by any means or
+     process that requires permission under the Licensed Rights, such
+     as reproduction, public display, public performance, distribution,
+     dissemination, communication, or importation, and to make material
+     available to the public including in ways that members of the
+     public may access the material from a place and at a time
+     individually chosen by them.
+
+  j. Sui Generis Database Rights means rights other than copyright
+     resulting from Directive 96/9/EC of the European Parliament and of
+     the Council of 11 March 1996 on the legal protection of databases,
+     as amended and/or succeeded, as well as other essentially
+     equivalent rights anywhere in the world.
+
+  k. You means the individual or entity exercising the Licensed Rights
+     under this Public License. Your has a corresponding meaning.
+
+
+Section 2 -- Scope.
+
+  a. License grant.
+
+       1. Subject to the terms and conditions of this Public License,
+          the Licensor hereby grants You a worldwide, royalty-free,
+          non-sublicensable, non-exclusive, irrevocable license to
+          exercise the Licensed Rights in the Licensed Material to:
+
+            a. reproduce and Share the Licensed Material, in whole or
+               in part; and
+
+            b. produce, reproduce, and Share Adapted Material.
+
+       2. Exceptions and Limitations. For the avoidance of doubt, where
+          Exceptions and Limitations apply to Your use, this Public
+          License does not apply, and You do not need to comply with
+          its terms and conditions.
+
+       3. Term. The term of this Public License is specified in Section
+          6(a).
+
+       4. Media and formats; technical modifications allowed. The
+          Licensor authorizes You to exercise the Licensed Rights in
+          all media and formats whether now known or hereafter created,
+          and to make technical modifications necessary to do so. The
+          Licensor waives and/or agrees not to assert any right or
+          authority to forbid You from making technical modifications
+          necessary to exercise the Licensed Rights, including
+          technical modifications necessary to circumvent Effective
+          Technological Measures. For purposes of this Public License,
+          simply making modifications authorized by this Section 2(a)
+          (4) never produces Adapted Material.
+
+       5. Downstream recipients.
+
+            a. Offer from the Licensor -- Licensed Material. Every
+               recipient of the Licensed Material automatically
+               receives an offer from the Licensor to exercise the
+               Licensed Rights under the terms and conditions of this
+               Public License.
+
+            b. No downstream restrictions. You may not offer or impose
+               any additional or different terms or conditions on, or
+               apply any Effective Technological Measures to, the
+               Licensed Material if doing so restricts exercise of the
+               Licensed Rights by any recipient of the Licensed
+               Material.
+
+       6. No endorsement. Nothing in this Public License constitutes or
+          may be construed as permission to assert or imply that You
+          are, or that Your use of the Licensed Material is, connected
+          with, or sponsored, endorsed, or granted official status by,
+          the Licensor or others designated to receive attribution as
+          provided in Section 3(a)(1)(A)(i).
+
+  b. Other rights.
+
+       1. Moral rights, such as the right of integrity, are not
+          licensed under this Public License, nor are publicity,
+          privacy, and/or other similar personality rights; however, to
+          the extent possible, the Licensor waives and/or agrees not to
+          assert any such rights held by the Licensor to the limited
+          extent necessary to allow You to exercise the Licensed
+          Rights, but not otherwise.
+
+       2. Patent and trademark rights are not licensed under this
+          Public License.
+
+       3. To the extent possible, the Licensor waives any right to
+          collect royalties from You for the exercise of the Licensed
+          Rights, whether directly or through a collecting society
+          under any voluntary or waivable statutory or compulsory
+          licensing scheme. In all other cases the Licensor expressly
+          reserves any right to collect such royalties.
+
+
+Section 3 -- License Conditions.
+
+Your exercise of the Licensed Rights is expressly made subject to the
+following conditions.
+
+  a. Attribution.
+
+       1. If You Share the Licensed Material (including in modified
+          form), You must:
+
+            a. retain the following if it is supplied by the Licensor
+               with the Licensed Material:
+
+                 i. identification of the creator(s) of the Licensed
+                    Material and any others designated to receive
+                    attribution, in any reasonable manner requested by
+                    the Licensor (including by pseudonym if
+                    designated);
+
+                ii. a copyright notice;
+
+               iii. a notice that refers to this Public License;
+
+                iv. a notice that refers to the disclaimer of
+                    warranties;
+
+                 v. a URI or hyperlink to the Licensed Material to the
+                    extent reasonably practicable;
+
+            b. indicate if You modified the Licensed Material and
+               retain an indication of any previous modifications; and
+
+            c. indicate the Licensed Material is licensed under this
+               Public License, and include the text of, or the URI or
+               hyperlink to, this Public License.
+
+       2. You may satisfy the conditions in Section 3(a)(1) in any
+          reasonable manner based on the medium, means, and context in
+          which You Share the Licensed Material. For example, it may be
+          reasonable to satisfy the conditions by providing a URI or
+          hyperlink to a resource that includes the required
+          information.
+
+       3. If requested by the Licensor, You must remove any of the
+          information required by Section 3(a)(1)(A) to the extent
+          reasonably practicable.
+
+       4. If You Share Adapted Material You produce, the Adapter's
+          License You apply must not prevent recipients of the Adapted
+          Material from complying with this Public License.
+
+
+Section 4 -- Sui Generis Database Rights.
+
+Where the Licensed Rights include Sui Generis Database Rights that
+apply to Your use of the Licensed Material:
+
+  a. for the avoidance of doubt, Section 2(a)(1) grants You the right
+     to extract, reuse, reproduce, and Share all or a substantial
+     portion of the contents of the database;
+
+  b. if You include all or a substantial portion of the database
+     contents in a database in which You have Sui Generis Database
+     Rights, then the database in which You have Sui Generis Database
+     Rights (but not its individual contents) is Adapted Material; and
+
+  c. You must comply with the conditions in Section 3(a) if You Share
+     all or a substantial portion of the contents of the database.
+
+For the avoidance of doubt, this Section 4 supplements and does not
+replace Your obligations under this Public License where the Licensed
+Rights include other Copyright and Similar Rights.
+
+
+Section 5 -- Disclaimer of Warranties and Limitation of Liability.
+
+  a. UNLESS OTHERWISE SEPARATELY UNDERTAKEN BY THE LICENSOR, TO THE
+     EXTENT POSSIBLE, THE LICENSOR OFFERS THE LICENSED MATERIAL AS-IS
+     AND AS-AVAILABLE, AND MAKES NO REPRESENTATIONS OR WARRANTIES OF
+     ANY KIND CONCERNING THE LICENSED MATERIAL, WHETHER EXPRESS,
+     IMPLIED, STATUTORY, OR OTHER. THIS INCLUDES, WITHOUT LIMITATION,
+     WARRANTIES OF TITLE, MERCHANTABILITY, FITNESS FOR A PARTICULAR
+     PURPOSE, NON-INFRINGEMENT, ABSENCE OF LATENT OR OTHER DEFECTS,
+     ACCURACY, OR THE PRESENCE OR ABSENCE OF ERRORS, WHETHER OR NOT
+     KNOWN OR DISCOVERABLE. WHERE DISCLAIMERS OF WARRANTIES ARE NOT
+     ALLOWED IN FULL OR IN PART, THIS DISCLAIMER MAY NOT APPLY TO YOU.
+
+  b. TO THE EXTENT POSSIBLE, IN NO EVENT WILL THE LICENSOR BE LIABLE
+     TO YOU ON ANY LEGAL THEORY (INCLUDING, WITHOUT LIMITATION,
+     NEGLIGENCE) OR OTHERWISE FOR ANY DIRECT, SPECIAL, INDIRECT,
+     INCIDENTAL, CONSEQUENTIAL, PUNITIVE, EXEMPLARY, OR OTHER LOSSES,
+     COSTS, EXPENSES, OR DAMAGES ARISING OUT OF THIS PUBLIC LICENSE OR
+     USE OF THE LICENSED MATERIAL, EVEN IF THE LICENSOR HAS BEEN
+     ADVISED OF THE POSSIBILITY OF SUCH LOSSES, COSTS, EXPENSES, OR
+     DAMAGES. WHERE A LIMITATION OF LIABILITY IS NOT ALLOWED IN FULL OR
+     IN PART, THIS LIMITATION MAY NOT APPLY TO YOU.
+
+  c. The disclaimer of warranties and limitation of liability provided
+     above shall be interpreted in a manner that, to the extent
+     possible, most closely approximates an absolute disclaimer and
+     waiver of all liability.
+
+
+Section 6 -- Term and Termination.
+
+  a. This Public License applies for the term of the Copyright and
+     Similar Rights licensed here. However, if You fail to comply with
+     this Public License, then Your rights under this Public License
+     terminate automatically.
+
+  b. Where Your right to use the Licensed Material has terminated under
+     Section 6(a), it reinstates:
+
+       1. automatically as of the date the violation is cured, provided
+          it is cured within 30 days of Your discovery of the
+          violation; or
+
+       2. upon express reinstatement by the Licensor.
+
+     For the avoidance of doubt, this Section 6(b) does not affect any
+     right the Licensor may have to seek remedies for Your violations
+     of this Public License.
+
+  c. For the avoidance of doubt, the Licensor may also offer the
+     Licensed Material under separate terms or conditions or stop
+     distributing the Licensed Material at any time; however, doing so
+     will not terminate this Public License.
+
+  d. Sections 1, 5, 6, 7, and 8 survive termination of this Public
+     License.
+
+
+Section 7 -- Other Terms and Conditions.
+
+  a. The Licensor shall not be bound by any additional or different
+     terms or conditions communicated by You unless expressly agreed.
+
+  b. Any arrangements, understandings, or agreements regarding the
+     Licensed Material not stated herein are separate from and
+     independent of the terms and conditions of this Public License.
+
+
+Section 8 -- Interpretation.
+
+  a. For the avoidance of doubt, this Public License does not, and
+     shall not be interpreted to, reduce, limit, restrict, or impose
+     conditions on any use of the Licensed Material that could lawfully
+     be made without permission under this Public License.
+
+  b. To the extent possible, if any provision of this Public License is
+     deemed unenforceable, it shall be automatically reformed to the
+     minimum extent necessary to make it enforceable. If the provision
+     cannot be reformed, it shall be severed from this Public License
+     without affecting the enforceability of the remaining terms and
+     conditions.
+
+  c. No term or condition of this Public License will be waived and no
+     failure to comply consented to unless expressly agreed to by the
+     Licensor.
+
+  d. Nothing in this Public License constitutes or may be interpreted
+     as a limitation upon, or waiver of, any privileges and immunities
+     that apply to the Licensor or You, including from the legal
+     processes of any jurisdiction or authority.
+
+
+=======================================================================
+
+Creative Commons is not a party to its public
+licenses. Notwithstanding, Creative Commons may elect to apply one of
+its public licenses to material it publishes and in those instances
+will be considered the “Licensor.” The text of the Creative Commons
+public licenses is dedicated to the public domain under the CC0 Public
+Domain Dedication. Except for the limited purpose of indicating that
+material is shared under a Creative Commons public license or as
+otherwise permitted by the Creative Commons policies published at
+creativecommons.org/policies, Creative Commons does not authorize the
+use of the trademark "Creative Commons" or any other trademark or logo
+of Creative Commons without its prior written consent including,
+without limitation, in connection with any unauthorized modifications
+to any of its public licenses or any other arrangements,
+understandings, or agreements concerning use of licensed material. For
+the avoidance of doubt, this paragraph does not form part of the
+public licenses.
+
+Creative Commons may be contacted at creativecommons.org.
+
+--------------------------------------------------------------------------------
+
+================================================================================
+## SEE LICENSE IN README.md LICENSE
+================================================================================
+
+Package: @anthropic-ai/claude-code
+Version: 1.0.56
+Author: Anthropic <support@anthropic.com>
+Homepage: https://github.com/anthropics/claude-code
+
+© Anthropic PBC. All rights reserved. Use is subject to Anthropic's [Commercial Terms of Service](https://www.anthropic.com/legal/commercial-terms).
+
+--------------------------------------------------------------------------------
+
+Package: @anthropic-ai/claude-code
+Version: 1.0.81
+Author: Anthropic <support@anthropic.com>
+Homepage: https://github.com/anthropics/claude-code
+
+© Anthropic PBC. All rights reserved. Use is subject to Anthropic's [Commercial Terms of Service](https://www.anthropic.com/legal/commercial-terms).
 
 --------------------------------------------------------------------------------
 
@@ -3364,413 +4299,6 @@ Exhibit B - “Incompatible With Secondary Licenses” Notice
 --------------------------------------------------------------------------------
 
 ================================================================================
-## CC-BY-4.0 LICENSE
-================================================================================
-
-Package: caniuse-lite
-Version: 1.0.30001727
-Author: Ben Briggs
-Repository: browserslist/caniuse-lite
-
-Attribution 4.0 International
-
-=======================================================================
-
-Creative Commons Corporation ("Creative Commons") is not a law firm and
-does not provide legal services or legal advice. Distribution of
-Creative Commons public licenses does not create a lawyer-client or
-other relationship. Creative Commons makes its licenses and related
-information available on an "as-is" basis. Creative Commons gives no
-warranties regarding its licenses, any material licensed under their
-terms and conditions, or any related information. Creative Commons
-disclaims all liability for damages resulting from their use to the
-fullest extent possible.
-
-Using Creative Commons Public Licenses
-
-Creative Commons public licenses provide a standard set of terms and
-conditions that creators and other rights holders may use to share
-original works of authorship and other material subject to copyright
-and certain other rights specified in the public license below. The
-following considerations are for informational purposes only, are not
-exhaustive, and do not form part of our licenses.
-
-     Considerations for licensors: Our public licenses are
-     intended for use by those authorized to give the public
-     permission to use material in ways otherwise restricted by
-     copyright and certain other rights. Our licenses are
-     irrevocable. Licensors should read and understand the terms
-     and conditions of the license they choose before applying it.
-     Licensors should also secure all rights necessary before
-     applying our licenses so that the public can reuse the
-     material as expected. Licensors should clearly mark any
-     material not subject to the license. This includes other CC-
-     licensed material, or material used under an exception or
-     limitation to copyright. More considerations for licensors:
-	wiki.creativecommons.org/Considerations_for_licensors
-
-     Considerations for the public: By using one of our public
-     licenses, a licensor grants the public permission to use the
-     licensed material under specified terms and conditions. If
-     the licensor's permission is not necessary for any reason--for
-     example, because of any applicable exception or limitation to
-     copyright--then that use is not regulated by the license. Our
-     licenses grant only permissions under copyright and certain
-     other rights that a licensor has authority to grant. Use of
-     the licensed material may still be restricted for other
-     reasons, including because others have copyright or other
-     rights in the material. A licensor may make special requests,
-     such as asking that all changes be marked or described.
-     Although not required by our licenses, you are encouraged to
-     respect those requests where reasonable. More_considerations
-     for the public: 
-	wiki.creativecommons.org/Considerations_for_licensees
-
-=======================================================================
-
-Creative Commons Attribution 4.0 International Public License
-
-By exercising the Licensed Rights (defined below), You accept and agree
-to be bound by the terms and conditions of this Creative Commons
-Attribution 4.0 International Public License ("Public License"). To the
-extent this Public License may be interpreted as a contract, You are
-granted the Licensed Rights in consideration of Your acceptance of
-these terms and conditions, and the Licensor grants You such rights in
-consideration of benefits the Licensor receives from making the
-Licensed Material available under these terms and conditions.
-
-
-Section 1 -- Definitions.
-
-  a. Adapted Material means material subject to Copyright and Similar
-     Rights that is derived from or based upon the Licensed Material
-     and in which the Licensed Material is translated, altered,
-     arranged, transformed, or otherwise modified in a manner requiring
-     permission under the Copyright and Similar Rights held by the
-     Licensor. For purposes of this Public License, where the Licensed
-     Material is a musical work, performance, or sound recording,
-     Adapted Material is always produced where the Licensed Material is
-     synched in timed relation with a moving image.
-
-  b. Adapter's License means the license You apply to Your Copyright
-     and Similar Rights in Your contributions to Adapted Material in
-     accordance with the terms and conditions of this Public License.
-
-  c. Copyright and Similar Rights means copyright and/or similar rights
-     closely related to copyright including, without limitation,
-     performance, broadcast, sound recording, and Sui Generis Database
-     Rights, without regard to how the rights are labeled or
-     categorized. For purposes of this Public License, the rights
-     specified in Section 2(b)(1)-(2) are not Copyright and Similar
-     Rights.
-
-  d. Effective Technological Measures means those measures that, in the
-     absence of proper authority, may not be circumvented under laws
-     fulfilling obligations under Article 11 of the WIPO Copyright
-     Treaty adopted on December 20, 1996, and/or similar international
-     agreements.
-
-  e. Exceptions and Limitations means fair use, fair dealing, and/or
-     any other exception or limitation to Copyright and Similar Rights
-     that applies to Your use of the Licensed Material.
-
-  f. Licensed Material means the artistic or literary work, database,
-     or other material to which the Licensor applied this Public
-     License.
-
-  g. Licensed Rights means the rights granted to You subject to the
-     terms and conditions of this Public License, which are limited to
-     all Copyright and Similar Rights that apply to Your use of the
-     Licensed Material and that the Licensor has authority to license.
-
-  h. Licensor means the individual(s) or entity(ies) granting rights
-     under this Public License.
-
-  i. Share means to provide material to the public by any means or
-     process that requires permission under the Licensed Rights, such
-     as reproduction, public display, public performance, distribution,
-     dissemination, communication, or importation, and to make material
-     available to the public including in ways that members of the
-     public may access the material from a place and at a time
-     individually chosen by them.
-
-  j. Sui Generis Database Rights means rights other than copyright
-     resulting from Directive 96/9/EC of the European Parliament and of
-     the Council of 11 March 1996 on the legal protection of databases,
-     as amended and/or succeeded, as well as other essentially
-     equivalent rights anywhere in the world.
-
-  k. You means the individual or entity exercising the Licensed Rights
-     under this Public License. Your has a corresponding meaning.
-
-
-Section 2 -- Scope.
-
-  a. License grant.
-
-       1. Subject to the terms and conditions of this Public License,
-          the Licensor hereby grants You a worldwide, royalty-free,
-          non-sublicensable, non-exclusive, irrevocable license to
-          exercise the Licensed Rights in the Licensed Material to:
-
-            a. reproduce and Share the Licensed Material, in whole or
-               in part; and
-
-            b. produce, reproduce, and Share Adapted Material.
-
-       2. Exceptions and Limitations. For the avoidance of doubt, where
-          Exceptions and Limitations apply to Your use, this Public
-          License does not apply, and You do not need to comply with
-          its terms and conditions.
-
-       3. Term. The term of this Public License is specified in Section
-          6(a).
-
-       4. Media and formats; technical modifications allowed. The
-          Licensor authorizes You to exercise the Licensed Rights in
-          all media and formats whether now known or hereafter created,
-          and to make technical modifications necessary to do so. The
-          Licensor waives and/or agrees not to assert any right or
-          authority to forbid You from making technical modifications
-          necessary to exercise the Licensed Rights, including
-          technical modifications necessary to circumvent Effective
-          Technological Measures. For purposes of this Public License,
-          simply making modifications authorized by this Section 2(a)
-          (4) never produces Adapted Material.
-
-       5. Downstream recipients.
-
-            a. Offer from the Licensor -- Licensed Material. Every
-               recipient of the Licensed Material automatically
-               receives an offer from the Licensor to exercise the
-               Licensed Rights under the terms and conditions of this
-               Public License.
-
-            b. No downstream restrictions. You may not offer or impose
-               any additional or different terms or conditions on, or
-               apply any Effective Technological Measures to, the
-               Licensed Material if doing so restricts exercise of the
-               Licensed Rights by any recipient of the Licensed
-               Material.
-
-       6. No endorsement. Nothing in this Public License constitutes or
-          may be construed as permission to assert or imply that You
-          are, or that Your use of the Licensed Material is, connected
-          with, or sponsored, endorsed, or granted official status by,
-          the Licensor or others designated to receive attribution as
-          provided in Section 3(a)(1)(A)(i).
-
-  b. Other rights.
-
-       1. Moral rights, such as the right of integrity, are not
-          licensed under this Public License, nor are publicity,
-          privacy, and/or other similar personality rights; however, to
-          the extent possible, the Licensor waives and/or agrees not to
-          assert any such rights held by the Licensor to the limited
-          extent necessary to allow You to exercise the Licensed
-          Rights, but not otherwise.
-
-       2. Patent and trademark rights are not licensed under this
-          Public License.
-
-       3. To the extent possible, the Licensor waives any right to
-          collect royalties from You for the exercise of the Licensed
-          Rights, whether directly or through a collecting society
-          under any voluntary or waivable statutory or compulsory
-          licensing scheme. In all other cases the Licensor expressly
-          reserves any right to collect such royalties.
-
-
-Section 3 -- License Conditions.
-
-Your exercise of the Licensed Rights is expressly made subject to the
-following conditions.
-
-  a. Attribution.
-
-       1. If You Share the Licensed Material (including in modified
-          form), You must:
-
-            a. retain the following if it is supplied by the Licensor
-               with the Licensed Material:
-
-                 i. identification of the creator(s) of the Licensed
-                    Material and any others designated to receive
-                    attribution, in any reasonable manner requested by
-                    the Licensor (including by pseudonym if
-                    designated);
-
-                ii. a copyright notice;
-
-               iii. a notice that refers to this Public License;
-
-                iv. a notice that refers to the disclaimer of
-                    warranties;
-
-                 v. a URI or hyperlink to the Licensed Material to the
-                    extent reasonably practicable;
-
-            b. indicate if You modified the Licensed Material and
-               retain an indication of any previous modifications; and
-
-            c. indicate the Licensed Material is licensed under this
-               Public License, and include the text of, or the URI or
-               hyperlink to, this Public License.
-
-       2. You may satisfy the conditions in Section 3(a)(1) in any
-          reasonable manner based on the medium, means, and context in
-          which You Share the Licensed Material. For example, it may be
-          reasonable to satisfy the conditions by providing a URI or
-          hyperlink to a resource that includes the required
-          information.
-
-       3. If requested by the Licensor, You must remove any of the
-          information required by Section 3(a)(1)(A) to the extent
-          reasonably practicable.
-
-       4. If You Share Adapted Material You produce, the Adapter's
-          License You apply must not prevent recipients of the Adapted
-          Material from complying with this Public License.
-
-
-Section 4 -- Sui Generis Database Rights.
-
-Where the Licensed Rights include Sui Generis Database Rights that
-apply to Your use of the Licensed Material:
-
-  a. for the avoidance of doubt, Section 2(a)(1) grants You the right
-     to extract, reuse, reproduce, and Share all or a substantial
-     portion of the contents of the database;
-
-  b. if You include all or a substantial portion of the database
-     contents in a database in which You have Sui Generis Database
-     Rights, then the database in which You have Sui Generis Database
-     Rights (but not its individual contents) is Adapted Material; and
-
-  c. You must comply with the conditions in Section 3(a) if You Share
-     all or a substantial portion of the contents of the database.
-
-For the avoidance of doubt, this Section 4 supplements and does not
-replace Your obligations under this Public License where the Licensed
-Rights include other Copyright and Similar Rights.
-
-
-Section 5 -- Disclaimer of Warranties and Limitation of Liability.
-
-  a. UNLESS OTHERWISE SEPARATELY UNDERTAKEN BY THE LICENSOR, TO THE
-     EXTENT POSSIBLE, THE LICENSOR OFFERS THE LICENSED MATERIAL AS-IS
-     AND AS-AVAILABLE, AND MAKES NO REPRESENTATIONS OR WARRANTIES OF
-     ANY KIND CONCERNING THE LICENSED MATERIAL, WHETHER EXPRESS,
-     IMPLIED, STATUTORY, OR OTHER. THIS INCLUDES, WITHOUT LIMITATION,
-     WARRANTIES OF TITLE, MERCHANTABILITY, FITNESS FOR A PARTICULAR
-     PURPOSE, NON-INFRINGEMENT, ABSENCE OF LATENT OR OTHER DEFECTS,
-     ACCURACY, OR THE PRESENCE OR ABSENCE OF ERRORS, WHETHER OR NOT
-     KNOWN OR DISCOVERABLE. WHERE DISCLAIMERS OF WARRANTIES ARE NOT
-     ALLOWED IN FULL OR IN PART, THIS DISCLAIMER MAY NOT APPLY TO YOU.
-
-  b. TO THE EXTENT POSSIBLE, IN NO EVENT WILL THE LICENSOR BE LIABLE
-     TO YOU ON ANY LEGAL THEORY (INCLUDING, WITHOUT LIMITATION,
-     NEGLIGENCE) OR OTHERWISE FOR ANY DIRECT, SPECIAL, INDIRECT,
-     INCIDENTAL, CONSEQUENTIAL, PUNITIVE, EXEMPLARY, OR OTHER LOSSES,
-     COSTS, EXPENSES, OR DAMAGES ARISING OUT OF THIS PUBLIC LICENSE OR
-     USE OF THE LICENSED MATERIAL, EVEN IF THE LICENSOR HAS BEEN
-     ADVISED OF THE POSSIBILITY OF SUCH LOSSES, COSTS, EXPENSES, OR
-     DAMAGES. WHERE A LIMITATION OF LIABILITY IS NOT ALLOWED IN FULL OR
-     IN PART, THIS LIMITATION MAY NOT APPLY TO YOU.
-
-  c. The disclaimer of warranties and limitation of liability provided
-     above shall be interpreted in a manner that, to the extent
-     possible, most closely approximates an absolute disclaimer and
-     waiver of all liability.
-
-
-Section 6 -- Term and Termination.
-
-  a. This Public License applies for the term of the Copyright and
-     Similar Rights licensed here. However, if You fail to comply with
-     this Public License, then Your rights under this Public License
-     terminate automatically.
-
-  b. Where Your right to use the Licensed Material has terminated under
-     Section 6(a), it reinstates:
-
-       1. automatically as of the date the violation is cured, provided
-          it is cured within 30 days of Your discovery of the
-          violation; or
-
-       2. upon express reinstatement by the Licensor.
-
-     For the avoidance of doubt, this Section 6(b) does not affect any
-     right the Licensor may have to seek remedies for Your violations
-     of this Public License.
-
-  c. For the avoidance of doubt, the Licensor may also offer the
-     Licensed Material under separate terms or conditions or stop
-     distributing the Licensed Material at any time; however, doing so
-     will not terminate this Public License.
-
-  d. Sections 1, 5, 6, 7, and 8 survive termination of this Public
-     License.
-
-
-Section 7 -- Other Terms and Conditions.
-
-  a. The Licensor shall not be bound by any additional or different
-     terms or conditions communicated by You unless expressly agreed.
-
-  b. Any arrangements, understandings, or agreements regarding the
-     Licensed Material not stated herein are separate from and
-     independent of the terms and conditions of this Public License.
-
-
-Section 8 -- Interpretation.
-
-  a. For the avoidance of doubt, this Public License does not, and
-     shall not be interpreted to, reduce, limit, restrict, or impose
-     conditions on any use of the Licensed Material that could lawfully
-     be made without permission under this Public License.
-
-  b. To the extent possible, if any provision of this Public License is
-     deemed unenforceable, it shall be automatically reformed to the
-     minimum extent necessary to make it enforceable. If the provision
-     cannot be reformed, it shall be severed from this Public License
-     without affecting the enforceability of the remaining terms and
-     conditions.
-
-  c. No term or condition of this Public License will be waived and no
-     failure to comply consented to unless expressly agreed to by the
-     Licensor.
-
-  d. Nothing in this Public License constitutes or may be interpreted
-     as a limitation upon, or waiver of, any privileges and immunities
-     that apply to the Licensor or You, including from the legal
-     processes of any jurisdiction or authority.
-
-
-=======================================================================
-
-Creative Commons is not a party to its public
-licenses. Notwithstanding, Creative Commons may elect to apply one of
-its public licenses to material it publishes and in those instances
-will be considered the “Licensor.” The text of the Creative Commons
-public licenses is dedicated to the public domain under the CC0 Public
-Domain Dedication. Except for the limited purpose of indicating that
-material is shared under a Creative Commons public license or as
-otherwise permitted by the Creative Commons policies published at
-creativecommons.org/policies, Creative Commons does not authorize the
-use of the trademark "Creative Commons" or any other trademark or logo
-of Creative Commons without its prior written consent including,
-without limitation, in connection with any unauthorized modifications
-to any of its public licenses or any other arrangements,
-understandings, or agreements concerning use of licensed material. For
-the avoidance of doubt, this paragraph does not form part of the
-public licenses.
-
-Creative Commons may be contacted at creativecommons.org.
-
---------------------------------------------------------------------------------
-
-================================================================================
 ## LGPL-3.0-or-later LICENSE
 ================================================================================
 
@@ -3780,6 +4308,35 @@ Author: Lovell Fuller <npm@lovell.info>
 Homepage: https://sharp.pixelplumbing.com
 
 License: LGPL-3.0-or-later
+
+--------------------------------------------------------------------------------
+
+================================================================================
+## MIT-0 LICENSE
+================================================================================
+
+Package: @csstools/color-helpers
+Version: 5.0.2
+Homepage: https://github.com/csstools/postcss-plugins/tree/main/packages/color-helpers#readme
+
+MIT No Attribution (MIT-0)
+
+Copyright © CSSTools Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the “Software”), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 --------------------------------------------------------------------------------
 
@@ -4418,19 +4975,6 @@ FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
 WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
 OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
---------------------------------------------------------------------------------
-
-================================================================================
-## SEE LICENSE IN README.md LICENSE
-================================================================================
-
-Package: @anthropic-ai/claude-code
-Version: 1.0.56
-Author: Anthropic <support@anthropic.com>
-Homepage: https://github.com/anthropics/claude-code
-
-© Anthropic PBC. All rights reserved. Use is subject to Anthropic's [Commercial Terms of Service](https://www.anthropic.com/legal/commercial-terms).
 
 --------------------------------------------------------------------------------
 

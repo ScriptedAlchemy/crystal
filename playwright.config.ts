@@ -2,6 +2,8 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
+  testMatch: '**/*.spec.ts',
+  testIgnore: ['**/__tests__/**', '**/*.test.ts', '**/main/**', '**/frontend/**'],
   // Maximum time one test can run for
   timeout: 60 * 1000,
   expect: {
@@ -9,13 +11,13 @@ export default defineConfig({
     timeout: 10000
   },
   // Run tests in files in parallel
-  fullyParallel: true,
+  fullyParallel: false,
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
   // Opt out of parallel tests on CI
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   // Reporter to use
   reporter: 'list',
   
@@ -37,8 +39,9 @@ export default defineConfig({
   ],
 
   // Run your local dev server before starting the tests
+  // The Electron app loads the frontend from localhost:4521
   webServer: {
-    command: 'pnpm run electron-dev',
+    command: 'pnpm run --filter frontend dev',
     port: 4521,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,

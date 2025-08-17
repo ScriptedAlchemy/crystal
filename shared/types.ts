@@ -23,10 +23,91 @@ export interface CommitResult {
 }
 
 export interface FinalizeSessionOptions {
-  squashCommits?: boolean;
+  sessionId: string;
   commitMessage?: string;
-  runPostProcessing?: boolean;
-  postProcessingCommands?: string[];
+  shouldCommit?: boolean;
+}
+
+// GitHub Integration Types
+export interface GitHubPR {
+  id: string;
+  number: number;
+  title: string;
+  state: 'open' | 'closed' | 'merged';
+  author: string;
+  createdAt: string;
+  updatedAt: string;
+  url: string;
+  labels: string[];
+  assignees: string[];
+  isDraft: boolean;
+  mergeable: boolean;
+  ciStatus?: 'pending' | 'success' | 'failure' | 'error';
+  headBranch: string;
+  baseBranch: string;
+  body?: string;
+  reviewDecision?: string;
+  comments?: number;
+}
+
+export interface GitHubIssue {
+  id: string;
+  number: number;
+  title: string;
+  state: 'open' | 'closed';
+  author: string;
+  createdAt: string;
+  updatedAt: string;
+  url: string;
+  labels: string[];
+  assignees: string[];
+  isPullRequest: false;
+  comments?: number;
+  milestone?: string;
+}
+
+export interface GitHubCIStatus {
+  status: 'pending' | 'success' | 'failure' | 'error';
+  conclusion?: string;
+  logs?: string;
+  totalCount?: number;
+  successCount?: number;
+  failureCount?: number;
+  checks: Array<{
+    name: string;
+    status: 'completed' | 'in_progress' | 'queued';
+    conclusion?: 'success' | 'failure' | 'cancelled' | 'skipped' | 'timed_out' | 'action_required' | 'neutral';
+    url?: string;
+    startedAt?: string;
+    completedAt?: string;
+    output?: {
+      title?: string;
+      summary?: string;
+      text?: string;
+    } | null;
+  }>;
+  checkRuns: Array<{
+    name: string;
+    status?: string;
+    conclusion?: string;
+    url?: string;
+  }>;
+}
+
+export interface CreateFixSessionRequest {
+  projectId: number;
+  type: 'pr' | 'issue';
+  prNumber: number;
+  issueNumber?: number;
+  ciLogs?: string;
+  title?: string;
+  body?: string;
+}
+
+export interface CreatePRRequest {
+  projectId: number;
+  title: string;
+  body?: string;
 }
 
 // Default commit mode settings

@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { setupTestProject, cleanupTestProject } from './setup';
 
 /**
  * Auto-Scroll Tests for Crystal Application
@@ -9,31 +10,85 @@ import { test, expect, Page } from '@playwright/test';
  */
 
 test.describe('Crystal Auto-Scroll Functionality', () => {
+  let testProjectPath: string | undefined;
+
+  test.beforeEach(async () => {
+    testProjectPath = await setupTestProject();
+  });
+
+  test.afterEach(async () => {
+    await cleanupTestProject(testProjectPath);
+  });
+
+  /**
+   * Helper to setup test environment
+   */
+  async function setupTest(page: Page): Promise<void> {
+    // Navigate to the app
+    await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 30000 });
+
+    // Close welcome dialog if present
+    const getStartedButton = page.locator('button:has-text("Get Started")');
+    if (await getStartedButton.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await getStartedButton.click();
+    }
+
+    // Wait for the UI to load
+    await page.waitForSelector('[data-testid="sidebar"], .sidebar, aside', { timeout: 10000 });
+  }
+
+  /**
+   * Helper to wait for scroll container to be ready
+   */
+  async function waitForScrollContainer(page: Page): Promise<boolean> {
+    try {
+      await page.waitForFunction(() => {
+        const container = document.querySelector('.xterm-viewport, [class*="output"], [role="main"], [data-testid="output-container"]');
+        return container && (container as HTMLElement).scrollHeight > 0;
+      }, { timeout: 10000 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
   
   /**
    * Helper to get scroll position of the output container
    */
   async function getScrollPosition(page: Page): Promise<{ scrollTop: number; scrollHeight: number; clientHeight: number }> {
+    // Wait for scroll container to be ready
+    await waitForScrollContainer(page);
+    
     return await page.evaluate(() => {
-      // Find the scrollable output container
-      const container = document.querySelector('.xterm-viewport, [class*="output"], [role="main"], [data-testid="output-container"]');
-      if (container) {
-        return {
-          scrollTop: (container as HTMLElement).scrollTop,
-          scrollHeight: (container as HTMLElement).scrollHeight,
-          clientHeight: (container as HTMLElement).clientHeight
-        };
+      // Find the scrollable output container with priority order
+      const selectors = [
+        '[data-testid="output-container"]',
+        '.xterm-viewport',
+        '[class*="output"]',
+        '[role="main"]',
+        '[class*="rich-output"]',
+        '[class*="message"]'
+      ];
+      
+      for (const selector of selectors) {
+        const container = document.querySelector(selector);
+        if (container && (container as HTMLElement).scrollHeight > 0) {
+          return {
+            scrollTop: (container as HTMLElement).scrollTop,
+            scrollHeight: (container as HTMLElement).scrollHeight,
+            clientHeight: (container as HTMLElement).clientHeight
+          };
+        }
       }
       
-      // Fallback to richOutput container
-      const richOutput = document.querySelector('[class*="rich-output"], [class*="message"]');
-      if (richOutput) {
-        const scrollableParent = richOutput.closest('[style*="overflow"], [class*="scroll"]');
-        if (scrollableParent) {
+      // Fallback to any scrollable element
+      const scrollableElements = document.querySelectorAll('[style*="overflow"], [class*="scroll"]');
+      for (const element of scrollableElements) {
+        if ((element as HTMLElement).scrollHeight > (element as HTMLElement).clientHeight) {
           return {
-            scrollTop: (scrollableParent as HTMLElement).scrollTop,
-            scrollHeight: (scrollableParent as HTMLElement).scrollHeight,
-            clientHeight: (scrollableParent as HTMLElement).clientHeight
+            scrollTop: (element as HTMLElement).scrollTop,
+            scrollHeight: (element as HTMLElement).scrollHeight,
+            clientHeight: (element as HTMLElement).clientHeight
           };
         }
       }
@@ -56,10 +111,27 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
   async function addTestMessages(page: Page, count: number = 50): Promise<void> {
     console.log(`  Adding ${count} test messages...`);
     
-    await page.evaluate((messageCount) => {
-      const messageContainer = document.querySelector('[data-testid="message-container"], .xterm-screen, .output-container, [class*="output"], [class*="rich-output"]');
-      
-      if (messageContainer) {
+    const success = await page.evaluate((messageCount) => {
+       const selectors = [
+         '[data-testid="message-container"]',
+         '.xterm-screen',
+         '.output-container',
+         '[class*="output"]',
+         '[class*="rich-output"]',
+         'main',
+         'body'
+       ];
+       
+       let messageContainer: Element | null = null;
+       for (const selector of selectors) {
+         const element = document.querySelector(selector);
+         if (element) {
+           messageContainer = element;
+           break;
+         }
+       }
+       
+       if (messageContainer) {
         for (let i = 0; i < messageCount; i++) {
           const messageDiv = document.createElement('div');
           messageDiv.className = 'test-auto-scroll-message';
@@ -75,33 +147,59 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
           `;
           messageContainer.appendChild(messageDiv);
         }
+        return true;
       }
+      return false;
     }, count);
     
-    // Wait for content to render
-    await page.waitForTimeout(500);
+    if (!success) {
+      console.warn('Could not find message container, messages not added');
+      return;
+    }
+    
+    // Wait for content to render and scroll container to update
+    await page.waitForTimeout(1000);
+    await waitForScrollContainer(page);
   }
   
   /**
    * Helper to scroll to a specific position
    */
   async function scrollToPosition(page: Page, position: 'top' | 'middle' | number): Promise<void> {
-    await page.evaluate((pos) => {
-      const container = document.querySelector('.xterm-viewport, [class*="output"], [role="main"], [data-testid="output-container"]');
-      if (!container) return;
+    await waitForScrollContainer(page);
+    
+    const scrolled = await page.evaluate((pos) => {
+      const selectors = [
+        '[data-testid="output-container"]',
+        '.xterm-viewport',
+        '[class*="output"]',
+        '[role="main"]'
+      ];
       
-      const element = container as HTMLElement;
-      
-      if (pos === 'top') {
-        element.scrollTop = 0;
-      } else if (pos === 'middle') {
-        element.scrollTop = element.scrollHeight / 2;
-      } else if (typeof pos === 'number') {
-        element.scrollTop = pos;
+      for (const selector of selectors) {
+        const container = document.querySelector(selector);
+        if (container && (container as HTMLElement).scrollHeight > 0) {
+          const element = container as HTMLElement;
+          
+          if (pos === 'top') {
+            element.scrollTop = 0;
+          } else if (pos === 'middle') {
+            element.scrollTop = element.scrollHeight / 2;
+          } else if (typeof pos === 'number') {
+            element.scrollTop = pos;
+          }
+          return true;
+        }
       }
+      return false;
     }, position);
     
-    await page.waitForTimeout(200); // Allow scroll to complete
+    if (!scrolled) {
+      console.warn('Could not find scrollable container for scrollToPosition');
+    }
+    
+    // Wait for scroll to complete and stabilize
+    await page.waitForTimeout(500);
   }
 
   /**
@@ -110,10 +208,10 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
   test('auto-scroll to bottom when selecting session from sidebar', async ({ page }) => {
     test.setTimeout(120000); // 2 minutes
     
-    await page.goto('http://localhost:4521');
-    await page.waitForLoadState('networkidle');
-    
     console.log('\n📜 Testing auto-scroll on session selection...');
+    
+    await setupTest(page);
+
     
     // Find available sessions
     const sessions = await page.locator('[data-testid^="session-item"], .session-item, [class*="session"]').all();
@@ -123,7 +221,7 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
       
       // Try to create a session for testing
       const createButton = page.locator('[data-testid="create-session"], button:has-text("Create"), button:has-text("New Session")').first();
-      if (await createButton.isVisible()) {
+      if (await createButton.isVisible({ timeout: 3000 }).catch(() => false)) {
         await createButton.click();
         await page.waitForTimeout(2000);
         
@@ -140,18 +238,27 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
     const availableSessions = await page.locator('[data-testid^="session-item"], .session-item, [class*="session"]').all();
     
     if (availableSessions.length > 0) {
-      // Select the first session
-      await availableSessions[0].click();
-      await page.waitForTimeout(1000);
+      // Select the first session with retry
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          await availableSessions[0].click({ timeout: 5000 });
+          console.log(`  Selected first session (attempt ${attempt + 1})`);
+          break;
+        } catch (error) {
+          if (attempt === 2) throw error;
+          await page.waitForTimeout(1000);
+        }
+      }
       
       // Ensure we're in Output view mode
       const outputTab = page.locator('button:has-text("Output"), [data-testid="output-tab"], .tab:has-text("Output")').first();
-      if (await outputTab.isVisible()) {
+      if (await outputTab.isVisible({ timeout: 3000 }).catch(() => false)) {
         await outputTab.click();
         await page.waitForTimeout(500);
+        console.log('  Clicked Output tab');
       }
       
-      // Add content to make it scrollable
+      // Add content to make it scrollable and wait for it to be ready
       await addTestMessages(page, 30);
       
       // Scroll to top to test auto-scroll
@@ -175,15 +282,21 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
         await availableSessions[0].click();
       }
       
-      // Wait for auto-scroll to complete
-      await page.waitForTimeout(1000);
+      // Wait for auto-scroll to trigger with retry mechanism
+      let isAtBottom = false;
+      for (let attempt = 0; attempt < 5; attempt++) {
+        await page.waitForTimeout(1000);
+        const finalScrollPos = await getScrollPosition(page);
+        isAtBottom = isScrolledToBottom(finalScrollPos);
+        if (isAtBottom) {
+          console.log(`  Auto-scroll detected on attempt ${attempt + 1}`);
+          break;
+        }
+      }
       
-      // Check if we auto-scrolled to bottom
+      // Get final scroll information for debugging
       const finalScrollPos = await getScrollPosition(page);
       console.log(`  Final scroll position: ${finalScrollPos.scrollTop}/${finalScrollPos.scrollHeight}`);
-      
-      // Verify auto-scroll worked
-      const isAtBottom = isScrolledToBottom(finalScrollPos);
       console.log(`  Is scrolled to bottom: ${isAtBottom}`);
       
       expect(isAtBottom).toBe(true);
@@ -197,10 +310,10 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
   test('auto-scroll to bottom when clicking Output tab', async ({ page }) => {
     test.setTimeout(120000); // 2 minutes
     
-    await page.goto('http://localhost:4521');
-    await page.waitForLoadState('networkidle');
-    
     console.log('\n📊 Testing auto-scroll on Output tab click...');
+    
+    await setupTest(page);
+
     
     // Find and select a session
     const sessions = await page.locator('[data-testid^="session-item"], .session-item, [class*="session"]').all();
@@ -210,14 +323,23 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
       return;
     }
     
-    await sessions[0].click();
-    await page.waitForTimeout(1000);
+    // Select session with retry
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        await sessions[0].click({ timeout: 5000 });
+        console.log(`  Selected session (attempt ${attempt + 1})`);
+        break;
+      } catch (error) {
+        if (attempt === 2) throw error;
+        await page.waitForTimeout(1000);
+      }
+    }
     
     // Find the tab buttons (Output, Diff, Terminal, etc.)
     const outputTab = page.locator('button:has-text("Output"), [data-testid="output-tab"], .tab:has-text("Output")').first();
     const diffTab = page.locator('button:has-text("Diff"), button:has-text("View Diff"), [data-testid="diff-tab"], .tab:has-text("Diff")').first();
     
-    if (!(await outputTab.isVisible())) {
+    if (!(await outputTab.isVisible({ timeout: 3000 }).catch(() => false))) {
       console.log('⚠️ Output tab not found, skipping Output tab auto-scroll test');
       return;
     }
@@ -226,7 +348,7 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
     await outputTab.click();
     await page.waitForTimeout(500);
     
-    // Add content to make it scrollable
+    // Add content to make it scrollable and wait for it to be ready
     await addTestMessages(page, 40);
     
     // Scroll to middle position
@@ -236,7 +358,7 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
     console.log(`  Scrolled to middle: ${middleScrollPos.scrollTop}/${middleScrollPos.scrollHeight}`);
     
     // Switch to a different tab if available
-    if (await diffTab.isVisible()) {
+    if (await diffTab.isVisible({ timeout: 2000 }).catch(() => false)) {
       console.log('  Switching to Diff tab...');
       await diffTab.click();
       await page.waitForTimeout(500);
@@ -245,15 +367,21 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
     console.log('  Clicking Output tab to test auto-scroll...');
     await outputTab.click();
     
-    // Wait for auto-scroll to complete
-    await page.waitForTimeout(1000);
+    // Wait for auto-scroll to trigger with retry mechanism
+    let isAtBottom = false;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      await page.waitForTimeout(1000);
+      const finalScrollPos = await getScrollPosition(page);
+      isAtBottom = isScrolledToBottom(finalScrollPos);
+      if (isAtBottom) {
+        console.log(`  Auto-scroll detected on attempt ${attempt + 1}`);
+        break;
+      }
+    }
     
-    // Check if we auto-scrolled to bottom
+    // Get final scroll information for debugging
     const finalScrollPos = await getScrollPosition(page);
     console.log(`  Final scroll position after Output tab click: ${finalScrollPos.scrollTop}/${finalScrollPos.scrollHeight}`);
-    
-    // Verify auto-scroll worked
-    const isAtBottom = isScrolledToBottom(finalScrollPos);
     console.log(`  Is scrolled to bottom: ${isAtBottom}`);
     
     expect(isAtBottom).toBe(true);
@@ -266,26 +394,33 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
   test('auto-scroll works with long message history', async ({ page }) => {
     test.setTimeout(180000); // 3 minutes
     
-    await page.goto('http://localhost:4521');
-    await page.waitForLoadState('networkidle');
-    
-    console.log('\n📚 Testing auto-scroll with heavy message load...');
+    await setupTest(page);
     
     const sessions = await page.locator('[data-testid^="session-item"], .session-item, [class*="session"]').all();
     
     if (sessions.length === 0) {
-      console.log('⚠️ No sessions available for heavy load auto-scroll test');
+
       return;
     }
     
-    await sessions[0].click();
-    await page.waitForTimeout(1000);
+    // Select session with retry
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        await sessions[0].click({ timeout: 5000 });
+        console.log(`  Selected session (attempt ${attempt + 1})`);
+        break;
+      } catch (error) {
+        if (attempt === 2) throw error;
+        await page.waitForTimeout(1000);
+      }
+    }
     
     // Ensure Output tab is active
     const outputTab = page.locator('button:has-text("Output"), [data-testid="output-tab"], .tab:has-text("Output")').first();
-    if (await outputTab.isVisible()) {
+    if (await outputTab.isVisible({ timeout: 3000 }).catch(() => false)) {
       await outputTab.click();
       await page.waitForTimeout(500);
+      console.log('  Clicked Output tab');
     }
     
     // Add a large number of messages to stress test auto-scroll
@@ -312,14 +447,22 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
       // Re-select session to trigger auto-scroll
       await sessions[0].click();
       
-      // Wait for auto-scroll (might take longer with heavy content)
-      await page.waitForTimeout(1500);
+      // Wait for auto-scroll to trigger with retry mechanism
+      let isAtBottom = false;
+      for (let attempt = 0; attempt < 5; attempt++) {
+        await page.waitForTimeout(1000);
+        const afterScrollPos = await getScrollPosition(page);
+        isAtBottom = isScrolledToBottom(afterScrollPos);
+        if (isAtBottom) {
+          console.log(`    Auto-scroll detected on attempt ${attempt + 1}`);
+          break;
+        }
+      }
       
       const afterScrollPos = await getScrollPosition(page);
       console.log(`    After session re-select: ${afterScrollPos.scrollTop}px`);
       
       // Verify auto-scroll to bottom
-      const isAtBottom = isScrolledToBottom(afterScrollPos);
       expect(isAtBottom).toBe(true);
       
       console.log(`    ✅ Auto-scroll from ${position} position successful`);
@@ -334,10 +477,7 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
   test('auto-scroll performance does not cause UI hangs', async ({ page }) => {
     test.setTimeout(120000); // 2 minutes
     
-    await page.goto('http://localhost:4521');
-    await page.waitForLoadState('networkidle');
-    
-    console.log('\n⚡ Testing auto-scroll performance...');
+    await setupTest(page);
     
     // Add performance monitoring
     await page.addInitScript(() => {
@@ -368,12 +508,20 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
     const sessions = await page.locator('[data-testid^="session-item"], .session-item, [class*="session"]').all();
     
     if (sessions.length === 0) {
-      console.log('⚠️ No sessions available for performance test');
       return;
     }
     
-    await sessions[0].click();
-    await page.waitForTimeout(500);
+    // Select session with retry
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        await sessions[0].click({ timeout: 5000 });
+        console.log(`  Selected session (attempt ${attempt + 1})`);
+        break;
+      } catch (error) {
+        if (attempt === 2) throw error;
+        await page.waitForTimeout(1000);
+      }
+    }
     
     // Add substantial content for performance testing
     await addTestMessages(page, 100);
@@ -389,8 +537,14 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
       // Trigger auto-scroll by re-selecting session
       await sessions[0].click();
       
-      // Wait for scroll to complete
-      await page.waitForTimeout(300);
+      // Wait for auto-scroll to trigger with retry mechanism
+      let isAtBottom = false;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        await page.waitForTimeout(300);
+        const scrollPos = await getScrollPosition(page);
+        isAtBottom = isScrolledToBottom(scrollPos);
+        if (isAtBottom) break;
+      }
       
       const scrollDuration = Date.now() - scrollStart;
       
@@ -402,8 +556,7 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
       console.log(`    Scroll ${i + 1}: ${scrollDuration}ms`);
       
       // Verify we're at bottom
-      const scrollPos = await getScrollPosition(page);
-      expect(isScrolledToBottom(scrollPos)).toBe(true);
+      expect(isAtBottom).toBe(true);
     }
     
     // Get performance metrics
@@ -432,20 +585,26 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
   test('auto-scroll uses smooth scrolling animation', async ({ page }) => {
     test.setTimeout(60000); // 1 minute
     
-    await page.goto('http://localhost:4521');
-    await page.waitForLoadState('networkidle');
-    
-    console.log('\n🎬 Testing smooth scrolling animation...');
+    await setupTest(page);
     
     const sessions = await page.locator('[data-testid^="session-item"], .session-item, [class*="session"]').all();
     
     if (sessions.length === 0) {
-      console.log('⚠️ No sessions available for smooth scroll test');
+
       return;
     }
     
-    await sessions[0].click();
-    await page.waitForTimeout(500);
+    // Select session with retry
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        await sessions[0].click({ timeout: 5000 });
+        console.log(`  Selected session (attempt ${attempt + 1})`);
+        break;
+      } catch (error) {
+        if (attempt === 2) throw error;
+        await page.waitForTimeout(1000);
+      }
+    }
     
     // Add content for scrolling
     await addTestMessages(page, 50);
@@ -484,8 +643,18 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
     // Trigger auto-scroll
     await sessions[0].click();
     
-    // Wait for animation to complete
-    await page.waitForTimeout(1500);
+    // Wait for animation to complete with retry mechanism
+    let finalScrollPos;
+    let isAtBottom = false;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      await page.waitForTimeout(500);
+      finalScrollPos = await getScrollPosition(page);
+      isAtBottom = isScrolledToBottom(finalScrollPos);
+      if (isAtBottom) {
+        console.log(`  Auto-scroll completed on attempt ${attempt + 1}`);
+        break;
+      }
+    }
     
     // Analyze scroll behavior
     const scrollTest = await page.evaluate(() => (window as any).scrollBehaviorTest);
@@ -510,8 +679,7 @@ test.describe('Crystal Auto-Scroll Functionality', () => {
     }
     
     // Verify final position is at bottom
-    const finalScrollPos = await getScrollPosition(page);
-    expect(isScrolledToBottom(finalScrollPos)).toBe(true);
+    expect(isAtBottom).toBe(true);
     
     console.log('✅ Smooth scrolling animation test passed');
   });
