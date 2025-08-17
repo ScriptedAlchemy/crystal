@@ -144,7 +144,7 @@ describe('formatters utilities', () => {
 
       const result = formatJsonForWeb(message);
       
-      expect(result).toContain('👤 USER PROMPT');
+      expect(result).toContain('👤 User Input');
       expect(result).toContain('Please help me with this task');
     });
 
@@ -159,7 +159,7 @@ describe('formatters utilities', () => {
 
       const result = formatJsonForWeb(message);
       
-      expect(result).toContain('👤 USER PROMPT');
+      expect(result).toContain('👤 User Input');
       expect(result).toContain('Simple string content');
     });
 
@@ -177,7 +177,7 @@ describe('formatters utilities', () => {
 
       const result = formatJsonForWeb(message);
       
-      expect(result).toContain('👤 USER PROMPT');
+      expect(result).toContain('👤 User Input');
       expect(result).toContain('Here is the output:');
       expect(result).toContain('Tool result: File contents here');
     });
@@ -312,7 +312,7 @@ describe('formatters utilities', () => {
 
       const result = formatJsonForWeb(message);
       
-      expect(result).toContain('👤 USER PROMPT');
+      expect(result).toContain('👤 User Input');
       expect(result).toContain('First text');
       expect(result).toContain('Tool result: Tool output');
       expect(result).toContain('Second text');

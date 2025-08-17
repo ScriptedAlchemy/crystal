@@ -65,14 +65,17 @@ export class BatchProcessor<T> {
   add(item: T) {
     this.items.push(item);
     
-    if (!this.timeoutId) {
-      this.timeoutId = setTimeout(() => {
-        const itemsToProcess = [...this.items];
-        this.items = [];
-        this.timeoutId = null;
-        this.processor(itemsToProcess);
-      }, this.delay);
+    // Reset timer on each add
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
     }
+    
+    this.timeoutId = setTimeout(() => {
+      const itemsToProcess = [...this.items];
+      this.items = [];
+      this.timeoutId = null;
+      this.processor(itemsToProcess);
+    }, this.delay);
   }
   
   flush() {

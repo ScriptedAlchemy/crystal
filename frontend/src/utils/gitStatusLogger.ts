@@ -22,8 +22,8 @@ class FrontendGitStatusLogger {
   log(context: GitStatusLogContext): void {
     const now = Date.now();
     
-    // Throttle repeated update logs
-    if (context.operation === 'update' && now - this.lastLogTime < this.LOG_THROTTLE_MS) {
+    // Throttle repeated update logs (but allow first update)
+    if (context.operation === 'update' && this.lastLogTime > 0 && now - this.lastLogTime < this.LOG_THROTTLE_MS) {
       this.updateCount++;
       return;
     }
@@ -89,11 +89,13 @@ class FrontendGitStatusLogger {
   clearErrors(context?: string): void {
     if (context) {
       // Clear specific context
+      const keysToDelete: string[] = [];
       for (const key of this.errorCache.keys()) {
         if (key.startsWith(`${context}:`)) {
-          this.errorCache.delete(key);
+          keysToDelete.push(key);
         }
       }
+      keysToDelete.forEach(key => this.errorCache.delete(key));
     } else {
       // Clear all
       this.errorCache.clear();

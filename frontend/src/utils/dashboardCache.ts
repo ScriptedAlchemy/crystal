@@ -29,7 +29,8 @@ class DashboardCache {
       return null;
     }
     
-    return entry.data;
+    // Return a deep copy to prevent mutations affecting the cache
+    return JSON.parse(JSON.stringify(entry.data));
   }
 
   invalidate(projectId: number): void {

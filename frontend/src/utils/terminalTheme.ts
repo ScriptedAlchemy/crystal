@@ -18,19 +18,37 @@ const rgbToHex = (rgb: string): string => {
 
 // Get CSS variable value from the document with smart fallbacks
 const getCSSVariable = (name: string): string => {
-  // Force a reflow to ensure CSS variables are up to date
-  void document.documentElement.offsetHeight;
-  
-  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  if (value) {
-    // Convert to hex format if needed
-    return rgbToHex(value);
+  try {
+    // Check if document.documentElement exists
+    if (!document.documentElement) {
+      return getDefaultFallback(name);
+    }
+    
+    // Force a reflow to ensure CSS variables are up to date
+    void document.documentElement.offsetHeight;
+    
+    const computedStyle = getComputedStyle(document.documentElement);
+    if (!computedStyle) {
+      return getDefaultFallback(name);
+    }
+    
+    const value = computedStyle.getPropertyValue(name).trim();
+    if (value) {
+      // Convert to hex format if needed
+      return rgbToHex(value);
+    }
+    
+    // Provide smart fallbacks based on current theme
+    const isLight = document.documentElement.classList.contains('light');
+    const isDark = document.documentElement.classList.contains('dark');
+    
+    return getThemeFallback(name, isLight, isDark);
+  } catch (error) {
+    return getDefaultFallback(name);
   }
-  
-  // Provide smart fallbacks based on current theme
-  const isLight = document.documentElement.classList.contains('light');
-  const isDark = document.documentElement.classList.contains('dark');
-  
+};
+
+const getThemeFallback = (name: string, isLight: boolean, isDark: boolean): string => {
   // Define theme-aware fallbacks (already in hex format)
   const fallbacks: Record<string, { light: string; dark: string }> = {
     '--color-terminal-bg': { light: '#ffffff', dark: '#111827' },
@@ -52,6 +70,11 @@ const getCSSVariable = (name: string): string => {
   
   // Default color fallbacks
   return isLight ? '#000000' : '#ffffff';
+};
+
+const getDefaultFallback = (name: string): string => {
+  // Default to dark theme when we can't access DOM
+  return getThemeFallback(name, false, true);
 };
 
 // Terminal theme generator that reads from CSS variables
@@ -82,36 +105,58 @@ export const getTerminalTheme = () => {
 // Script terminal theme (slightly different background for better UI integration)
 export const getScriptTerminalTheme = () => {
   const baseTheme = getTerminalTheme();
-  const isLight = document.documentElement.classList.contains('light');
-  const isDark = document.documentElement.classList.contains('dark');
   
-  // Use surface colors for better integration with the UI
-  const surfaceBackground = getCSSVariable('--color-surface-secondary');
-  
-  return {
-    ...baseTheme,
-    background: surfaceBackground || (isLight ? '#f9fafb' : isDark ? '#1f2937' : '#1f2937'),
-  };
+  try {
+    const isLight = document.documentElement?.classList.contains('light') || false;
+    const isDark = document.documentElement?.classList.contains('dark') || false;
+    
+    // Use surface colors for better integration with the UI
+    const surfaceBackground = getCSSVariable('--color-surface-secondary');
+    
+    return {
+      ...baseTheme,
+      background: surfaceBackground || (isLight ? '#f9fafb' : isDark ? '#1f2937' : '#1f2937'),
+    };
+  } catch (error) {
+    return {
+      ...baseTheme,
+      background: '#1f2937', // Default to dark surface
+    };
+  }
 };
 
 // Debug function to check current terminal theme values
 export const debugTerminalTheme = () => {
-  const isLight = document.documentElement.classList.contains('light');
-  const isDark = document.documentElement.classList.contains('dark');
-  console.log('=== Terminal Theme Debug ===');
-  console.log('Classes on root:', document.documentElement.className);
-  console.log('Has light class:', isLight);
-  console.log('Has dark class:', isDark);
-  
-  // Check actual CSS variable values
-  const bgVar = getComputedStyle(document.documentElement).getPropertyValue('--color-terminal-bg').trim();
-  const fgVar = getComputedStyle(document.documentElement).getPropertyValue('--color-terminal-fg').trim();
-  
-  console.log('CSS Variables:');
-  console.log('  --color-terminal-bg:', bgVar || 'NOT SET');
-  console.log('  --color-terminal-fg:', fgVar || 'NOT SET');
-  
-  console.log('Terminal theme:', getTerminalTheme());
-  console.log('Script terminal theme:', getScriptTerminalTheme());
-  console.log('=========================');
+  try {
+    const isLight = document.documentElement?.classList.contains('light') || false;
+    const isDark = document.documentElement?.classList.contains('dark') || false;
+    console.log('=== Terminal Theme Debug ===');
+    console.log('Classes on root:', document.documentElement?.className || '');
+    console.log('Has light class:', isLight);
+    console.log('Has dark class:', isDark);
+    
+    // Check actual CSS variable values
+    let bgVar = 'NOT SET';
+    let fgVar = 'NOT SET';
+    
+    if (document.documentElement) {
+      const computedStyle = getComputedStyle(document.documentElement);
+      if (computedStyle) {
+        bgVar = computedStyle.getPropertyValue('--color-terminal-bg').trim() || 'NOT SET';
+        fgVar = computedStyle.getPropertyValue('--color-terminal-fg').trim() || 'NOT SET';
+      }
+    }
+    
+    console.log('CSS Variables:');
+    console.log('  --color-terminal-bg:', bgVar);
+    console.log('  --color-terminal-fg:', fgVar);
+    
+    console.log('Terminal theme:', getTerminalTheme());
+    console.log('Script terminal theme:', getScriptTerminalTheme());
+    console.log('=========================');
+  } catch (error) {
+    console.log('=== Terminal Theme Debug ===');
+    console.log('Error accessing theme debug info:', error);
+    console.log('=========================');
+  }
 };

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SessionHeader } from '../../src/components/session/SessionHeader';
 import type { Session, GitCommands } from '../../src/types/session';
@@ -27,13 +27,13 @@ vi.mock('../../src/components/session/ViewTabs', () => ({
     <div data-testid="view-tabs" data-view-mode={viewMode} data-terminal-running={isTerminalRunning} data-merging={isMerging}>
       <div>Current view: {viewMode}</div>
       <div>Terminal running: {isTerminalRunning.toString()}</div>
-      <div>Branch actions: {branchActions.length}</div>
+      <div>Branch actions: {branchActions ? branchActions.length : 0}</div>
       {unreadActivity.changes && <div data-testid="unread-changes">Changes unread</div>}
       {unreadActivity.terminal && <div data-testid="unread-terminal">Terminal unread</div>}
       <button onClick={() => setViewMode('terminal')} data-testid="switch-view">Switch View</button>
       <button onClick={() => setUnreadActivity({ ...unreadActivity, changes: false })} data-testid="clear-unread">Clear Unread</button>
       {onSettingsClick && <button onClick={onSettingsClick} data-testid="settings-click">Settings</button>}
-      {branchActions.map((action: any) => (
+      {branchActions && branchActions.map((action: any) => (
         <button key={action.id} onClick={action.onClick} data-testid={`action-${action.id}`} disabled={action.disabled}>
           {action.label}
         </button>
@@ -185,10 +185,20 @@ describe('SessionHeader', () => {
       render(<SessionHeader {...defaultProps} isEditingName={true} editName="Test" />);
       
       const input = screen.getByDisplayValue('Test');
-      await userEvent.clear(input);
-      await userEvent.type(input, 'New Name');
       
-      expect(mockSetEditName).toHaveBeenCalledWith('New Name');
+      // Clear the mock to start fresh
+      mockSetEditName.mockClear();
+      
+      // Simulate typing a new value
+      await userEvent.type(input, '{selectall}New Name');
+      
+      // setEditName should have been called multiple times (once per character)
+      expect(mockSetEditName).toHaveBeenCalled();
+      
+      // The last call should be with the complete text
+      const calls = mockSetEditName.mock.calls;
+      const lastCall = calls[calls.length - 1];
+      expect(lastCall[0]).toBe('New Name');
     });
 
     it('calls handleNameKeyDown on key press', async () => {
@@ -244,6 +254,11 @@ describe('SessionHeader', () => {
       
       render(<SessionHeader {...defaultProps} activeSession={session} />);
       
+      // Debug: Check if ViewTabs is rendered
+      const viewTabs = screen.getByTestId('view-tabs');
+      expect(viewTabs).toBeDefined();
+      
+      // The mock ViewTabs renders branch actions directly as buttons
       const pullButton = screen.getByTestId('action-pull');
       await userEvent.click(pullButton);
       
@@ -255,6 +270,7 @@ describe('SessionHeader', () => {
       
       render(<SessionHeader {...defaultProps} activeSession={session} />);
       
+      // The mock ViewTabs renders branch actions directly as buttons
       const pushButton = screen.getByTestId('action-push');
       await userEvent.click(pushButton);
       
@@ -301,6 +317,7 @@ describe('SessionHeader', () => {
     it('calls handleRebaseMainIntoWorktree when rebase from main is clicked', async () => {
       render(<SessionHeader {...defaultProps} />);
       
+      // The mock ViewTabs renders branch actions directly as buttons
       const rebaseButton = screen.getByTestId('action-rebase-from-main');
       await userEvent.click(rebaseButton);
       
@@ -310,6 +327,7 @@ describe('SessionHeader', () => {
     it('calls handleSquashAndRebaseToMain when rebase to main is clicked', async () => {
       render(<SessionHeader {...defaultProps} />);
       
+      // The mock ViewTabs renders branch actions directly as buttons
       const rebaseButton = screen.getByTestId('action-rebase-to-main');
       await userEvent.click(rebaseButton);
       
@@ -415,7 +433,9 @@ describe('SessionHeader', () => {
       render(<SessionHeader {...defaultProps} />);
       
       const switchButton = screen.getByTestId('switch-view');
-      await userEvent.click(switchButton);
+      await act(async () => {
+        await userEvent.click(switchButton);
+      });
       
       expect(mockSetViewMode).toHaveBeenCalledWith('terminal');
     });
@@ -505,7 +525,10 @@ describe('SessionHeader', () => {
       
       const input = screen.getByRole('textbox');
       expect(input).toBeDefined();
-      expect(input.hasAttribute('autoFocus')).toBe(true);
+      // Check that the input has the correct value
+      expect(input.getAttribute('value')).toBe('Test');
+      // The input should be focused when editing (autoFocus prop)
+      expect(document.activeElement).toBe(input);
     });
 
     it('has accessible buttons for actions', () => {

@@ -63,6 +63,7 @@ Object.defineProperty(window, 'electronAPI', {
     removeAllListeners: vi.fn(),
   },
   writable: true,
+  configurable: true,
 });
 
 // Mock window.matchMedia

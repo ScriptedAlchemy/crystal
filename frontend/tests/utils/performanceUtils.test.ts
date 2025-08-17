@@ -115,14 +115,16 @@ describe('performanceUtils', () => {
       const fn = vi.fn();
       const throttledFn = throttle(fn, 1000);
 
-      throttledFn();
+      throttledFn(); // First call executes immediately
+      expect(fn).toHaveBeenCalledTimes(1);
+      
       vi.advanceTimersByTime(500);
       throttledFn(); // Schedule delayed call
       vi.advanceTimersByTime(200);
       throttledFn(); // Should cancel previous and schedule new
 
       vi.advanceTimersByTime(300); // 500ms from the last call
-      expect(fn).toHaveBeenCalledTimes(1); // Only initial call
+      expect(fn).toHaveBeenCalledTimes(1); // Still only initial call
 
       vi.advanceTimersByTime(500); // Complete the delay
       expect(fn).toHaveBeenCalledTimes(2);
@@ -226,6 +228,8 @@ describe('performanceUtils', () => {
 
       batcher.add('item1');
       vi.advanceTimersByTime(90);
+      
+      // Second add should not trigger processing yet since timer is reset
       batcher.add('item2'); // Should reset timer
 
       vi.advanceTimersByTime(90);
@@ -412,7 +416,18 @@ describe('performanceUtils', () => {
     let mockObserver: any;
 
     beforeEach(() => {
-      mockElement = document.createElement('div');
+      // Mock document.createElement
+      global.document = {
+        ...global.document,
+        createElement: vi.fn(() => ({
+          tagName: 'DIV',
+          style: {},
+          className: '',
+          id: ''
+        }))
+      } as any;
+      
+      mockElement = document.createElement('div') as HTMLElement;
       
       mockObserver = {
         observe: vi.fn(),
@@ -531,6 +546,7 @@ describe('performanceUtils', () => {
         vi.advanceTimersByTime(100);
       }
 
+      // First call should execute immediately, subsequent calls should be throttled
       expect(callback).toHaveBeenCalledOnce();
     });
 

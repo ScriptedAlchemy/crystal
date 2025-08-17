@@ -29,7 +29,7 @@ describe('toolFormatter utilities', () => {
       expect(result).toContain('🔧 Tool: Bash');
       expect(result).toContain('$ ls -la');
       expect(result).toContain('⏳ Executing...');
-      expect(result).toMatch(/\[12:00:00.*\]/); // Timestamp
+      expect(result).toMatch(/\[\d{1,2}:\d{2}:\d{2}.*\]/); // Timestamp format may vary by locale
     });
 
     test('should format tool call with result', () => {

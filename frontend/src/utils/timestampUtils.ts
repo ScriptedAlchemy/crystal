@@ -122,6 +122,6 @@ export function formatDuration(ms: number): string {
  * @returns ISO string for consistent sorting
  */
 export function formatForSorting(timestamp: string | Date): string {
-  const date = typeof timestamp === 'string' ? new Date(timestamp) : timestamp;
+  const date = typeof timestamp === 'string' ? parseTimestamp(timestamp) : timestamp;
   return date.toISOString();
 }

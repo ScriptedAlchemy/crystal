@@ -9,13 +9,15 @@ export function debounce<T extends (...args: any[]) => any>(
 ): DebouncedFunction<T> {
   let timeout: NodeJS.Timeout | null = null;
   
-  const debounced = function(...args: Parameters<T>) {
+  const debounced = function(this: any, ...args: Parameters<T>) {
+    const context = this;
+    
     if (timeout) {
       clearTimeout(timeout);
     }
     
     timeout = setTimeout(() => {
-      func(...args);
+      func.apply(context, args);
     }, wait);
   };
   

@@ -65,7 +65,7 @@ describe('SessionInput', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    delete (window as any).electronAPI;
+    (window as any).electronAPI = undefined;
   });
 
   describe('Rendering', () => {

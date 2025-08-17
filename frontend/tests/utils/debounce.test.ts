@@ -272,7 +272,7 @@ describe('debounce utility', () => {
 
       debouncedFn1(); // Reset timer for fn1
       vi.advanceTimersByTime(500);
-      expect(fn1).toHaveBeenCalledOnce(); // Still only once
+      expect(fn1).toHaveBeenCalledOnce(); // Still only once - timer was reset
       expect(fn2).toHaveBeenCalledOnce(); // Now called
 
       vi.advanceTimersByTime(500);

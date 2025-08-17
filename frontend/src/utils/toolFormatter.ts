@@ -397,6 +397,11 @@ export function formatJsonForOutputEnhanced(jsonMessage: any): string {
         return `\r\n\x1b[36m[${time}]\x1b[0m \x1b[1m\x1b[35m🤖 Assistant\x1b[0m\r\n` +
                `\x1b[37m${textContent}\x1b[0m\r\n\r\n`;
       }
+    } else if (typeof content === 'string') {
+      // Handle string content directly
+      const time = new Date(timestamp).toLocaleTimeString();
+      return `\r\n\x1b[36m[${time}]\x1b[0m \x1b[1m\x1b[35m🤖 Assistant\x1b[0m\r\n` +
+             `\x1b[37m${content}\x1b[0m\r\n\r\n`;
     }
   }
   

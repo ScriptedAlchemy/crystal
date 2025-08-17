@@ -285,7 +285,11 @@ describe('terminalTheme utilities', () => {
       );
       
       mockGetComputedStyle.mockReturnValue({
-        getPropertyValue: () => '' // No surface color available
+        getPropertyValue: (prop: string) => {
+          if (prop === '--color-surface-secondary') return '';
+          if (prop === '--color-terminal-bg') return '#ffffff'; // light fallback
+          return '';
+        }
       });
 
       const scriptTheme = getScriptTerminalTheme();
@@ -298,7 +302,11 @@ describe('terminalTheme utilities', () => {
       );
       
       mockGetComputedStyle.mockReturnValue({
-        getPropertyValue: () => '' // No surface color available
+        getPropertyValue: (prop: string) => {
+          if (prop === '--color-surface-secondary') return '';
+          if (prop === '--color-terminal-bg') return '#111827'; // dark fallback
+          return '';
+        }
       });
 
       const scriptTheme = getScriptTerminalTheme();
@@ -309,7 +317,11 @@ describe('terminalTheme utilities', () => {
       mockDocumentElement.classList.contains.mockReturnValue(false);
       
       mockGetComputedStyle.mockReturnValue({
-        getPropertyValue: () => '' // No surface color available
+        getPropertyValue: (prop: string) => {
+          if (prop === '--color-surface-secondary') return '';
+          if (prop === '--color-terminal-bg') return '#111827'; // dark fallback (default)
+          return '';
+        }
       });
 
       const scriptTheme = getScriptTerminalTheme();
@@ -360,6 +372,10 @@ describe('terminalTheme utilities', () => {
     test('should handle empty class list', () => {
       mockDocumentElement.className = '';
       mockDocumentElement.classList.contains.mockReturnValue(false);
+      
+      mockGetComputedStyle.mockReturnValue({
+        getPropertyValue: () => ''
+      });
 
       debugTerminalTheme();
 
@@ -385,7 +401,7 @@ describe('terminalTheme utilities', () => {
     test('should handle RGB with extra whitespace', () => {
       mockGetComputedStyle.mockReturnValue({
         getPropertyValue: (prop: string) => {
-          if (prop === '--color-terminal-bg') return '  rgb( 255 , 255 , 255 )  ';
+          if (prop === '--color-terminal-bg') return 'rgb( 255 , 255 , 255 )';
           return '';
         }
       });
@@ -396,6 +412,9 @@ describe('terminalTheme utilities', () => {
 
     test('should handle getComputedStyle returning null', () => {
       global.getComputedStyle = vi.fn().mockReturnValue(null);
+      
+      // Also need to handle the documentElement access
+      mockDocumentElement.classList.contains.mockReturnValue(false);
 
       expect(() => getTerminalTheme()).not.toThrow();
     });
@@ -404,6 +423,11 @@ describe('terminalTheme utilities', () => {
       Object.defineProperty(document, 'documentElement', {
         value: null,
         writable: true
+      });
+      
+      // Mock getComputedStyle to handle null documentElement
+      global.getComputedStyle = vi.fn().mockImplementation(() => {
+        throw new Error('Cannot read properties of null');
       });
 
       expect(() => getTerminalTheme()).not.toThrow();

@@ -8,7 +8,7 @@ vi.mock('dompurify', () => ({
       // Simple mock that removes script tags and dangerous attributes
       return input
         .replace(/<script[^>]*>.*?<\/script>/gi, '')
-        .replace(/on\w+="[^"]*"/gi, '')
+        .replace(/\s*on\w+="[^"]*"/gi, '')
         .replace(/javascript:/gi, '');
     })
   }

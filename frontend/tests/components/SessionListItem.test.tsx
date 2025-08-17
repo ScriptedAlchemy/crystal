@@ -36,7 +36,7 @@ vi.mock('../../src/components/StatusIndicator', () => ({
 }));
 
 vi.mock('../../src/components/GitStatusIndicator', () => ({
-  GitStatusIndicator: ({ gitStatus, size, sessionId, isLoading }: any) => (
+  GitStatusIndicator: ({ gitStatus, sessionId, isLoading }: any) => (
     <div data-testid="git-status-indicator" data-session-id={sessionId} data-loading={isLoading}>
       Git Status: {gitStatus?.summary || 'loading'}
     </div>
@@ -87,8 +87,11 @@ describe('SessionListItem', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Mock useSessionStore
-    (useSessionStore as any).mockImplementation((selector: any) => {
+    // Create a mock subscribe function
+    const mockSubscribe = vi.fn(() => vi.fn()); // Returns an unsubscribe function
+
+    // Mock useSessionStore with subscribe method
+    const createMockStore = (overrides = {}) => {
       const state = {
         activeSessionId: null,
         setActiveSession: mockSetActiveSession,
@@ -98,13 +101,23 @@ describe('SessionListItem', () => {
         sessions: [],
         activeMainRepoSession: null,
         gitStatusLoading: new Set(),
+        ...overrides,
       };
+      
+      return state;
+    };
+
+    (useSessionStore as any).mockImplementation((selector: any) => {
+      const state = createMockStore();
       
       if (typeof selector === 'function') {
         return selector(state);
       }
       return state;
     });
+
+    // Add subscribe method to the mock
+    (useSessionStore as any).subscribe = mockSubscribe;
 
     // Mock useNavigationStore
     (useNavigationStore as any).mockReturnValue({
@@ -167,7 +180,8 @@ describe('SessionListItem', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    delete (window as any).electronAPI;
+    // Instead of deleting, set to undefined to avoid "Cannot delete property" error
+    (window as any).electronAPI = undefined;
   });
 
   describe('Rendering', () => {
@@ -211,7 +225,7 @@ describe('SessionListItem', () => {
     it('applies active styling when session is active', () => {
       const session = createMockSession();
       
-      (useSessionStore as any).mockImplementation((selector: any) => {
+      const createMockStore = (overrides = {}) => {
         const state = {
           activeSessionId: 'session-1',
           setActiveSession: mockSetActiveSession,
@@ -221,7 +235,14 @@ describe('SessionListItem', () => {
           sessions: [],
           activeMainRepoSession: null,
           gitStatusLoading: new Set(),
+          ...overrides,
         };
+        
+        return state;
+      };
+
+      (useSessionStore as any).mockImplementation((selector: any) => {
+        const state = createMockStore();
         
         if (typeof selector === 'function') {
           return selector(state);
@@ -462,7 +483,7 @@ describe('SessionListItem', () => {
     });
 
     it('shows deleting state during deletion', async () => {
-      (useSessionStore as any).mockImplementation((selector: any) => {
+      const createMockStore = (overrides = {}) => {
         const state = {
           activeSessionId: null,
           setActiveSession: mockSetActiveSession,
@@ -472,7 +493,14 @@ describe('SessionListItem', () => {
           sessions: [],
           activeMainRepoSession: null,
           gitStatusLoading: new Set(),
+          ...overrides,
         };
+        
+        return state;
+      };
+
+      (useSessionStore as any).mockImplementation((selector: any) => {
+        const state = createMockStore();
         
         if (typeof selector === 'function') {
           return selector(state);

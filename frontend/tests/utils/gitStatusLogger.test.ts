@@ -80,13 +80,20 @@ describe('FrontendGitStatusLogger', () => {
     });
 
     describe('update operations', () => {
+      let originalNodeEnv: string | undefined;
+      
       beforeEach(() => {
         // Mock NODE_ENV for development tests
+        originalNodeEnv = process.env.NODE_ENV;
         process.env.NODE_ENV = 'production';
       });
 
       afterEach(() => {
-        delete process.env.NODE_ENV;
+        if (originalNodeEnv !== undefined) {
+          process.env.NODE_ENV = originalNodeEnv;
+        } else {
+          delete process.env.NODE_ENV;
+        }
       });
 
       test('should log non-clean states in production', () => {
@@ -96,7 +103,7 @@ describe('FrontendGitStatusLogger', () => {
           state: 'dirty'
         });
 
-        expect(console.log).toHaveBeenCalledWith('[GitStatus] session-1 → dirty');
+        expect(console.log).toHaveBeenCalledWith('[GitStatus] session-12 → dirty');
       });
 
       test('should not log clean states in production', () => {
@@ -118,7 +125,7 @@ describe('FrontendGitStatusLogger', () => {
           state: 'clean'
         });
 
-        expect(console.log).toHaveBeenCalledWith('[GitStatus] session-1 → clean');
+        expect(console.log).toHaveBeenCalledWith('[GitStatus] session-12 → clean');
       });
 
       test('should truncate long session IDs', () => {
@@ -208,8 +215,15 @@ describe('FrontendGitStatusLogger', () => {
       });
 
       test('should reset throttle counter after flush', () => {
-        // Accumulate some updates
-        for (let i = 0; i < 3; i++) {
+        // First update should always log
+        gitStatusLogger.log({
+          operation: 'update',
+          sessionId: 'session-0',
+          state: 'modified'
+        });
+        
+        // Accumulate some more updates
+        for (let i = 1; i < 3; i++) {
           gitStatusLogger.log({
             operation: 'update',
             sessionId: `session-${i}`,

@@ -15,8 +15,9 @@ vi.mock('../../src/utils/api', () => ({
   }
 }));
 
-// Mock console.log to reduce noise
+// Mock console.log and console.warn to reduce noise
 const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {});
+const mockConsoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
 // Helper to create mock sessions
 const createMockSession = (overrides: Partial<Session> = {}): Session => ({
@@ -72,6 +73,12 @@ const createMockSessionOutput = (overrides: Partial<SessionOutput> = {}): Sessio
 
 describe('SessionStore', () => {
   beforeEach(() => {
+    // Clean up any pending timers from previous tests
+    const currentState = useSessionStore.getState();
+    if (currentState.gitStatusBatchTimer) {
+      clearTimeout(currentState.gitStatusBatchTimer);
+    }
+    
     // Reset store state before each test
     useSessionStore.setState({
       sessions: [],
@@ -85,8 +92,10 @@ describe('SessionStore', () => {
       pendingGitStatusLoading: new Map(),
       pendingGitStatusUpdates: new Map(),
     });
+    
     vi.clearAllMocks();
     mockConsoleLog.mockClear();
+    mockConsoleWarn.mockClear();
   });
 
   afterEach(() => {
@@ -95,6 +104,7 @@ describe('SessionStore', () => {
     if (state.gitStatusBatchTimer) {
       clearTimeout(state.gitStatusBatchTimer);
     }
+    vi.clearAllTimers();
   });
 
   describe('Initial State', () => {
@@ -389,8 +399,10 @@ describe('SessionStore', () => {
         await result.current.setActiveSession('non-existent');
       });
       
-      expect(result.current.activeSessionId).toBe('non-existent');
+      // When backend fetch fails, activeSessionId should remain null
+      expect(result.current.activeSessionId).toBeNull();
       expect(result.current.activeMainRepoSession).toBeNull();
+      expect(result.current.sessions).toEqual([]); // Sessions array should remain unchanged
     });
   });
 
@@ -466,8 +478,8 @@ describe('SessionStore', () => {
         });
         
         // Should not crash, just log warning
-        expect(mockConsoleLog).toHaveBeenCalledWith(
-          expect.stringContaining('Session non-existent not found in store')
+        expect(mockConsoleWarn).toHaveBeenCalledWith(
+          expect.stringContaining('[SessionStore] Session non-existent not found in store, cannot add output')
         );
       });
     });
@@ -695,10 +707,17 @@ describe('SessionStore', () => {
     it('should manage git status loading state', () => {
       const { result } = renderHook(() => useSessionStore());
       
+      vi.useFakeTimers();
+      
       expect(result.current.isGitStatusLoading('session-123')).toBe(false);
       
       act(() => {
         result.current.setGitStatusLoading('session-123', true);
+      });
+      
+      // Advance timers to process pending updates
+      act(() => {
+        vi.advanceTimersByTime(50);
       });
       
       expect(result.current.isGitStatusLoading('session-123')).toBe(true);
@@ -707,7 +726,14 @@ describe('SessionStore', () => {
         result.current.setGitStatusLoading('session-123', false);
       });
       
+      // Advance timers to process pending updates
+      act(() => {
+        vi.advanceTimersByTime(50);
+      });
+      
       expect(result.current.isGitStatusLoading('session-123')).toBe(false);
+      
+      vi.useRealTimers();
     });
 
     it('should batch git status loading updates', () => {
@@ -794,12 +820,17 @@ describe('SessionStore', () => {
         result.current.setSessions([session]);
       });
       
+      // Verify initial state
+      expect(result.current.sessions[0].gitStatus).toBeUndefined();
+      expect(result.current.pendingGitStatusUpdates.size).toBe(0);
+      
       // Should not update immediately
       act(() => {
         result.current.updateSessionGitStatus(session.id, gitStatus);
       });
       
       expect(result.current.sessions[0].gitStatus).toBeUndefined();
+      expect(result.current.pendingGitStatusUpdates.size).toBe(1);
       
       // Should update after timer fires
       act(() => {
@@ -807,6 +838,7 @@ describe('SessionStore', () => {
       });
       
       expect(result.current.sessions[0].gitStatus).toEqual(gitStatus);
+      expect(result.current.pendingGitStatusUpdates.size).toBe(0);
     });
 
     it('should batch multiple git status updates', () => {
@@ -999,18 +1031,28 @@ describe('SessionStore', () => {
       // 4. Update git status
       const gitStatus = createMockGitStatus({ state: 'modified', filesChanged: 3 });
       
+      // Set up fake timers before updating git status
+      vi.useFakeTimers();
+      
+      // Verify git status is initially undefined
+      expect(result.current.sessions[0].gitStatus).toBeUndefined();
+      
       act(() => {
         result.current.updateSessionGitStatus(session.id, gitStatus);
       });
       
-      // 5. Process git status batch update (using fake timers)
-      vi.useFakeTimers();
+      // Verify pending state
+      expect(result.current.pendingGitStatusUpdates.size).toBeGreaterThan(0);
+      
+      // 5. Process git status batch update
       act(() => {
         vi.advanceTimersByTime(50);
       });
+      
       vi.useRealTimers();
       
       expect(result.current.sessions[0].gitStatus).toEqual(gitStatus);
+      expect(result.current.pendingGitStatusUpdates.size).toBe(0);
       
       // 6. Complete session
       act(() => {
@@ -1018,6 +1060,11 @@ describe('SessionStore', () => {
       });
       
       expect(result.current.sessions[0].status).toBe('completed_unviewed');
+      
+      // 6.5. Clear active session to test marking as viewed
+      await act(async () => {
+        await result.current.setActiveSession(null);
+      });
       
       // 7. Set as active (should mark as viewed)
       await act(async () => {

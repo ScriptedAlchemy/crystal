@@ -124,7 +124,8 @@ describe('CombinedDiffView', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    delete (window as any).electronAPI;
+    // Restore electronAPI mock instead of deleting
+    (window as any).electronAPI = undefined;
   });
 
   describe('Rendering', () => {
