@@ -638,7 +638,12 @@ export function registerGitHandlers(ipcMain: IpcMain, services: AppServices): vo
           }
 
           // Continue the session with proper worktree path
-          await claudeCodeManager.continueSession(sessionId, session.worktreePath, prompt, conversationHistory);
+          // Map ConversationMessage format to expected format
+          const formattedHistory = conversationHistory.map(msg => ({
+            role: msg.message_type === 'user' ? 'user' : 'assistant',
+            content: msg.content
+          }));
+          await claudeCodeManager.continueSession(sessionId, session.worktreePath, prompt, formattedHistory);
 
           return { success: true, data: { message: 'Rebase aborted and Claude Code prompted to handle conflicts' } };
         } catch (error: any) {

@@ -444,7 +444,12 @@ export function registerSessionHandlers(ipcMain: IpcMain, services: AppServices)
         
         console.log(`[IPC] Continue session ${sessionId} - provided model: ${model}, current model: ${dbSession?.model}, modelToUse: ${modelToUse}`);
         
-        await claudeCodeManager.continueSession(sessionId, session.worktreePath, continuePrompt, conversationHistory, modelToUse);
+        // Map ConversationMessage format to expected format
+        const formattedHistory = conversationHistory.map(msg => ({
+          role: msg.message_type === 'user' ? 'user' : 'assistant',
+          content: msg.content
+        }));
+        await claudeCodeManager.continueSession(sessionId, session.worktreePath, continuePrompt, formattedHistory, modelToUse);
       }
 
       // The session manager will update status based on Claude output

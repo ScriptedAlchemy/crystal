@@ -15,6 +15,7 @@ import { registerFolderHandlers } from './folders';
 import { registerUIStateHandlers } from './uiState';
 import { registerDashboardHandlers } from './dashboard';
 import { registerCommitModeHandlers } from './commitMode';
+import { registerGitHubHandlers } from './github';
 import { setupLogHandlers } from './logs';
 
 
@@ -34,5 +35,6 @@ export function registerIpcHandlers(services: AppServices): void {
   registerUIStateHandlers(services);
   registerDashboardHandlers(ipcMain, services);
   registerCommitModeHandlers(services.databaseService, services.logger, services.sessionManager);
+  registerGitHubHandlers(ipcMain, services);
   setupLogHandlers(services.sessionManager);
-} 
+}
