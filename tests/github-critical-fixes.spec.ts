@@ -1,34 +1,5 @@
 import { test, expect } from './helpers/electron-test-shared';
-import { Page } from 'playwright';
-
-// Helper functions
-async function waitForSidebar(page: Page, timeout = 10000) {
-  await page.waitForSelector('[data-testid="sidebar"]', { timeout });
-}
-
-async function selectModuleFederationProject(page: Page, timeout = 10000) {
-  await page.waitForSelector('[data-testid="project-item-6"]', { timeout });
-  await page.click('[data-testid="project-item-6"]');
-  await page.waitForTimeout(1000);
-}
-
-async function navigateToGitHubTab(page: Page, timeout = 5000) {
-  const githubTab = page.locator('button:has-text("GitHub")');
-  await expect(githubTab).toBeVisible({ timeout });
-  await githubTab.click();
-  await page.waitForTimeout(1000);
-}
-
-async function waitForGitHubDashboard(page: Page, timeout = 10000) {
-  await page.waitForSelector('[data-testid="github-dashboard"]', { timeout });
-}
-
-async function setupGitHubTest(page: Page) {
-  await waitForSidebar(page);
-  await selectModuleFederationProject(page);
-  await navigateToGitHubTab(page);
-  await waitForGitHubDashboard(page);
-}
+import { setupGitHubTest } from './helpers/github-test-helpers';
 
 test.describe.serial('GitHub Critical Fixes', () => {
   // Test Fix #1: CI status should show "Failed" when 0 checks pass
