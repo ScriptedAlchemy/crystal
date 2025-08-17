@@ -5,6 +5,23 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    // Run tests serially to avoid race conditions and improve stability
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
+    // Disable file parallelism to run test files one at a time
+    fileParallelism: false,
+    // Alternative: use threads with maxThreads: 1
+    // pool: 'threads',
+    // poolOptions: {
+    //   threads: {
+    //     maxThreads: 1,
+    //     minThreads: 1,
+    //   },
+    // },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
