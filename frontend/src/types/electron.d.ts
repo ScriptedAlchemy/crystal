@@ -1,6 +1,11 @@
 // Type definitions for Electron preload API
 
-interface IPCResponse<T = any> {
+import type { Session, CreateSessionRequest, GitStatus, GitCommands, GitErrorDetails } from './session';
+import type { Project, CreateProjectRequest, UpdateProjectRequest } from './project';
+import type { Folder, CreateFolderRequest, UpdateFolderRequest } from './folder';
+import type { CreateFixSessionRequest, CreatePRRequest, GitHubPR, GitHubIssue, GitHubCIStatus, CommitModeSettings } from '../../shared/types';
+
+interface IPCResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -10,7 +15,7 @@ interface IPCResponse<T = any> {
 
 interface ElectronAPI {
   // Generic invoke method for direct IPC calls
-  invoke: (channel: string, ...args: any[]) => Promise<any>;
+  invoke: <T = unknown>(channel: string, ...args: unknown[]) => Promise<T>;
   
   // Basic app info
   getAppVersion: () => Promise<string>;
@@ -37,7 +42,7 @@ interface ElectronAPI {
     getAllWithProjects: () => Promise<IPCResponse>;
     getArchivedWithProjects: () => Promise<IPCResponse>;
     get: (sessionId: string) => Promise<IPCResponse>;
-    create: (request: any) => Promise<IPCResponse>;
+    create: (request: CreateSessionRequest) => Promise<IPCResponse<Session>>;
     delete: (sessionId: string) => Promise<IPCResponse>;
     sendInput: (sessionId: string, input: string) => Promise<IPCResponse>;
     continue: (sessionId: string, prompt?: string, model?: string) => Promise<IPCResponse>;
@@ -106,16 +111,21 @@ interface ElectronAPI {
     // Log operations
     getLogs: (sessionId: string) => Promise<IPCResponse>;
     clearLogs: (sessionId: string) => Promise<IPCResponse>;
-    addLog: (sessionId: string, entry: any) => Promise<IPCResponse>;
+    addLog: (sessionId: string, entry: {
+      type: 'info' | 'warning' | 'error' | 'debug';
+      message: string;
+      details?: string;
+      timestamp?: string;
+    }) => Promise<IPCResponse>;
   };
 
   // Project management
   projects: {
     getAll: () => Promise<IPCResponse>;
     getActive: () => Promise<IPCResponse>;
-    create: (projectData: any) => Promise<IPCResponse>;
+    create: (projectData: CreateProjectRequest) => Promise<IPCResponse<Project>>;
     activate: (projectId: string) => Promise<IPCResponse>;
-    update: (projectId: string, updates: any) => Promise<IPCResponse>;
+    update: (projectId: string, updates: UpdateProjectRequest) => Promise<IPCResponse<Project>>;
     delete: (projectId: string) => Promise<IPCResponse>;
     detectBranch: (path: string) => Promise<IPCResponse>;
     reorder: (projectOrders: Array<{ id: number; displayOrder: number }>) => Promise<IPCResponse>;
@@ -142,7 +152,18 @@ interface ElectronAPI {
   // Configuration
   config: {
     get: () => Promise<IPCResponse>;
-    update: (updates: any) => Promise<IPCResponse>;
+    update: (updates: Partial<{
+      apiKey?: string;
+      model?: string;
+      verbose?: boolean;
+      system_prompt_addon?: string;
+      show_notifications?: boolean;
+      play_sound_on_completion?: boolean;
+      play_sound_on_waiting?: boolean;
+      play_sound_on_error?: boolean;
+      claude_path?: string;
+      git_auto_squash?: boolean;
+    }>) => Promise<IPCResponse>;
   };
 
   // Prompts
@@ -157,15 +178,36 @@ interface ElectronAPI {
     readProject: (projectId: number, filePath: string) => Promise<IPCResponse>;
   };
 
+  // GitHub operations
+  github: {
+    getPRs: (projectId: number) => Promise<IPCResponse>;
+    getIssues: (projectId: number) => Promise<IPCResponse>;
+    getCIStatus: (projectId: number, prNumber: number) => Promise<IPCResponse>;
+    getCILogs: (projectId: number, prNumber: number) => Promise<IPCResponse>;
+    createFixSession: (request: CreateFixSessionRequest) => Promise<IPCResponse<Session>>;
+    createPR: (request: CreatePRRequest) => Promise<IPCResponse<{ url: string }>>;
+  };
+
   // Dialog
   dialog: {
-    openFile: (options?: any) => Promise<IPCResponse<string | null>>;
-    openDirectory: (options?: any) => Promise<IPCResponse<string | null>>;
+    openFile: (options?: {
+      defaultPath?: string;
+      filters?: Array<{ name: string; extensions: string[] }>;
+      properties?: Array<'openFile' | 'multiSelections'>;
+    }) => Promise<IPCResponse<string | null>>;
+    openDirectory: (options?: {
+      defaultPath?: string;
+      properties?: Array<'openDirectory' | 'createDirectory'>;
+    }) => Promise<IPCResponse<string | null>>;
   };
 
   // Permissions
   permissions: {
-    respond: (requestId: string, response: any) => Promise<IPCResponse>;
+    respond: (requestId: string, response: {
+      behavior: 'allow' | 'deny';
+      updatedInput?: unknown;
+      message?: string;
+    }) => Promise<IPCResponse>;
     getPending: () => Promise<IPCResponse>;
   };
 
@@ -184,8 +226,16 @@ interface ElectronAPI {
   dashboard: {
     getProjectStatus: (projectId: number) => Promise<IPCResponse>;
     getProjectStatusProgressive: (projectId: number) => Promise<IPCResponse>;
-    onUpdate: (callback: (data: any) => void) => () => void;
-    onSessionUpdate: (callback: (data: any) => void) => () => void;
+    onUpdate: (callback: (data: {
+      projectId: number;
+      sessionCount: number;
+      sessionStatuses: Record<string, Session['status']>;
+    }) => void) => () => void;
+    onSessionUpdate: (callback: (data: {
+      sessionId: string;
+      status: Session['status'];
+      gitStatus?: GitStatus;
+    }) => void) => () => void;
   };
 
   // UI State management
@@ -198,38 +248,80 @@ interface ElectronAPI {
 
   // Event listeners for real-time updates
   events: {
-    onSessionCreated: (callback: (session: any) => void) => () => void;
-    onSessionUpdated: (callback: (session: any) => void) => () => void;
-    onSessionDeleted: (callback: (session: any) => void) => () => void;
-    onSessionsLoaded: (callback: (sessions: any[]) => void) => () => void;
-    onSessionOutput: (callback: (output: any) => void) => () => void;
-    onSessionLog: (callback: (data: any) => void) => () => void;
+    onSessionCreated: (callback: (session: Session) => void) => () => void;
+    onSessionUpdated: (callback: (session: Session) => void) => () => void;
+    onSessionDeleted: (callback: (session: { id: string }) => void) => () => void;
+    onSessionsLoaded: (callback: (sessions: Session[]) => void) => () => void;
+    onSessionOutput: (callback: (output: {
+      sessionId: string;
+      type: 'stdout' | 'stderr' | 'json' | 'error';
+      data: string | unknown;
+      timestamp: string;
+    }) => void) => () => void;
+    onSessionLog: (callback: (data: {
+      sessionId: string;
+      entry: {
+        type: 'info' | 'warning' | 'error' | 'debug';
+        message: string;
+        details?: string;
+        timestamp?: string;
+      };
+    }) => void) => () => void;
     onSessionLogsCleared: (callback: (data: { sessionId: string }) => void) => () => void;
-    onSessionOutputAvailable: (callback: (info: any) => void) => () => void;
-    onGitStatusUpdated: (callback: (data: { sessionId: string; gitStatus: any }) => void) => () => void;
+    onSessionOutputAvailable: (callback: (info: {
+      sessionId: string;
+      outputIndex: number;
+    }) => void) => () => void;
+    onGitStatusUpdated: (callback: (data: { sessionId: string; gitStatus: GitStatus }) => void) => () => void;
     onGitStatusLoading: (callback: (data: { sessionId: string }) => void) => () => void;
     onGitStatusLoadingBatch?: (callback: (sessionIds: string[]) => void) => () => void;
-    onGitStatusUpdatedBatch?: (callback: (updates: Array<{ sessionId: string; status: any }>) => void) => () => void;
+    onGitStatusUpdatedBatch?: (callback: (updates: Array<{ sessionId: string; status: GitStatus }>) => void) => () => void;
     
     // Project events
-    onProjectUpdated: (callback: (project: any) => void) => () => void;
+    onProjectUpdated: (callback: (project: Project) => void) => () => void;
     
     // Folder events
-    onFolderCreated: (callback: (folder: any) => void) => () => void;
-    onFolderUpdated: (callback: (folder: any) => void) => () => void;
+    onFolderCreated: (callback: (folder: Folder) => void) => () => void;
+    onFolderUpdated: (callback: (folder: Folder) => void) => () => void;
     onFolderDeleted: (callback: (folderId: string) => void) => () => void;
     
-    onTerminalOutput: (callback: (output: any) => void) => () => void;
+    onTerminalOutput: (callback: (output: {
+      sessionId: string;
+      data: string;
+    }) => void) => () => void;
     onMainLog: (callback: (level: string, message: string) => void) => () => void;
-    onVersionUpdateAvailable: (callback: (versionInfo: any) => void) => () => void;
+    onVersionUpdateAvailable: (callback: (versionInfo: {
+      latestVersion: string;
+      currentVersion: string;
+      downloadUrl: string;
+      releaseNotes?: string;
+    }) => void) => () => void;
     
     // Auto-updater events
     onUpdaterCheckingForUpdate: (callback: () => void) => () => void;
-    onUpdaterUpdateAvailable: (callback: (info: any) => void) => () => void;
-    onUpdaterUpdateNotAvailable: (callback: (info: any) => void) => () => void;
-    onUpdaterDownloadProgress: (callback: (progressInfo: any) => void) => () => void;
-    onUpdaterUpdateDownloaded: (callback: (info: any) => void) => () => void;
-    onUpdaterError: (callback: (error: any) => void) => () => void;
+    onUpdaterUpdateAvailable: (callback: (info: {
+      version: string;
+      releaseNotes?: string;
+      releaseName?: string;
+      releaseDate: string;
+    }) => void) => () => void;
+    onUpdaterUpdateNotAvailable: (callback: (info: {
+      version: string;
+      releaseDate: string;
+    }) => void) => () => void;
+    onUpdaterDownloadProgress: (callback: (progressInfo: {
+      bytesPerSecond: number;
+      percent: number;
+      transferred: number;
+      total: number;
+    }) => void) => () => void;
+    onUpdaterUpdateDownloaded: (callback: (info: {
+      version: string;
+      releaseNotes?: string;
+      releaseName?: string;
+      releaseDate: string;
+    }) => void) => () => void;
+    onUpdaterError: (callback: (error: Error) => void) => () => void;
     
     // Process management events
     onZombieProcessesDetected: (callback: (data: { sessionId?: string | null; pids?: number[]; message: string }) => void) => () => void;
@@ -245,7 +337,7 @@ interface ElectronAPI {
         name: string;
         type: string;
         notnull: number;
-        dflt_value: any;
+        dflt_value: unknown;
         pk: number;
       }>;
       foreignKeys: Array<{
@@ -270,9 +362,9 @@ interface ElectronAPI {
 // Additional electron interface for IPC event listeners
 interface ElectronInterface {
   openExternal: (url: string) => Promise<void>;
-  invoke: (channel: string, ...args: any[]) => Promise<any>;
-  on: (channel: string, callback: (...args: any[]) => void) => void;
-  off: (channel: string, callback: (...args: any[]) => void) => void;
+  invoke: <T = unknown>(channel: string, ...args: unknown[]) => Promise<T>;
+  on: (channel: string, callback: (...args: unknown[]) => void) => void;
+  off: (channel: string, callback: (...args: unknown[]) => void) => void;
 }
 
 declare global {

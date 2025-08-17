@@ -4,7 +4,7 @@ import { useNavigationStore } from '../stores/navigationStore';
 import { StatusIndicator } from './StatusIndicator';
 import { GitStatusIndicator } from './GitStatusIndicator';
 import { ConfirmDialog } from './ConfirmDialog';
-import { API } from '../utils/api';
+import { API, type IPCResponse } from '../utils/api';
 import { Star, Archive } from 'lucide-react';
 import type { Session, GitStatus } from '../types/session';
 import { useContextMenu } from '../contexts/ContextMenuContext';
@@ -60,8 +60,8 @@ export const SessionListItem = memo(function SessionListItem({ session, isNested
     // Check if this session's project has a run script
     const checkRunScript = () => {
       API.sessions.hasRunScript(session.id)
-        .then(response => {
-          if (response.success) {
+        .then((response: IPCResponse<boolean>) => {
+          if (response.success && response.data !== undefined) {
             setHasRunScript(response.data);
           }
         })
@@ -94,7 +94,7 @@ export const SessionListItem = memo(function SessionListItem({ session, isNested
   useEffect(() => {
     // Check if this session is currently running
     API.sessions.getRunningSession()
-      .then(response => {
+      .then((response: IPCResponse<string | null>) => {
         if (response.success) {
           setIsRunning(response.data === session.id);
         }

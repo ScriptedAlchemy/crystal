@@ -232,8 +232,8 @@ export const useSessionView = (
       }
       
       setLoadError(null);
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
         console.log(`[loadOutputContent] Request aborted for session ${sessionId}`);
         // CRITICAL: Reset loading state before returning
         loadingRef.current = false;
@@ -612,7 +612,7 @@ export const useSessionView = (
         term.onData((data) => {
           // Pass all input directly to the PTY without buffering
           if (activeSession && !activeSession.archived) {
-            API.sessions.sendTerminalInput(activeSession.id, data).catch(error => {
+            API.sessions.sendTerminalInput(activeSession.id, data).catch((error: any) => {
               console.error('Failed to send terminal input:', error);
             });
           }
@@ -622,7 +622,7 @@ export const useSessionView = (
         // and any buffered output is sent to the terminal
         if (activeSession && !activeSession.archived) {
           setTimeout(() => {
-            API.sessions.sendTerminalInput(activeSession.id, '').catch(error => {
+            API.sessions.sendTerminalInput(activeSession.id, '').catch((error: any) => {
               console.error('Failed to send initial terminal input:', error);
             });
           }, 100);
@@ -657,7 +657,7 @@ export const useSessionView = (
           // Don't send it when just switching back to terminal view
           if (!wasAlreadyInitialized && !activeSession.archived) {
             console.log('[Terminal] Sending empty input to trigger PTY prompt (fresh initialization)');
-            API.sessions.sendTerminalInput(activeSession.id, '').catch(error => {
+            API.sessions.sendTerminalInput(activeSession.id, '').catch((error: any) => {
               console.error('Failed to send terminal trigger input:', error);
             });
           } else {
@@ -1332,8 +1332,8 @@ export const useSessionView = (
       console.log(`[handleRebaseMainIntoWorktree] API call completed`, response);
       
       if (!response.success) {
-        if ((response as any).gitError) {
-          const gitError = (response as any).gitError;
+        const gitError = (response as IPCResponse & { gitError?: GitErrorDetails }).gitError;
+        if (gitError) {
           setGitErrorDetails({
             title: 'Rebase Failed',
             message: response.error || 'Failed to rebase main into worktree',
@@ -1349,10 +1349,10 @@ export const useSessionView = (
       } else {
         console.log(`[handleRebaseMainIntoWorktree] Rebase successful, checking for changes to rebase`);
         // Run this in the background and don't let it block the finally block
-        API.sessions.hasChangesToRebase(activeSession.id).then(changesResponse => {
+        API.sessions.hasChangesToRebase(activeSession.id).then((changesResponse: any) => {
           console.log(`[handleRebaseMainIntoWorktree] hasChangesToRebase completed`, changesResponse);
           if (changesResponse.success) setHasChangesToRebase(changesResponse.data);
-        }).catch(error => {
+        }).catch((error: any) => {
           console.error(`[handleRebaseMainIntoWorktree] hasChangesToRebase failed`, error);
         });
       }
@@ -1419,8 +1419,8 @@ export const useSessionView = (
         : await API.sessions.rebaseToMain(activeSession.id);
 
       if (!response.success) {
-        if ((response as any).gitError) {
-          const gitError = (response as any).gitError;
+        const gitError = (response as IPCResponse & { gitError?: GitErrorDetails }).gitError;
+        if (gitError) {
           setGitErrorDetails({
             title: shouldSquash ? 'Squash and Rebase Failed' : 'Rebase Failed',
             message: response.error || `Failed to ${shouldSquash ? 'squash and ' : ''}rebase to main`,
@@ -1435,9 +1435,9 @@ export const useSessionView = (
         }
       } else {
         // Run this in the background and don't let it block the finally block
-        API.sessions.hasChangesToRebase(activeSession.id).then(changesResponse => {
+        API.sessions.hasChangesToRebase(activeSession.id).then((changesResponse: any) => {
           if (changesResponse.success) setHasChangesToRebase(changesResponse.data);
-        }).catch(error => {
+        }).catch((error: any) => {
           console.error(`[performSquashWithCommitMessage] hasChangesToRebase failed`, error);
         });
       }

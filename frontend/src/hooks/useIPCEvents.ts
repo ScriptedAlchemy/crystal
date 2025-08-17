@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useSessionStore } from '../stores/sessionStore';
 import { useErrorStore } from '../stores/errorStore';
-import { API } from '../utils/api';
+import { API, type IPCResponse } from '../utils/api';
 import type { Session, SessionOutput, GitStatus } from '../types/session';
 
 // Throttle utility function
@@ -245,7 +245,7 @@ export function useIPCEvents() {
 
     // Load initial sessions
     API.sessions.getAll()
-      .then(response => {
+      .then((response: IPCResponse<Session[]>) => {
         if (response.success && response.data) {
           const sessionsWithJsonMessages = response.data.map((session: Session) => ({
             ...session,
@@ -254,7 +254,7 @@ export function useIPCEvents() {
           loadSessions(sessionsWithJsonMessages);
         }
       })
-      .catch(error => {
+      .catch((error: Error) => {
         console.error('Failed to load initial sessions:', error);
       });
 

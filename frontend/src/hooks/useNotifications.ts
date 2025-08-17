@@ -46,7 +46,7 @@ export function useNotifications() {
     
     try {
       // Create a simple notification sound using Web Audio API
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioContext = new (window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext!)();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
       
@@ -179,11 +179,11 @@ export function useNotifications() {
     if (!settingsLoaded.current) {
       settingsLoaded.current = true;
       
-      API.config.get().then(response => {
+      API.config.get().then((response: any) => {
         if (response.success && response.data?.notifications) {
           setSettings(response.data.notifications);
         }
-      }).catch(error => {
+      }).catch((error: any) => {
         console.error('Failed to load notification settings:', error);
       });
       

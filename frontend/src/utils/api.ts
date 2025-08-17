@@ -464,6 +464,39 @@ class ElectronAPI {
       return window.electronAPI.dashboard.onSessionUpdate(callback);
     },
   };
+
+  // GitHub CLI integration
+  static github = {
+    async getPRs(projectId: number) {
+      if (!isElectron()) throw new Error('Electron API not available');
+      return window.electronAPI.github.getPRs(projectId);
+    },
+
+    async getIssues(projectId: number) {
+      if (!isElectron()) throw new Error('Electron API not available');
+      return window.electronAPI.github.getIssues(projectId);
+    },
+
+    async getCIStatus(projectId: number, prNumber: number) {
+      if (!isElectron()) throw new Error('Electron API not available');
+      return window.electronAPI.github.getCIStatus(projectId, prNumber);
+    },
+
+    async getCILogs(projectId: number, prNumber: number) {
+      if (!isElectron()) throw new Error('Electron API not available');
+      return window.electronAPI.github.getCILogs(projectId, prNumber);
+    },
+
+    async createFixSession(request: { projectId: number; prNumber: number; ciLogs?: string; type: 'pr' | 'issue' }) {
+      if (!isElectron()) throw new Error('Electron API not available');
+      return window.electronAPI.github.createFixSession(request);
+    },
+
+    async createPR(request: { projectId: number; title: string; body?: string }) {
+      if (!isElectron()) throw new Error('Electron API not available');
+      return window.electronAPI.github.createPR(request);
+    },
+  };
 }
 
 // Helper to call HTTP backend using same IPC channels
@@ -501,6 +534,7 @@ class BrowserAPI {
   static permissions = createBrowserSection<any>('permissions');
   static stravu = createBrowserSection<any>('stravu');
   static dashboard = createBrowserSection<any>('dashboard');
+  static github = createBrowserSection<any>('github');
 
   static checkForUpdates() {
     return invokeHttp('version:check-for-updates');

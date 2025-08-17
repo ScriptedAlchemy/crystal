@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ProjectDashboard } from './ProjectDashboard';
+import { GitHubDashboard } from './GitHubDashboard';
 import { FileEditor } from './FileEditor';
 import { SessionInputWithImages } from './session/SessionInputWithImages';
 import { RichOutputWithSidebar } from './session/RichOutputWithSidebar';
 import { RichOutputSettings } from './session/RichOutputView';
-import { API } from '../utils/api';
+import { API, type IPCResponse } from '../utils/api';
 import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 import { useTheme } from '../contexts/ThemeContext';
@@ -12,10 +13,10 @@ import { useSessionStore } from '../stores/sessionStore';
 import { Session } from '../types/session';
 import { useSessionView } from '../hooks/useSessionView';
 import { cn } from '../utils/cn';
-import { BarChart3, Eye, FolderTree, Terminal as TerminalIcon } from 'lucide-react';
+import { BarChart3, Eye, FolderTree, Terminal as TerminalIcon, Github } from 'lucide-react';
 import '@xterm/xterm/css/xterm.css';
 
-export type ProjectViewMode = 'dashboard' | 'output' | 'files' | 'terminal';
+export type ProjectViewMode = 'dashboard' | 'output' | 'files' | 'terminal' | 'github';
 
 interface ProjectViewProps {
   projectId: number;
@@ -57,6 +58,11 @@ const ProjectViewTabs: React.FC<ProjectViewTabsProps> = ({ viewMode, setViewMode
       label: 'Terminal', 
       icon: <TerminalIcon className="w-4 h-4" />
     },
+    { 
+      mode: 'github', 
+      label: 'GitHub', 
+      icon: <Github className="w-4 h-4" />
+    },
   ];
 
   return (
@@ -64,6 +70,7 @@ const ProjectViewTabs: React.FC<ProjectViewTabsProps> = ({ viewMode, setViewMode
       {tabs.map(({ mode, label, icon }) => (
         <button
           key={mode}
+          data-testid={mode === 'github' ? 'github-tab' : undefined}
           role="tab"
           aria-selected={viewMode === mode}
           onClick={() => setViewMode(mode)}
@@ -212,7 +219,7 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
     // Handle terminal input
     term.onData((data) => {
       if (mainRepoSessionId) {
-        API.sessions.sendTerminalInput(mainRepoSessionId, data).catch(error => {
+        API.sessions.sendTerminalInput(mainRepoSessionId, data).catch((error: Error) => {
           console.error('Failed to send terminal input:', error);
         });
       }
@@ -299,11 +306,11 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
       initTerminal();
       
       // Pre-create the backend PTY session
-      API.sessions.preCreateTerminal(mainRepoSessionId).then(response => {
+      API.sessions.preCreateTerminal(mainRepoSessionId).then((response: IPCResponse) => {
         if (response.success) {
           console.log('[ProjectView Terminal] Backend PTY pre-created for session', mainRepoSessionId);
         }
-      }).catch(error => {
+      }).catch((error: Error) => {
         console.error('[ProjectView Terminal] Failed to pre-create backend PTY:', error);
       });
     }
@@ -517,6 +524,14 @@ export const ProjectView: React.FC<ProjectViewProps> = ({
                 onSettingsChange={handleRichOutputSettingsChange}
               />
             )}
+          </div>
+          
+          {/* GitHub View */}
+          <div className={`h-full ${viewMode === 'github' ? 'flex flex-col p-6' : 'hidden'}`}>
+            <GitHubDashboard 
+              projectId={projectId} 
+              projectName={projectName} 
+            />
           </div>
         </div>
       </div>

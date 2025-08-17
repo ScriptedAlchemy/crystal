@@ -1598,7 +1598,7 @@ export function DraggableProjectTreeView() {
           const isActiveProject = activeProjectId === project.id;
           
           return (
-            <div key={project.id} className="mb-1">
+            <div key={project.id} className="mb-1" data-testid={`project-${project.id}`}>
               <div 
                 className={`group flex items-center space-x-1 px-2 py-2 rounded-lg transition-colors ${
                   isActiveProject 
@@ -1614,6 +1614,7 @@ export function DraggableProjectTreeView() {
                 onDrop={(e) => handleProjectDrop(e, project)}
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
+                data-testid={`project-item-${project.id}`}
               >
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity cursor-move">
                   <GripVertical className="w-3 h-3 text-text-tertiary" />
@@ -1649,7 +1650,7 @@ export function DraggableProjectTreeView() {
                   <div className="relative" title="Git-backed project (connected to repository)">
                     <GitBranch className="w-4 h-4 text-interactive flex-shrink-0" />
                   </div>
-                  <span className="text-sm font-semibold text-text-primary truncate text-left" title={project.name}>
+                  <span className="text-sm font-semibold text-text-primary truncate text-left" title={project.name} data-testid={`project-name-${project.id}`}>
                     {project.name}
                   </span>
                   {unviewedCount > 0 && (
@@ -1839,8 +1840,8 @@ export function DraggableProjectTreeView() {
                   const sessionCount = project.sessions.length;
                   
                   return (
-                    <div key={`archived-${project.id}`} className="ml-2">
-                      <div className="flex items-center space-x-1 px-2 py-1 rounded hover:bg-surface-hover">
+                    <div key={`archived-${project.id}`} className="ml-2" data-testid={`archived-project-${project.id}`}>
+                      <div className="flex items-center space-x-1 px-2 py-1 rounded hover:bg-surface-hover" data-testid={`archived-project-item-${project.id}`}>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -1857,7 +1858,7 @@ export function DraggableProjectTreeView() {
                         </button>
                         
                         <FolderIcon className="w-4 h-4 text-text-tertiary" />
-                        <span className="text-sm text-text-tertiary flex-1 text-left">
+                        <span className="text-sm text-text-tertiary flex-1 text-left" data-testid={`archived-project-name-${project.id}`}>
                           {project.name} ({sessionCount})
                         </span>
                       </div>

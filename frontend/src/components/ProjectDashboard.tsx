@@ -123,7 +123,7 @@ export const ProjectDashboard: React.FC<ProjectDashboardProps> = React.memo(({ p
     const cleanupFns: Array<() => void> = [];
 
     // Handle dashboard updates
-    const unsubscribeUpdate = API.dashboard.onUpdate((event) => {
+    const unsubscribeUpdate = API.dashboard.onUpdate((event: { projectId: number; data: ProjectDashboardData | null; isPartial?: boolean }) => {
       if (event.projectId === projectId) {
         setDashboardData(prevData => {
           if (!prevData && event.data) {
@@ -149,7 +149,7 @@ export const ProjectDashboard: React.FC<ProjectDashboardProps> = React.memo(({ p
     cleanupFns.push(unsubscribeUpdate);
 
     // Handle individual session updates with debouncing
-    const unsubscribeSession = API.dashboard.onSessionUpdate((event) => {
+    const unsubscribeSession = API.dashboard.onSessionUpdate((event: { projectId: number; session: SessionBranchInfo | null }) => {
       if (event.projectId === projectId && event.session) {
         // Add to pending updates
         pendingSessionUpdatesRef.current.set(event.session.sessionId, event.session);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { API } from '../utils/api';
+import { API, type IPCResponse } from '../utils/api';
 import type { CreateSessionRequest } from '../types/session';
 import { useErrorStore } from '../stores/errorStore';
 import { Shield, ShieldOff, Sparkles, GitBranch, ChevronRight, ChevronDown, Zap, Brain, Target } from 'lucide-react';
@@ -45,7 +45,7 @@ export function CreateSessionDialog({ isOpen, onClose, projectName, projectId }:
   // Fetch project details to get last used model
   useEffect(() => {
     if (isOpen && projectId) {
-      API.projects.getAll().then(response => {
+      API.projects.getAll().then((response: IPCResponse) => {
         if (response.success && response.data) {
           const project = response.data.find((p: any) => p.id === projectId);
           if (project && project.lastUsedModel) {
@@ -64,7 +64,7 @@ export function CreateSessionDialog({ isOpen, onClose, projectName, projectId }:
   useEffect(() => {
     if (isOpen) {
       // Fetch the default permission mode and check for API key when dialog opens
-      API.config.get().then(response => {
+      API.config.get().then((response: IPCResponse) => {
         if (response.success) {
           if (response.data?.defaultPermissionMode) {
             setFormData(prev => ({
@@ -83,7 +83,7 @@ export function CreateSessionDialog({ isOpen, onClose, projectName, projectId }:
       if (projectId) {
         setIsLoadingBranches(true);
         // First get the project to get its path
-        API.projects.getAll().then(projectsResponse => {
+        API.projects.getAll().then((projectsResponse: IPCResponse) => {
           if (!projectsResponse.success || !projectsResponse.data) {
             throw new Error('Failed to fetch projects');
           }
@@ -97,7 +97,7 @@ export function CreateSessionDialog({ isOpen, onClose, projectName, projectId }:
             // Get the main branch for this project using its path
             API.projects.detectBranch(project.path)
           ]);
-        }).then(([branchesResponse, mainBranchResponse]) => {
+        }).then(([branchesResponse, mainBranchResponse]: [IPCResponse, IPCResponse]) => {
           if (branchesResponse.success && branchesResponse.data) {
             setBranches(branchesResponse.data);
             // Set the current branch as default if available
@@ -222,7 +222,7 @@ export function CreateSessionDialog({ isOpen, onClose, projectName, projectId }:
       
       // Save the model as last used for this project
       if (projectId && formData.model) {
-        API.projects.update(projectId.toString(), { lastUsedModel: formData.model }).catch(err => {
+        API.projects.update(projectId.toString(), { lastUsedModel: formData.model }).catch((err: Error) => {
           console.error('Failed to save last used model:', err);
         });
       }

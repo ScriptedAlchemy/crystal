@@ -152,6 +152,7 @@ export default function ProjectSelector({ onProjectChange }: ProjectSelectorProp
       <div className="relative">
         <div className="flex items-center space-x-2">
           <Button
+            data-testid="project-selector"
             onClick={() => setIsOpen(!isOpen)}
             variant="secondary"
             size="md"

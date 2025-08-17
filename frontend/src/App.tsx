@@ -266,7 +266,7 @@ function App() {
         {/* Draggable title bar area */}
         <div 
           className="fixed top-0 left-0 right-0 h-8 z-50 flex items-center justify-end pr-4" 
-          style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+          style={{ WebkitAppRegion: 'drag' } as React.CSSProperties & { WebkitAppRegion: string }}
         >
         </div>
         <Sidebar 
