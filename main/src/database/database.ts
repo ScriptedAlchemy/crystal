@@ -318,21 +318,31 @@ export class DatabaseService {
       this.db.prepare("CREATE INDEX IF NOT EXISTS idx_sessions_display_order ON sessions(project_id, display_order)").run();
     }
     
+    // Define column info type
+    interface TableColumnInfo {
+      cid: number;
+      name: string;
+      type: string;
+      notnull: number;
+      dflt_value: unknown;
+      pk: number;
+    }
+    
     // Normalize timestamp fields migration
     // Check if last_viewed_at is still TEXT type
-    const sessionTableInfoTimestamp = this.db.prepare("PRAGMA table_info(sessions)").all();
-    const lastViewedAtColumn = sessionTableInfoTimestamp.find((col: any) => col.name === 'last_viewed_at') as any;
+    const sessionTableInfoTimestamp = this.db.prepare("PRAGMA table_info(sessions)").all() as TableColumnInfo[];
+    const lastViewedAtColumn = sessionTableInfoTimestamp.find(col => col.name === 'last_viewed_at');
     
     // Skip this migration if last_viewed_at_new already exists (migration partially completed)
-    const hasLastViewedAtNew = sessionTableInfoTimestamp.some((col: any) => col.name === 'last_viewed_at_new');
+    const hasLastViewedAtNew = sessionTableInfoTimestamp.some(col => col.name === 'last_viewed_at_new');
     
     if (lastViewedAtColumn && lastViewedAtColumn.type === 'TEXT' && !hasLastViewedAtNew) {
       console.log('[Database] Running timestamp normalization migration...');
       
       try {
         // Check if the new columns already exist (from a previous failed migration)
-        const hasLastViewedAtNew = sessionTableInfoTimestamp.some((col: any) => col.name === 'last_viewed_at_new');
-        const hasRunStartedAtNew = sessionTableInfoTimestamp.some((col: any) => col.name === 'run_started_at_new');
+        const hasLastViewedAtNew = sessionTableInfoTimestamp.some(col => col.name === 'last_viewed_at_new');
+        const hasRunStartedAtNew = sessionTableInfoTimestamp.some(col => col.name === 'run_started_at_new');
         
         // Create new temporary columns with DATETIME type if they don't exist
         if (!hasLastViewedAtNew) {
@@ -441,8 +451,8 @@ export class DatabaseService {
       
       // Check if the old folders table has INTEGER id
       if (foldersExists) {
-        const foldersInfo = this.db.prepare("PRAGMA table_info(folders)").all();
-        const idColumn = foldersInfo.find((col: any) => col.name === 'id') as any;
+        const foldersInfo = this.db.prepare("PRAGMA table_info(folders)").all() as TableColumnInfo[];
+        const idColumn = foldersInfo.find(col => col.name === 'id');
         
         if (idColumn && idColumn.type === 'INTEGER') {
           // Old folders table with INTEGER id exists, drop it
@@ -465,7 +475,15 @@ export class DatabaseService {
       `).run();
       
       // Migrate data from project_folders to folders
-      const projectFolders = this.db.prepare('SELECT * FROM project_folders').all() as any[];
+      interface ProjectFolder {
+        id: string;
+        name: string;
+        project_id: number;
+        display_order: number;
+        created_at: string;
+        updated_at: string;
+      }
+      const projectFolders = this.db.prepare('SELECT * FROM project_folders').all() as ProjectFolder[];
       console.log(`[Database] Migrating ${projectFolders.length} folders from project_folders to folders table...`);
       
       for (const folder of projectFolders) {
@@ -488,8 +506,8 @@ export class DatabaseService {
       console.log('[Database] Dropped legacy project_folders table');
       
       // Update sessions table folder_id column type if needed
-      const sessionTableInfo = this.db.prepare("PRAGMA table_info(sessions)").all();
-      const folderIdColumn = sessionTableInfo.find((col: any) => col.name === 'folder_id') as any;
+      const sessionTableInfo = this.db.prepare("PRAGMA table_info(sessions)").all() as TableColumnInfo[];
+      const folderIdColumn = sessionTableInfo.find(col => col.name === 'folder_id');
       
       if (folderIdColumn && folderIdColumn.type === 'INTEGER') {
         console.log('[Database] Converting sessions.folder_id from INTEGER to TEXT...');
@@ -1195,6 +1213,15 @@ export class DatabaseService {
     return session;
   }
 
+  sessionNameExists(name: string, worktreeName?: string): boolean {
+    const result = this.db.prepare(`
+      SELECT id FROM sessions 
+      WHERE (name = ? OR worktree_name = ?)
+      LIMIT 1
+    `).get(name, worktreeName || name);
+    return !!result;
+  }
+
   getAllSessions(projectId?: number): Session[] {
     if (projectId !== undefined) {
       return this.db.prepare('SELECT * FROM sessions WHERE project_id = ? AND (archived = 0 OR archived IS NULL) AND (is_main_repo = 0 OR is_main_repo IS NULL) ORDER BY display_order ASC, created_at DESC').all(projectId) as Session[];
@@ -1532,7 +1559,7 @@ export class DatabaseService {
       SELECT MAX(execution_sequence) as max_seq 
       FROM execution_diffs 
       WHERE session_id = ?
-    `).get(sessionId) as any;
+    `).get(sessionId) as { max_seq: number | null } | undefined;
     
     return (result?.max_seq || 0) + 1;
   }
@@ -1706,7 +1733,7 @@ export class DatabaseService {
       FROM app_opens
       ORDER BY opened_at DESC
       LIMIT 1
-    `).get() as any;
+    `).get() as { opened_at: string; welcome_hidden: number; discord_shown: number } | undefined;
 
     if (!result) return null;
     

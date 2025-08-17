@@ -42,6 +42,10 @@ export class SessionManager extends EventEmitter {
     this.emit('active-project-changed', project);
   }
 
+  getDatabase(): DatabaseService {
+    return this.db;
+  }
+
   getActiveProject(): Project | null {
     if (!this.activeProject) {
       this.activeProject = this.db.getActiveProject() || null;
@@ -409,7 +413,7 @@ export class SessionManager extends EventEmitter {
       
       if (Array.isArray(content)) {
         // Look for text content in the array
-        const textContent = content.find((item: any) => item.type === 'text');
+        const textContent = content.find((item: { type: string; text?: string }) => item.type === 'text');
         if (textContent?.text) {
           promptText = textContent.text;
         }
@@ -435,8 +439,8 @@ export class SessionManager extends EventEmitter {
       if (Array.isArray(content)) {
         // Concatenate all text content from the array
         assistantText = content
-          .filter((item: any) => item.type === 'text')
-          .map((item: any) => item.text)
+          .filter((item: { type: string; text?: string }) => item.type === 'text')
+          .map((item: { type: string; text?: string }) => item.text)
           .join('\n');
       } else if (typeof content === 'string') {
         assistantText = content;
@@ -772,9 +776,9 @@ export class SessionManager extends EventEmitter {
               addSessionLog(sessionId, 'warn', line, 'Build');
             });
           }
-        } catch (cmdError: any) {
+        } catch (cmdError) {
           console.error(`[SessionManager] Build command failed: ${command}`, cmdError);
-          const errorMessage = cmdError.stderr || cmdError.stdout || cmdError.message || String(cmdError);
+          const errorMessage = (cmdError as { stderr?: string; stdout?: string; message?: string }).stderr || (cmdError as { stdout?: string; message?: string }).stdout || (cmdError as Error).message || String(cmdError);
           allOutput += errorMessage;
           
           addSessionLog(sessionId, 'error', `Command failed: ${command}`, 'Build');

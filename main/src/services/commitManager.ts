@@ -106,9 +106,9 @@ export class CommitManager extends EventEmitter {
       this.emit('commit-created', { sessionId, commitHash, mode: 'checkpoint' });
 
       return { success: true, commitHash };
-    } catch (error: any) {
-      const errorMessage = error.stderr || error.stdout || error.message || 'Unknown error';
-      this.logger?.error(`Failed to create checkpoint commit:`, error);
+    } catch (error) {
+      const errorMessage = (error as { stderr?: string; stdout?: string; message?: string }).stderr || (error as { stdout?: string; message?: string }).stdout || (error as Error).message || 'Unknown error';
+      this.logger?.error(`Failed to create checkpoint commit:`, error instanceof Error ? error : undefined);
       
       return {
         success: false,
@@ -160,9 +160,9 @@ export class CommitManager extends EventEmitter {
 
           // Continue polling
           setTimeout(checkForCommit, pollInterval);
-        } catch (error: any) {
+        } catch (error) {
           this.logger?.error(`Error checking for structured commit:`, error instanceof Error ? error : undefined);
-          resolve({ success: false, error: error.message });
+          resolve({ success: false, error: (error as Error).message });
         }
       };
 
@@ -183,16 +183,8 @@ export class CommitManager extends EventEmitter {
     try {
       this.logger?.verbose(`Finalizing session ${sessionId}`);
 
-      if (options.squashCommits) {
-        // Get the merge base with main
-        const mergeBase = execSync(`git merge-base HEAD ${mainBranch}`, {
-          cwd: worktreePath,
-          encoding: 'utf8',
-        }).trim();
-
-        // Reset to merge base keeping changes
-        execSync(`git reset --soft ${mergeBase}`, { cwd: worktreePath });
-
+      // Check if we should commit changes
+      if (options.shouldCommit) {
         // Commit with final message
         const commitMessage = options.commitMessage || 'Finalized session changes';
         const commitCommand = buildGitCommitCommand(commitMessage);
@@ -204,22 +196,13 @@ export class CommitManager extends EventEmitter {
         }).trim();
 
         this.logger?.verbose(`Created final commit: ${commitHash}`);
-
-        // Run post-processing if requested
-        if (options.runPostProcessing && options.postProcessingCommands) {
-          for (const cmd of options.postProcessingCommands) {
-            this.logger?.verbose(`Running post-processing command: ${cmd}`);
-            execSync(cmd, { cwd: worktreePath });
-          }
-        }
-
         return { success: true, commitHash };
       }
 
       return { success: true };
-    } catch (error: any) {
-      const errorMessage = error.stderr || error.stdout || error.message || 'Unknown error';
-      this.logger?.error(`Failed to finalize session:`, error);
+    } catch (error) {
+      const errorMessage = (error as { stderr?: string; stdout?: string; message?: string }).stderr || (error as { stdout?: string; message?: string }).stdout || (error as Error).message || 'Unknown error';
+      this.logger?.error(`Failed to finalize session:`, error instanceof Error ? error : undefined);
       
       return {
         success: false,

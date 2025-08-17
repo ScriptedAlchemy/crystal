@@ -14,10 +14,11 @@ if (process.env.NODE_ENV !== 'production') {
   };
 
   // Override console methods to capture frontend logs
-  ['log', 'warn', 'error', 'info', 'debug'].forEach(level => {
-    (console as any)[level] = (...args: any[]) => {
+  type ConsoleLevel = 'log' | 'warn' | 'error' | 'info' | 'debug';
+  (['log', 'warn', 'error', 'info', 'debug'] as ConsoleLevel[]).forEach(level => {
+    console[level] = (...args: unknown[]) => {
       // Call original console first so they still appear in DevTools
-      (originalConsole as any)[level](...args);
+      originalConsole[level](...args);
       
       // Send to main process for file logging
       try {
@@ -45,7 +46,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Response type for IPC calls
-interface IPCResponse<T = any> {
+interface IPCResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -53,7 +54,7 @@ interface IPCResponse<T = any> {
 
 contextBridge.exposeInMainWorld('electronAPI', {
   // Generic invoke method for direct IPC calls
-  invoke: (channel: string, ...args: any[]) => ipcRenderer.invoke(channel, ...args),
+  invoke: <T = unknown>(channel: string, ...args: unknown[]) => ipcRenderer.invoke(channel, ...args) as Promise<T>,
   
   // Basic app info
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
@@ -80,7 +81,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getAllWithProjects: (): Promise<IPCResponse> => ipcRenderer.invoke('sessions:get-all-with-projects'),
     getArchivedWithProjects: (): Promise<IPCResponse> => ipcRenderer.invoke('sessions:get-archived-with-projects'),
     get: (sessionId: string): Promise<IPCResponse> => ipcRenderer.invoke('sessions:get', sessionId),
-    create: (request: any): Promise<IPCResponse> => ipcRenderer.invoke('sessions:create', request),
+    create: (request: unknown): Promise<IPCResponse> => ipcRenderer.invoke('sessions:create', request),
     delete: (sessionId: string): Promise<IPCResponse> => ipcRenderer.invoke('sessions:delete', sessionId),
     sendInput: (sessionId: string, input: string): Promise<IPCResponse> => ipcRenderer.invoke('sessions:input', sessionId, input),
     continue: (sessionId: string, prompt?: string, model?: string): Promise<IPCResponse> => ipcRenderer.invoke('sessions:continue', sessionId, prompt, model),
@@ -197,6 +198,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   file: {
     listProject: (projectId: number, path?: string): Promise<IPCResponse> => ipcRenderer.invoke('file:list-project', { projectId, path }),
     readProject: (projectId: number, filePath: string): Promise<IPCResponse> => ipcRenderer.invoke('file:read-project', { projectId, filePath }),
+  },
+
+  // GitHub operations
+  github: {
+    getPRs: (projectId: number): Promise<IPCResponse> => ipcRenderer.invoke('github:get-prs', projectId),
+    getIssues: (projectId: number): Promise<IPCResponse> => ipcRenderer.invoke('github:get-issues', projectId),
+    getCIStatus: (projectId: number, prNumber: number): Promise<IPCResponse> => ipcRenderer.invoke('github:get-ci-status', projectId, prNumber),
+    createFixSession: (request: any): Promise<IPCResponse> => ipcRenderer.invoke('github:create-fix-session', request),
   },
 
   // Dialog

@@ -12,6 +12,7 @@ import { PermissionManager } from './permissionManager';
 import { execSync, exec } from 'child_process';
 import { promisify } from 'util';
 import { findNodeExecutable, testNodeExecutable, findClaudeCodeScript } from '../utils/nodeFinder';
+import type { SessionManager } from './sessionManager';
 
 interface ClaudeCodeProcess {
   process: pty.IPty;
@@ -30,7 +31,7 @@ export class ClaudeCodeManager extends EventEmitter {
   private readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes cache
 
   constructor(
-    private sessionManager: any, 
+    private sessionManager: SessionManager, 
     private logger?: Logger, 
     private configManager?: ConfigManager,
     private permissionIpcPath?: string | null
@@ -371,9 +372,9 @@ export class ClaudeCodeManager extends EventEmitter {
           const testCmd = `"${nodePath}" "${mcpBridgePath}" --version`;
           // Note: This will fail because the script expects different args, but it tests if node can execute it
           execSync(testCmd, { encoding: 'utf8', timeout: 2000 });
-        } catch (testError: any) {
+        } catch (testError) {
           // Expected to fail, but check if it's a permission error vs argument error
-          if (testError.code === 'EACCES' || testError.message.includes('EACCES')) {
+          if ((testError as { code?: string }).code === 'EACCES' || (testError as Error).message?.includes('EACCES')) {
             this.logger?.error(`[MCP] Permission denied executing MCP bridge script`);
             throw new Error('MCP bridge script is not executable');
           }
@@ -600,7 +601,7 @@ export class ClaudeCodeManager extends EventEmitter {
       
       let ptyProcess: pty.IPty;
       let spawnAttempt = 0;
-      let lastError: any;
+      let lastError: Error | unknown;
       
       // Try normal spawn first, then fallback to Node.js invocation if it fails
       while (spawnAttempt < 2) {
@@ -1089,7 +1090,7 @@ export class ClaudeCodeManager extends EventEmitter {
     return this.spawnClaudeCode(sessionId, worktreePath, prompt, undefined, false, permissionMode, model);
   }
 
-  async continueSession(sessionId: string, worktreePath: string, prompt: string, conversationHistory: any[], model?: string): Promise<void> {
+  async continueSession(sessionId: string, worktreePath: string, prompt: string, conversationHistory: Array<{ role?: string; message_type?: 'user' | 'assistant'; content: string }>, model?: string): Promise<void> {
     // Kill any existing process for this session first
     if (this.processes.has(sessionId)) {
       await this.killProcess(sessionId);
@@ -1102,7 +1103,7 @@ export class ClaudeCodeManager extends EventEmitter {
     // Check if we should skip --continue flag this time (after prompt compaction)
     // SQLite returns 0/1 for booleans, so we need to check explicitly
     const skipContinueRaw = dbSession?.skip_continue_next;
-    const shouldSkipContinue = skipContinueRaw === 1 || skipContinueRaw === true;
+    const shouldSkipContinue = skipContinueRaw === true || (typeof skipContinueRaw === 'number' && skipContinueRaw === 1) || String(skipContinueRaw) === '1';
     
     console.log(`[ClaudeCodeManager] continueSession called for ${sessionId}:`, {
       skip_continue_next_raw: skipContinueRaw,

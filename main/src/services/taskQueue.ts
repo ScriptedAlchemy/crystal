@@ -6,6 +6,7 @@ import { WorktreeNameGenerator } from './worktreeNameGenerator';
 import type { ClaudeCodeManager } from './claudeCodeManager';
 import type { GitDiffManager } from './gitDiffManager';
 import type { ExecutionTracker } from './executionTracker';
+import type { DatabaseService } from '../database/database';
 import { formatForDisplay } from '../utils/timestampUtils';
 import * as os from 'os';
 
@@ -268,7 +269,12 @@ export class TaskQueue {
       }
 
       const messages = await sessionManager.getConversationMessages(sessionId);
-      await claudeCodeManager.continueSession(sessionId, session.worktreePath, prompt, messages);
+      // Map ConversationMessage format to expected format
+      const formattedHistory = messages.map(msg => ({
+        role: msg.message_type === 'user' ? 'user' : 'assistant',
+        content: msg.content
+      }));
+      await claudeCodeManager.continueSession(sessionId, session.worktreePath, prompt, formattedHistory);
     });
   }
 
@@ -298,7 +304,7 @@ export class TaskQueue {
     if (count > 1 && projectId) {
       try {
         const { sessionManager } = this.options;
-        const db = (sessionManager as any).db;
+        const db = sessionManager.getDatabase();
         const folderName = worktreeTemplate || generatedBaseName || 'Multi-session prompt';
         
         console.log(`[TaskQueue] Creating folder for multi-session prompt. ProjectId: ${projectId}, type: ${typeof projectId}`);
@@ -351,7 +357,7 @@ export class TaskQueue {
 
   private async ensureUniqueSessionName(baseName: string, index?: number): Promise<string> {
     const { sessionManager } = this.options;
-    const db = (sessionManager as any).db;
+    const db = sessionManager.getDatabase();
     
     let candidateName = baseName;
     
@@ -366,11 +372,7 @@ export class TaskQueue {
     
     while (true) {
       // Check both active and archived sessions
-      const existingSession = db.db.prepare(`
-        SELECT id FROM sessions 
-        WHERE (name = ? OR worktree_name = ?)
-        LIMIT 1
-      `).get(uniqueName, uniqueName);
+      const existingSession = db.sessionNameExists(uniqueName, uniqueName);
       
       if (!existingSession) {
         break;

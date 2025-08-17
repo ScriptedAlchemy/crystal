@@ -117,9 +117,13 @@ if (isDevelopment) {
 }
 
 async function createWindow() {
+  // Use larger window size for tests
+  const width = process.env.WINDOW_WIDTH ? parseInt(process.env.WINDOW_WIDTH) : 1400;
+  const height = process.env.WINDOW_HEIGHT ? parseInt(process.env.WINDOW_HEIGHT) : 900;
+  
   mainWindow = new BrowserWindow({
-    width: 1400,
-    height: 900,
+    width,
+    height,
     icon: path.join(__dirname, '../assets/icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -134,7 +138,45 @@ async function createWindow() {
 
   if (isDevelopment) {
     await mainWindow.loadURL('http://localhost:4521');
-    mainWindow.webContents.openDevTools();
+    // Check environment variable for DevTools mode
+    // Default to detached mode for all environments
+    const devToolsMode = process.env.DEVTOOLS_MODE || 'detach';
+    const devToolsEnabled = process.env.DEVTOOLS !== 'false';
+    
+    if (devToolsEnabled) {
+      if (devToolsMode === 'minimal') {
+        // Open DevTools docked to the right with minimal impact
+        mainWindow.webContents.openDevTools({ 
+          mode: 'right'
+        });
+        
+        // Attempt to minimize DevTools width after opening
+        mainWindow.webContents.once('devtools-opened', () => {
+          console.log('[Main] DevTools opened in minimal mode (docked right)');
+          // Unfortunately, Electron doesn't provide direct API to control docked DevTools width
+          // Users can manually resize the DevTools pane by dragging the divider
+        });
+      } else if (devToolsMode === 'detach') {
+        // Open DevTools in a separate window (default)
+        mainWindow.webContents.openDevTools({ 
+          mode: 'detach'
+        });
+        console.log('[Main] DevTools opened in detached window');
+      } else if (devToolsMode === 'bottom') {
+        // Open DevTools docked to bottom
+        mainWindow.webContents.openDevTools({ 
+          mode: 'bottom'
+        });
+        console.log('[Main] DevTools opened at bottom');
+      } else {
+        // Default to detached
+        mainWindow.webContents.openDevTools({ 
+          mode: 'detach'
+        });
+      }
+    } else {
+      console.log('[Main] DevTools disabled via DEVTOOLS=false environment variable');
+    }
     
     // Enable IPC debugging in development
     console.log('[Main] 🔍 IPC debugging enabled - check DevTools console for IPC call logs');
